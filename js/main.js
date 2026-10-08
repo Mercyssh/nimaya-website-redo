@@ -250,6 +250,58 @@
     });
   }
 
+  /* ---------- Motifs ----------
+     data-twinkle / data-float get staggered timings, data-draw paths are drawn
+     the first time their container scrolls in, data-parallax="N" drifts up to N px. */
+  function initMotifs() {
+    document.querySelectorAll("[data-twinkle]").forEach((el) => {
+      el.style.setProperty("--dur", `${(2.4 + Math.random() * 2.4).toFixed(2)}s`);
+      el.style.setProperty("--delay", `${(-Math.random() * 4).toFixed(2)}s`);
+    });
+    document.querySelectorAll("[data-float]").forEach((el, i) => {
+      el.style.setProperty("--dur", `${4 + (i % 3)}s`);
+      el.style.setProperty("--delay", `${(-i * 1.3).toFixed(1)}s`);
+    });
+
+    const paths = [...document.querySelectorAll("[data-draw]")];
+    if (reduceMotion) {
+      paths.forEach((p) => p.classList.add("is-drawn"));
+      return;
+    }
+    // Observe the container: a fully clipped path never reports as intersecting
+    const io = new IntersectionObserver((entries) => {
+      for (const entry of entries) {
+        if (!entry.isIntersecting) continue;
+        entry.target.__drawPaths.forEach((p) => p.classList.add("is-drawn"));
+        io.unobserve(entry.target);
+      }
+    }, { rootMargin: "0px 0px -20% 0px" });
+    paths.forEach((p) => {
+      const box = p.parentElement;
+      (box.__drawPaths ||= []).push(p);
+      io.observe(box);
+    });
+
+    const drifting = [...document.querySelectorAll("[data-parallax]")];
+    let queued = false;
+    function drift() {
+      queued = false;
+      const vh = window.innerHeight;
+      for (const el of drifting) {
+        const r = el.parentElement.getBoundingClientRect();
+        if (r.bottom < 0 || r.top > vh) continue;
+        const p = Math.max(-1, Math.min(1, (r.top + r.height / 2 - vh / 2) / (vh / 2 + r.height / 2)));
+        el.style.setProperty("--py", `${(-p * Number(el.dataset.parallax)).toFixed(1)}px`);
+      }
+    }
+    window.addEventListener("scroll", () => {
+      if (queued) return;
+      queued = true;
+      requestAnimationFrame(drift);
+    }, { passive: true });
+    drift();
+  }
+
   /* ---------- Media overlays (YouTube + uploaded video) ---------- */
   function openOverlay(frame) {
     const backdrop = document.createElement("div");
@@ -308,6 +360,7 @@
     document.querySelectorAll("[data-rotator]").forEach(initRotator);
     document.querySelectorAll("[data-ticker]").forEach(initTicker);
     initDraw();
+    initMotifs(); // after the slider clones, so cloned stars twinkle too
     if (reduceMotion) return;
     initAppear();
     initReveal();

@@ -66,6 +66,7 @@
   --tile: #fcf3ee;
   --grey: #9f9f9f;
   --line: rgba(65, 34, 135, 0.2);
+  --lilac: #8f73cf;        /* dotted connector paths */
   --wash: linear-gradient(160deg, var(--cream) 47%, var(--lav) 100%);
 
   --shadow-card: -16px 16px 40px rgba(32, 9, 60, 0.1);
@@ -225,6 +226,86 @@ main > section:nth-of-type(even) { --section-bg: #fff; background: #fff; }
   pointer-events: none;
 }
 
+/* Motifs: decorative pieces from the poster kit. Each one is absolutely placed by its
+   section rule, sized with --w and tilted with --rot; --py is the scroll parallax offset. */
+.motif {
+  position: absolute;
+  z-index: var(--z, 0);
+  display: block;
+  width: calc(var(--w, 24px) * var(--ws, 1));
+  height: auto;
+  rotate: var(--rot, 0deg);
+  transform: translateY(var(--py, 0px));
+  pointer-events: none;
+  user-select: none;
+}
+/* Black source SVGs recoloured through a mask; --c sets the colour */
+.m-mask {
+  background: var(--c, var(--yellow));
+  -webkit-mask: var(--src) center / contain no-repeat;
+  mask: var(--src) center / contain no-repeat;
+}
+.m-star { --src: url("../assets/Motifs/star-01.svg"); aspect-ratio: 13 / 14; }
+.m-star2 { --src: url("../assets/Motifs/star-02.svg"); aspect-ratio: 21 / 25; --c: var(--purple); }
+.m-dot { --src: url("../assets/Motifs/star-03.svg"); aspect-ratio: 7 / 8; --w: 11px; }
+.m-path1 { --src: url("../assets/Motifs/dotted-lines-01.svg"); aspect-ratio: 83 / 13; }
+.m-path2 { --src: url("../assets/Motifs/dotted-lines-02.svg"); aspect-ratio: 88 / 98; }
+.m-path3 { --src: url("../assets/Motifs/dotted-lines-03.svg"); aspect-ratio: 79 / 11; }
+.m-path1, .m-path2, .m-path3 { --c: var(--lilac); opacity: 0.55; }
+.m-shape { --src: url("../assets/Motifs/bg-shape-01.svg"); aspect-ratio: 340 / 349; --c: var(--purple); opacity: 0.06; }
+/* Dotted trail drawn as a stretchable stroke (dots keep their shape at any width) */
+.m-trail {
+  height: 40px;
+  overflow: visible;
+  fill: none;
+  stroke: var(--lilac);
+  stroke-width: 2.5;
+  stroke-linecap: round;
+  stroke-dasharray: 0.5 9;
+  opacity: 0.6;
+}
+/* Poster-style speech bubble ("80% Action!") */
+.sticker {
+  --z: 2;
+  width: auto;
+  padding: 7px 14px 8px;
+  border-radius: 14px;
+  background: var(--peach);
+  color: var(--purple);
+  font-size: var(--fs-5);
+  font-style: italic;
+  font-weight: 700;
+  line-height: 1.2;
+  white-space: nowrap;
+  box-shadow: var(--shadow-tile);
+}
+.sticker::after {
+  content: "";
+  position: absolute;
+  left: 16px;
+  top: calc(100% - 1px);
+  border: 7px solid transparent;
+  border-top-color: var(--peach);
+  border-left-color: var(--peach);
+}
+/* Yellow pill-tiny bubble with a label inside */
+.m-bubble {
+  --z: 2;
+  aspect-ratio: 42 / 28;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding-bottom: 2px;
+  background: var(--yellow);
+  -webkit-mask: url("../assets/graphics/pill-tiny.svg") center / 100% 100% no-repeat;
+  mask: url("../assets/graphics/pill-tiny.svg") center / 100% 100% no-repeat;
+  color: var(--purple);
+  font-size: var(--fs-5);
+  font-weight: 700;
+  line-height: 1;
+  white-space: nowrap;
+}
+
 /* White card with a purple folder-tab header ("Your Beneficiaries will ✦") */
 .card {
   position: relative;
@@ -372,7 +453,6 @@ main { padding-top: var(--nav-h); }
   min-height: 640px;
 }
 .hero__info { position: relative; }
-.hero__motif { left: -34px; top: 18px; width: 28px; opacity: 0.6; transform: rotate(4deg); }
 .hero__title {
   font-family: var(--serif);
   font-weight: 700;
@@ -568,14 +648,6 @@ main { padding-top: var(--nav-h); }
   gap: 20px;
   margin-top: var(--title-gap);
 }
-.work__list::before {
-  content: "";
-  position: absolute;
-  left: 28px;
-  right: calc((100% - 100px) / 6 - 28px);
-  top: 28px;
-  border-top: 2px dashed var(--line);
-}
 .work__step { position: relative; display: flex; flex-direction: column; align-items: flex-start; }
 .work__step .badge { position: relative; z-index: 1; box-shadow: 0 0 0 6px var(--section-bg, #fff); }
 .work__text { margin-top: 18px; min-height: 96px; }
@@ -690,6 +762,82 @@ main { padding-top: var(--nav-h); }
 .footer__legal a:hover, .footer__social a:hover { color: var(--coral); }
 .footer__social { display: flex; gap: 24px; }
 
+/* ============ Motif placements ============ */
+/* Hero: outline star on the headline, tool cards + skill badges orbiting the photo */
+.hero__star { left: -52px; top: -34px; --w: 40px; --rot: -10deg; }
+.hero__dot { left: -2px; top: -40px; }
+.hero__media-box { z-index: 1; }
+.hero__path--top { left: -2%; top: -44px; --w: 58%; }
+.hero__path--side { left: -92px; top: 34%; --w: 66px; --rot: 8deg; }
+.hero__claude { --z: 2; left: -44px; top: 12%; --w: 76px; --rot: -9deg; }
+.hero__gpt { --z: 2; left: -26px; bottom: 10%; --w: 70px; --rot: 7deg; }
+.hero__skill { --z: 2; filter: drop-shadow(var(--shadow-tag)); }
+.hero__skill--a { left: 56%; top: -40px; --w: 58px; --rot: 8deg; }
+.hero__skill--b { right: -26px; bottom: 26%; --w: 54px; --rot: -6deg; }
+
+/* Our Why */
+.why__star { --z: 1; right: -14px; top: -22px; --w: 36px; --rot: 6deg; }
+.why__dot { left: -26px; bottom: 18%; --c: var(--purple); }
+.why__quote { --z: 1; right: 28px; top: -46px; --w: 88px; }
+
+/* Milestones: one dotted trail behind the row, a tiny star between items */
+.slider__viewport { position: relative; }
+.slider__track { position: relative; z-index: 1; }
+.milestones__trail { left: 0; top: 119px; --w: 100%; }
+.stat__dot { right: -20px; top: 44%; }
+.stat:nth-child(even) .stat__dot { --c: var(--purple); }
+.stat__sticker { right: 0; top: 2px; --rot: 8deg; }
+
+/* Partners: kept quiet, one star either side of the label */
+.partners__title { display: flex; align-items: center; justify-content: center; gap: 14px; }
+.partners__star { display: block; width: 16px; }
+
+/* Programs */
+.programs__shape { left: -60px; bottom: -80px; --w: 360px; --rot: 160deg; }
+.programs__head, .programs__cards { position: relative; z-index: 1; }
+.programs__star { position: relative; display: inline-block; vertical-align: top; --w: 0.42em; margin-left: 0.6em; --rot: 10deg; }
+.programs__cards > div { position: relative; }
+.program__sticker { right: -18px; top: -30px; --w: 104px; --rot: 8deg; }
+.program__sticker--r { --rot: -7deg; }
+
+/* How We Work: dotted curves between the badges, a star on each badge */
+.work__trail { left: 28px; top: 8px; --w: calc((100% + 20px) * 5 / 6); }
+.work__step .badge::after {
+  content: "";
+  position: absolute;
+  right: -7px;
+  top: -7px;
+  width: 16px;
+  aspect-ratio: 13 / 14;
+  background: var(--yellow);
+  -webkit-mask: url("../assets/Motifs/star-01.svg") center / contain no-repeat;
+  mask: url("../assets/Motifs/star-01.svg") center / contain no-repeat;
+  animation: motif-twinkle 3s ease-in-out infinite;
+}
+.work__step .badge--yellow::after { background: var(--purple); }
+.work__step:nth-child(3n + 1) .badge::after { animation-delay: -1s; animation-duration: 3.6s; }
+.work__step:nth-child(3n + 2) .badge::after { animation-delay: -2.2s; animation-duration: 2.7s; }
+
+/* Watch Us In Action */
+.watch__item { position: relative; }
+.watch__sticker { left: 4%; top: -24px; --rot: -8deg; }
+.watch__star { --z: 2; right: -12px; top: -26px; --w: 34px; --rot: 12deg; }
+.watch__dot { --z: 2; right: 34px; top: -30px; --c: var(--purple); }
+
+/* Listen to our Naaris */
+.voices__row { position: relative; }
+.voices__card { z-index: 1; }
+.voices__blob { left: calc(50% - 330px); top: 14%; width: 660px; height: 76%; opacity: 0.45; }
+.voices__quote { left: calc(50% - 360px); top: -44px; --w: 124px; --rot: -6deg; }
+.voices__star { --z: 2; right: -12px; top: -16px; --w: 30px; --rot: 8deg; }
+.voices__card + .voices__card .voices__star { --rot: -10deg; }
+
+/* Footer */
+.footer { position: relative; overflow: clip; }
+.footer__path { right: 3%; top: 12px; --w: 150px; --rot: -4deg; }
+.footer__star--a { right: calc(3% + 156px); top: 6px; --w: 22px; }
+.footer__star--b { right: calc(3% - 16px); top: 38px; --c: var(--purple); }
+
 /* ============ Media overlay ============ */
 .overlay {
   position: fixed;
@@ -716,8 +864,8 @@ html.is-locked { overflow: hidden; }
 @media (max-width: 1100px) {
   :root { --section-pad: 96px; --gutter: 40px; --fs-1: 64px; --fs-2: 48px; --fs-3: 22px; }
   .nav__links { gap: 18px; }
+  .work__trail { display: none; }
   .work__list { grid-template-columns: repeat(3, minmax(0, 1fr)); row-gap: 48px; }
-  .work__list::before { display: none; }
 }
 
 @media (max-width: 900px) {
@@ -745,7 +893,6 @@ html.is-locked { overflow: hidden; }
   :root { --section-pad: 72px; --title-gap: 24px; --gutter: 16px; --fs-1: 44px; --fs-2: 36px; --fs-3: 20px; --fs-4: 16px; --fs-5: 14px; }
   .hero__wrap { padding-top: 32px; }
   .hero__sub { margin-top: 24px; }
-  .hero__motif { display: none; }
   /* Hotspot offsets are in collage pixels, so drop them once the collage scales down */
   .why__collage { width: 300px; height: 297px; }
   .why__hot { display: none; }
@@ -759,6 +906,18 @@ html.is-locked { overflow: hidden; }
   .voices__row { gap: 16px; }
   .voices__card { width: calc(50% - 8px); }
   .footer__inner { flex-direction: column; align-items: flex-start; }
+  /* Motifs: connectors and shapes off, a couple of sparkles per section, cards at 70% */
+  .m-trail, .m-shape, .hero__path, .footer__path, .motif--desk { display: none; }
+  .motif--card { --ws: 0.7; }
+  .hero__claude { left: -14px; top: 2%; }
+  .hero__gpt { left: -6px; }
+  .hero__skill--b { right: -8px; }
+  .hero__star { left: -4px; top: -40px; --w: 30px; }
+  .why__quote { --w: 64px; top: -36px; }
+  .voices__quote { left: -6px; top: -14px; --w: 60px; }
+  .voices__blob { left: -10%; width: 120%; }
+  .program__sticker { right: -6px; --w: 92px; }
+  .footer__star--a { right: 16px; }
 }
 
 /* ============ Motion: hidden initial states (only when JS runs) ============ */
@@ -788,11 +947,34 @@ html.is-locked { overflow: hidden; }
 }
 .js .is-drawn .script__earmarks { opacity: 1; transform: none; }
 
-/* Sparkles: slow looping swing */
+/* Sparkles: slow looping swing around their resting tilt */
 @keyframes sparkle-swing {
-  from { rotate: -14deg; }
-  to { rotate: 14deg; }
+  from { rotate: calc(var(--rot, 0deg) - 14deg); }
+  to { rotate: calc(var(--rot, 0deg) + 14deg); }
 }
+/* Stars twinkle; main.js gives each its own --dur/--delay so they never pulse together */
+@keyframes motif-twinkle {
+  0%, 100% { scale: 1; opacity: 1; }
+  50% { scale: 0.85; opacity: 0.5; }
+}
+[data-twinkle] {
+  animation:
+    sparkle-swing 3s ease-in-out var(--delay, 0s) infinite alternate,
+    motif-twinkle var(--dur, 3.2s) ease-in-out var(--delay, 0s) infinite;
+}
+/* Cards and stickers bob gently */
+@keyframes motif-float {
+  from { translate: 0 -5px; rotate: calc(var(--rot, 0deg) - 2deg); }
+  to { translate: 0 5px; rotate: calc(var(--rot, 0deg) + 2deg); }
+}
+[data-float] { animation: motif-float var(--dur, 5s) ease-in-out var(--delay, 0s) infinite alternate; }
+/* Dotted paths draw in once they scroll into view */
+.js [data-draw] {
+  clip-path: inset(-20% 100% -20% -20%);
+  transition: clip-path 1.6s cubic-bezier(0.65, 0, 0.35, 1) 0.2s;
+}
+.js [data-draw="down"] { clip-path: inset(-20% -20% 100% -20%); }
+.js [data-draw].is-drawn { clip-path: inset(-20%); }
 .sparkle,
 .card__tab img,
 .chip::before { animation: sparkle-swing 2.8s ease-in-out infinite alternate; }
@@ -801,7 +983,9 @@ html.is-locked { overflow: hidden; }
 .chip:nth-child(even)::before { animation-delay: -1.4s; }
 
 @media (prefers-reduced-motion: reduce) {
-  .sparkle, .card__tab img, .chip::before { animation: none; }
+  .sparkle, .card__tab img, .chip::before,
+  [data-twinkle], [data-float], .work__step .badge::after { animation: none; }
+  .js [data-draw] { transition: none !important; }
   .js [data-appear],
   .js [data-reveal] { opacity: 1 !important; transform: none !important; }
   .btn, .watch__thumb { transition: none; }
