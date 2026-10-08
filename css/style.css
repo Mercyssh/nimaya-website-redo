@@ -95,6 +95,12 @@
   --section-pad: 112px;
   --title-gap: 32px;     /* section title -> content */
 
+  /* Motion: one slow-out curve and three durations for every transition on the page */
+  --ease: cubic-bezier(0.16, 1, 0.3, 1);
+  --t-1: 0.6s;   /* small things: hovers, badges, nav */
+  --t-2: 1s;     /* text and block reveals */
+  --t-3: 1.4s;   /* images, writing, paths */
+
   --nav-h: 68px;
   --gutter: 60px;
 }
@@ -122,6 +128,31 @@ section { position: relative; overflow: clip; padding-block: var(--section-pad);
 /* Sections alternate: gradient wash, then plain white */
 main > section:nth-of-type(odd) { --section-bg: var(--cream); background: var(--wash); }
 main > section:nth-of-type(even) { --section-bg: #fff; background: #fff; }
+main > section, .footer { isolation: isolate; }
+/* Printed-paper grain over the wash backgrounds */
+main > section:nth-of-type(odd)::before,
+.footer::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  z-index: -1;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='180' height='180'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='3' stitchTiles='stitch'/%3E%3CfeColorMatrix values='0 0 0 0 0.25 0 0 0 0 0.13 0 0 0 0 0.53 0 0 0 0.55 0'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+  opacity: 0.22;
+  pointer-events: none;
+}
+/* Each section fades into the colour the next one starts with */
+main > section::after {
+  content: "";
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  height: min(160px, var(--section-pad));
+  z-index: -1;
+  pointer-events: none;
+}
+main > section:nth-of-type(odd)::after { background: linear-gradient(to bottom, rgba(255, 255, 255, 0), #fff); }
+main > section:nth-of-type(even)::after { background: linear-gradient(to bottom, rgba(252, 243, 238, 0), var(--cream)); }
 
 .display {
   font-family: var(--serif);
@@ -406,7 +437,8 @@ main > section:nth-of-type(even) { --section-bg: #fff; background: #fff; }
   font-weight: 600;
   line-height: 1;
   white-space: nowrap;
-  transition: transform 0.2s ease, box-shadow 0.2s ease;
+  translate: var(--mx, 0px) var(--my, 0px);
+  transition: transform var(--t-1) var(--ease), box-shadow var(--t-1) var(--ease), translate var(--t-1) var(--ease);
 }
 .btn:hover { transform: translateY(-2px); }
 .btn--filled { background: var(--purple); color: #fff; box-shadow: var(--shadow-tag); }
@@ -425,6 +457,22 @@ main > section:nth-of-type(even) { --section-bg: #fff; background: #fff; }
   backdrop-filter: blur(12px);
   border-bottom: 1px solid var(--line);
   z-index: 10;
+  transition: height var(--t-1) var(--ease), background-color var(--t-1) var(--ease), box-shadow var(--t-1) var(--ease);
+}
+.nav__progress {
+  position: absolute;
+  left: 0;
+  bottom: -1px;
+  width: 100%;
+  height: 2px;
+  background: var(--coral);
+  transform-origin: 0 50%;
+  scale: var(--progress, 0) 1;
+}
+.nav__logo img { transform-origin: 0 50%; transition: scale var(--t-1) var(--ease); }
+@media (min-width: 901px) {
+  .nav.is-scrolled { height: 56px; background: rgba(255, 255, 255, 0.96); box-shadow: 0 8px 28px rgba(32, 9, 60, 0.06); }
+  .nav.is-scrolled .nav__logo img { scale: 0.86; }
 }
 .nav__inner {
   max-width: 1400px;
@@ -676,13 +724,15 @@ main { padding-top: var(--nav-h); }
   margin-top: var(--title-gap);
 }
 .watch__item { display: flex; flex-direction: column; align-items: center; text-align: center; }
-.watch__thumb { width: 100%; max-width: 600px; transition: transform 0.25s ease; }
+.watch__thumb { width: 100%; max-width: 600px; }
 /* The source thumbnails carry the old chamfered gradient frame; crop it away */
 .watch__frame { display: block; aspect-ratio: 803 / 516; border-radius: 10px; overflow: hidden; }
 .watch__frame img { width: 100%; height: 100%; object-fit: cover; transform: scale(1.24); }
-.watch__thumb--l { transform: rotate(-2deg); }
-.watch__thumb--r { transform: rotate(2deg); }
-.watch__thumb:hover { transform: rotate(0deg) scale(1.01); }
+.watch__thumb--l { --tilt-base: -2deg; }
+.watch__thumb--r { --tilt-base: 2deg; }
+.watch__thumb:hover { --tilt-base: 0deg; }
+.watch__frame img { transition: scale var(--t-3) var(--ease); }
+.watch__thumb:hover .watch__frame img { scale: 1.05; }
 .watch__name {
   max-width: 520px;
   margin-top: 32px;
@@ -698,8 +748,8 @@ main { padding-top: var(--nav-h); }
 .voices__intro { max-width: 640px; margin: 16px auto 0; }
 .voices__row { display: flex; justify-content: center; gap: 32px; margin-top: var(--title-gap); }
 .voices__card { position: relative; width: 280px; }
-.voices__card:nth-child(odd) .voices__thumb { transform: rotate(-1.5deg); }
-.voices__card:nth-child(even) .voices__thumb { transform: rotate(1.5deg); }
+.voices__card:nth-child(odd) .voices__thumb { --tilt-base: -1.5deg; }
+.voices__card:nth-child(even) .voices__thumb { --tilt-base: 1.5deg; }
 .voices__thumb {
   position: relative;
   display: block;
@@ -765,9 +815,15 @@ main { padding-top: var(--nav-h); }
 .footer__social { display: flex; gap: 24px; }
 
 /* ============ Motif placements ============ */
+/* One large, faint star per section that drifts with scroll */
+.m-big { --c: var(--purple); --w: 240px; opacity: 0.06; }
+.why__big { right: 2%; top: -90px; --rot: 12deg; }
+.milestones__big { left: 4%; top: -70px; --rot: -10deg; --w: 200px; }
+.work__big { right: 3%; top: -80px; --rot: 8deg; }
+.watch__big { left: 3%; top: -90px; --rot: -14deg; }
+
 /* Hero: outline star on the headline, tool cards + skill badges orbiting the photo */
 .hero__star { left: -52px; top: -34px; --w: 40px; --rot: -10deg; }
-.hero__dot { left: -2px; top: -40px; }
 .hero__media-box { z-index: 1; }
 .hero__path--top { left: -2%; top: -44px; --w: 58%; }
 .hero__path--side { left: -92px; top: 34%; --w: 66px; --rot: 8deg; }
@@ -779,15 +835,12 @@ main { padding-top: var(--nav-h); }
 
 /* Our Why */
 .why__star { --z: 1; right: -14px; top: -22px; --w: 36px; --rot: 6deg; }
-.why__dot { left: -26px; bottom: 18%; --c: var(--purple); }
 .why__quote { --z: 1; right: 28px; top: -46px; --w: 88px; }
 
 /* Milestones: one dotted trail behind the row, a tiny star between items */
 .slider__viewport { position: relative; }
 .slider__track { position: relative; z-index: 1; }
 .milestones__trail { left: 0; top: 119px; --w: 100%; }
-.stat__dot { right: -20px; top: 44%; }
-.stat:nth-child(even) .stat__dot { --c: var(--purple); }
 .stat__sticker { right: 0; top: 2px; --rot: 8deg; }
 
 /* Partners: kept quiet, one star either side of the label */
@@ -824,7 +877,6 @@ main { padding-top: var(--nav-h); }
 .watch__item { position: relative; }
 .watch__sticker { left: 4%; top: -24px; --rot: -8deg; }
 .watch__star { --z: 2; right: -12px; top: -26px; --w: 34px; --rot: 12deg; }
-.watch__dot { --z: 2; right: 34px; top: -30px; --c: var(--purple); }
 
 /* Listen to our Naaris */
 .voices__row { position: relative; }
@@ -832,13 +884,11 @@ main { padding-top: var(--nav-h); }
 .voices__blob { left: calc(50% - 330px); top: 14%; width: 660px; height: 76%; opacity: 0.45; }
 .voices__quote { left: calc(50% - 360px); top: -44px; --w: 124px; --rot: -6deg; }
 .voices__star { --z: 2; right: -12px; top: -16px; --w: 30px; --rot: 8deg; }
-.voices__card + .voices__card .voices__star { --rot: -10deg; }
 
 /* Footer */
 .footer { position: relative; overflow: clip; }
 .footer__path { right: 3%; top: 12px; --w: 150px; --rot: -4deg; }
 .footer__star--a { right: calc(3% + 156px); top: 6px; --w: 22px; }
-.footer__star--b { right: calc(3% - 16px); top: 38px; --c: var(--purple); }
 
 /* ============ Media overlay ============ */
 .overlay {
@@ -883,6 +933,7 @@ html.is-locked { overflow: hidden; }
   .nav__links::-webkit-scrollbar { display: none; }
   .nav__links a:last-child { padding-right: 32px; }
   main { padding-top: 108px; }
+  .pin.is-pinned .pin__stage { padding-top: 108px; }
   .hero__wrap, .why { grid-template-columns: minmax(0, 1fr); }
   .hero__wrap { min-height: 0; }
   .hero__media { justify-content: center; }
@@ -910,6 +961,7 @@ html.is-locked { overflow: hidden; }
   .footer__inner { flex-direction: column; align-items: flex-start; }
   /* Motifs: connectors and shapes off, a couple of sparkles per section, cards at 70% */
   .m-trail, .m-shape, .hero__path, .footer__path, .motif--desk { display: none; }
+  .m-big { --w: 150px; }
   .motif--card { --ws: 0.7; }
   .hero__claude { left: -14px; top: 2%; }
   .hero__gpt { left: -6px; }
@@ -922,9 +974,125 @@ html.is-locked { overflow: hidden; }
   .footer__star--a { right: 16px; }
 }
 
-/* ============ Motion: hidden initial states (only when JS runs) ============ */
-.js [data-appear],
-.js [data-reveal] { opacity: 0; }
+/* ============ Motion (hidden states only apply when JS runs) ============ */
+/* Blocks: soft fade-up */
+.js [data-reveal] {
+  opacity: 0;
+  translate: 0 32px;
+  transition: opacity var(--t-2) var(--ease) var(--d, 0s), translate var(--t-2) var(--ease) var(--d, 0s);
+}
+.js [data-reveal="fade"] { translate: none; }
+.js [data-reveal="left"] { translate: -48px 0; }
+.js [data-reveal="right"] { translate: 48px 0; }
+.js [data-reveal].is-in { opacity: 1; translate: none; }
+
+/* Titles: each line rises from behind its own baseline. The clip lifts once the
+   rise has finished so swishes and earmarks can overhang again. */
+.rise, .rise__in { display: block; }
+.js .rise { clip-path: inset(-50% -50% -0.14em -50%); }
+.js .rise__in { translate: 0 125%; }
+.js .is-risen .rise { animation: rise-unclip var(--t-2) linear var(--d, 0s) forwards; }
+.js .is-risen .rise__in { translate: none; transition: translate var(--t-2) var(--ease) var(--d, 0s); }
+@keyframes rise-unclip {
+  0%, 99% { clip-path: inset(-50% -50% -0.14em -50%); }
+  100% { clip-path: none; }
+}
+
+/* Images: the photo opens out of a smaller window and settles from a slight zoom */
+.js [data-unmask] img {
+  clip-path: inset(10% 8% round 16px);
+  scale: 1.12;
+  transition: clip-path var(--t-3) var(--ease) var(--d, 0s), scale var(--t-3) var(--ease) var(--d, 0s);
+}
+.js [data-unmask].is-in img { clip-path: inset(0 round 0); scale: 1; }
+.js [data-unmask] .lottie,
+.js .voices__thumb[data-unmask]::after { opacity: 0; transition: opacity var(--t-2) var(--ease) calc(var(--d, 0s) + 0.6s); }
+.js [data-unmask].is-in .lottie,
+.js .voices__thumb[data-unmask].is-in::after { opacity: 1; }
+.js .watch__thumb:hover .watch__frame.is-in img { scale: 1.05; }
+
+/* Hero entrance: headline rises, photo opens, the word is written, cards pop in, paths draw */
+.hero__media-box { --d: 0.35s; }
+.hero .script { --write-delay: 0.75s; }
+.js .hero__blob,
+.js .hero__glow { opacity: 0; scale: 0.92; transition: opacity var(--t-3) var(--ease) 0.2s, scale var(--t-3) var(--ease) 0.2s; }
+.js .hero.is-in .hero__blob { opacity: 1; scale: 1; }
+.js .hero.is-in .hero__glow { opacity: 0.6; scale: 1; }
+.js .hero .motif--card { opacity: 0; scale: 0.6; transition: opacity var(--t-1) var(--ease) var(--d, 0s), scale var(--t-2) var(--ease) var(--d, 0s); }
+.js .hero.is-in .motif--card { opacity: 1; scale: 1; }
+.hero__claude { --d: 0.9s; }
+.hero__skill--a { --d: 1s; }
+.hero__skill--b { --d: 1.1s; }
+.hero__gpt { --d: 1.2s; }
+
+/* Pinned chapters (desktop): the stage sticks while scroll drives its content */
+.pin.is-pinned { padding-block: 0; }
+.pin.is-pinned .pin__stage {
+  position: sticky;
+  top: 0;
+  height: 100vh;
+  height: 100svh;
+  padding-top: var(--nav-h);
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+}
+.pin.is-pinned .slider__arrow { display: none; }
+.pin.is-pinned .work__trail { clip-path: inset(-50% calc(100% - var(--trail, 0) * 100%) -50% -50%); }
+.pin.is-pinned .work__text { opacity: 0.28; transition: opacity var(--t-1) var(--ease); }
+.pin.is-pinned .work__step .badge { scale: 0.82; filter: grayscale(1) opacity(0.45); transition: scale var(--t-1) var(--ease), filter var(--t-1) var(--ease); }
+.pin.is-pinned .work__step.is-on .work__text { opacity: 1; }
+.pin.is-pinned .work__step.is-on .badge { scale: 1; filter: none; }
+/* Each step's photo rises into its frame as the step lights up */
+.js .pin.is-pinned .work__img { opacity: 0.45; transition: opacity var(--t-1) var(--ease); }
+.js .pin.is-pinned .work__step.is-on .work__img { opacity: 1; }
+.js .pin.is-pinned .work__img[data-unmask]:not(.is-in) img { clip-path: inset(100% 0 0 0 round 16px); scale: 1.18; }
+
+/* Cards lean toward the cursor (main.js sets --rx/--ry on fine pointers) */
+[data-tilt] {
+  transform: perspective(1000px) rotateX(var(--rx, 0deg)) rotateY(var(--ry, 0deg)) rotate(var(--tilt-base, 0deg));
+  transition: transform var(--t-1) var(--ease);
+}
+
+/* Video hover preview (testimonials) */
+.voices__preview {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  opacity: 0;
+  transition: opacity var(--t-1) var(--ease);
+}
+.voices__thumb.is-previewing .voices__preview { opacity: 1; }
+
+/* "Play" cursor over videos */
+.cursor {
+  position: fixed;
+  left: 0;
+  top: 0;
+  z-index: 15;
+  width: 88px;
+  height: 88px;
+  margin: -44px 0 0 -44px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 4px;
+  border-radius: 50%;
+  background: var(--purple);
+  color: #fff;
+  font-size: var(--fs-5);
+  font-weight: 700;
+  box-shadow: var(--shadow-tag);
+  pointer-events: none;
+  opacity: 0;
+  scale: 0.3;
+  transition: opacity var(--t-1) var(--ease), scale var(--t-1) var(--ease);
+}
+.cursor.is-on { opacity: 1; scale: 1; }
+.has-cursor [data-youtube],
+.has-cursor [data-video] { cursor: none; }
 
 /* Script draw-in: the word is "written" left to right along its tilt (clip-path wipe, in the
    element's own rotated space), then the swish draws, then the earmarks pop. Negative insets
@@ -932,20 +1100,20 @@ html.is-locked { overflow: hidden; }
 .js .script,
 .js .voices__name {
   clip-path: inset(-60% 100% -60% -20%);
-  transition: clip-path 1.1s cubic-bezier(0.65, 0, 0.35, 1);
+  transition: clip-path var(--t-3) var(--ease) var(--write-delay, 0.45s);
 }
 .js .script.is-drawn,
 .js .voices__name.is-drawn { clip-path: inset(-60% -60% -60% -20%); }
 .js .script__swish {
   clip-path: inset(0 100% 0 0);
-  transition: clip-path 0.5s cubic-bezier(0.65, 0, 0.35, 1) 0.85s;
+  transition: clip-path var(--t-1) var(--ease) calc(var(--write-delay, 0.45s) + 0.7s);
 }
 .js .is-drawn .script__swish { clip-path: inset(0 0 0 0); }
 .js .script__earmarks {
   opacity: 0;
   transform: scale(0.4);
   transform-origin: 0 100%;
-  transition: opacity 0.25s ease 1.15s, transform 0.4s cubic-bezier(0.34, 1.56, 0.64, 1) 1.15s;
+  transition: opacity var(--t-1) var(--ease) calc(var(--write-delay, 0.45s) + 1s), transform var(--t-1) var(--ease) calc(var(--write-delay, 0.45s) + 1s);
 }
 .js .is-drawn .script__earmarks { opacity: 1; transform: none; }
 
@@ -973,10 +1141,11 @@ html.is-locked { overflow: hidden; }
 /* Dotted paths draw in once they scroll into view */
 .js [data-draw] {
   clip-path: inset(-20% 100% -20% -20%);
-  transition: clip-path 1.6s cubic-bezier(0.65, 0, 0.35, 1) 0.2s;
+  transition: clip-path var(--t-3) var(--ease) 0.2s;
 }
 .js [data-draw="down"] { clip-path: inset(-20% -20% 100% -20%); }
 .js [data-draw].is-drawn { clip-path: inset(-20%); }
+.js .hero [data-draw] { transition-delay: 1.25s; }
 .sparkle,
 .card__tab img,
 .chip::before { animation: sparkle-swing 2.8s ease-in-out infinite alternate; }
@@ -988,8 +1157,11 @@ html.is-locked { overflow: hidden; }
   .sparkle, .card__tab img, .chip::before,
   [data-twinkle], [data-float], .work__step .badge::after { animation: none; }
   .js [data-draw] { transition: none !important; }
-  .js [data-appear],
-  .js [data-reveal] { opacity: 1 !important; transform: none !important; }
-  .btn, .watch__thumb { transition: none; }
+  .js [data-reveal] { opacity: 1 !important; translate: none !important; }
+  .js .rise { clip-path: none; }
+  .js .rise__in { translate: none; }
+  .js [data-unmask] img { clip-path: none; scale: 1; }
+  .js .hero .motif--card, .js .hero__blob, .js .hero__glow { opacity: 1; scale: 1; }
+  .btn, [data-tilt], .nav, .cursor { transition: none; }
   .js .script, .js .voices__name, .js .script__swish, .js .script__earmarks { transition: none !important; }
 }

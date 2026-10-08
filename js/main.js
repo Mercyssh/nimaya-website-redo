@@ -1,19 +1,28 @@
 (() => {
   const { bind } = window.Motion;
   const reduceMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+  const finePointer = window.matchMedia("(hover: hover) and (pointer: fine)").matches;
+  const clamp = (v, min = 0, max = 1) => Math.min(max, Math.max(min, v));
 
-  // Transitions exactly as configured on the Framer site.
-  const spring = (delay = 0) => ({ type: "spring", bounce: 0.2, duration: 0.4, delay });
-  const tween = (delay = 0) => ({ type: "tween", ease: [0.44, 0, 0.56, 1], duration: 0.2, delay });
+  /* One scroll pass for everything that follows the page (nav, pins, parallax).
+     Runs inside the scroll event, which browsers fire once per frame. */
+  const scrollFns = [];
+  function onScroll(fn) { scrollFns.push(fn); fn(); }
+  function runScroll() { scrollFns.forEach((fn) => fn()); }
+  window.addEventListener("scroll", runScroll, { passive: true });
+  window.addEventListener("resize", runScroll);
 
-  // data-reveal presets -> Framer "enter" (hidden) state.
-  const ENTER = {
-    fade: { opacity: 0, x: 0, y: 0 },
-    left: { opacity: 0, x: -150, y: 0 },
-    right: { opacity: 0, x: 150, y: 0 },
-    up: { opacity: 0, x: 0, y: 150 },
-  };
-  const SHOWN = { opacity: 1, x: 0, y: 0 };
+  // Fires `fn(el)` once, the first time each element scrolls into view.
+  function onceInView(els, fn, options = {}) {
+    const io = new IntersectionObserver((entries) => {
+      for (const entry of entries) {
+        if (!entry.isIntersecting) continue;
+        fn(entry.target);
+        io.unobserve(entry.target);
+      }
+    }, options);
+    els.forEach((el) => io.observe(el));
+  }
 
   /* ---------- Lottie ---------- */
   function initLottie(root = document) {
@@ -174,56 +183,284 @@
     document.addEventListener("visibilitychange", sync);
   }
 
-  /* ---------- Page-load appear (hero) ---------- */
-  function initAppear() {
-    document.querySelectorAll("[data-appear]").forEach((el) => {
-      const m = bind(el, { opacity: 0.001, x: el.dataset.from === "right" ? 150 : -150 });
-      m.animate(SHOWN, spring(Number(el.dataset.delay) || 0));
+  /* ---------- Smooth scrolling ----------
+     Wheel input eases toward its target instead of jumping in steps. Touch,
+     keyboard and scrollbar keep native scrolling; the target resyncs from them. */
+  function initSmoothScroll() {
+    if (reduceMotion || !finePointer) return;
+    const root = document.documentElement;
+    let target = window.scrollY;
+    let current = target;
+    let running = false;
+    let last = 0;
+
+    function frame(now) {
+      const dt = last ? Math.min(64, now - last) : 16.7;
+      last = now;
+      current += (target - current) * (1 - Math.pow(0.9, dt / 16.7));
+      if (Math.abs(target - current) < 0.5) {
+        current = target;
+        running = false;
+      }
+      window.scrollTo(0, current);
+      if (running) requestAnimationFrame(frame);
+    }
+
+    window.addEventListener("wheel", (e) => {
+      if (e.ctrlKey || root.classList.contains("is-locked") || Math.abs(e.deltaX) > Math.abs(e.deltaY)) return;
+      e.preventDefault();
+      if (!running) current = target = window.scrollY;
+      const unit = e.deltaMode === 1 ? 32 : e.deltaMode === 2 ? window.innerHeight : 1;
+      target = clamp(target + e.deltaY * unit, 0, root.scrollHeight - window.innerHeight);
+      if (!running) {
+        running = true;
+        last = 0;
+        requestAnimationFrame(frame);
+      }
+    }, { passive: false });
+  }
+
+  /* ---------- Reveals ----------
+     Blocks fade up, titles rise line by line, photos open out of a smaller window.
+     All timing lives in CSS (--ease, --t-*); JS only flips the classes. */
+  function initReveal() {
+    const els = [...document.querySelectorAll("[data-reveal]")];
+    els.forEach((el) => {
+      const d = Number(el.dataset.delay) || 0;
+      if (d) el.style.setProperty("--d", `${d}s`);
+    });
+    if (reduceMotion) return els.forEach((el) => el.classList.add("is-in"));
+    onceInView(els, (el) => el.classList.add("is-in"), { threshold: 0.15, rootMargin: "0px 0px -8% 0px" });
+  }
+
+  function wrapRise(el) {
+    const inner = document.createElement("span");
+    inner.className = "rise__in";
+    inner.append(...el.childNodes);
+    const outer = document.createElement("span");
+    outer.className = "rise";
+    outer.append(inner);
+    el.append(outer);
+    return outer;
+  }
+
+  // Must run before initDraw: the script words move into the new wrappers.
+  function initRise() {
+    const titles = [...document.querySelectorAll("h2.display")];
+    titles.forEach(wrapRise);
+    document.querySelectorAll(".hero__title .line").forEach((line, i) => {
+      wrapRise(line).style.setProperty("--d", `${0.1 + i * 0.12}s`);
+    });
+    if (reduceMotion) return;
+    onceInView(titles, (el) => el.classList.add("is-risen"), { rootMargin: "0px 0px -15% 0px" });
+  }
+
+  function initUnmask() {
+    const els = [...document.querySelectorAll("[data-unmask]")].filter(
+      (el) => !el.closest(".hero") && !el.closest(".pin.is-pinned .work__step")
+    );
+    if (reduceMotion) return els.forEach((el) => el.classList.add("is-in"));
+    onceInView(els, (el) => el.classList.add("is-in"), { threshold: 0.25 });
+  }
+
+  /* ---------- Hero entrance ----------
+     Headline rises, photo opens, the script word writes, cards pop, paths draw.
+     The stagger lives in CSS; this starts it once the fonts are in. */
+  function initHero() {
+    const hero = document.querySelector(".hero");
+    const go = () => {
+      hero.classList.add("is-in");
+      hero.querySelector(".hero__title").classList.add("is-risen");
+      hero.querySelectorAll("[data-unmask]").forEach((el) => el.classList.add("is-in"));
+    };
+    if (reduceMotion) return go();
+    document.fonts.ready.then(() => setTimeout(go, 60));
+  }
+
+  /* ---------- Pinned chapters ----------
+     The section grows taller and its stage sticks; scroll progress through the
+     section drives the content. Milestones: the row slides sideways.
+     How We Work (desktop): steps light up one by one along the trail. */
+  function initPins() {
+    if (reduceMotion) return;
+    const progressOf = (sec) => {
+      const r = sec.getBoundingClientRect();
+      return clamp(-r.top / Math.max(1, r.height - window.innerHeight));
+    };
+
+    const ms = document.querySelector('[data-pin="milestones"]');
+    if (ms) {
+      const track = ms.querySelector(".slider__track");
+      const viewport = ms.querySelector(".slider__viewport");
+      let dist = 0;
+      ms.classList.add("is-pinned");
+      const measure = () => {
+        track.style.transform = "";
+        dist = Math.max(0, track.scrollWidth - viewport.clientWidth + parseFloat(getComputedStyle(track).paddingLeft));
+        ms.style.height = `${window.innerHeight + dist * 1.3}px`;
+      };
+      measure();
+      window.addEventListener("resize", measure);
+      window.addEventListener("load", measure);
+      onScroll(() => {
+        const p = clamp((progressOf(ms) - 0.06) / 0.88);
+        track.style.transform = `translateX(${(-p * dist).toFixed(1)}px)`;
+      });
+    }
+
+    const work = document.querySelector('[data-pin="work"]');
+    if (work) {
+      const steps = [...work.querySelectorAll(".work__step")];
+      const desktop = window.matchMedia("(min-width: 1101px)");
+      const setOn = (step, on) => {
+        step.classList.toggle("is-on", on);
+        step.querySelector("[data-unmask]").classList.toggle("is-in", on);
+      };
+      const apply = () => {
+        const pinned = desktop.matches;
+        work.classList.toggle("is-pinned", pinned);
+        work.style.height = pinned ? `${window.innerHeight * 2.8}px` : "";
+        if (!pinned) steps.forEach((s) => setOn(s, true));
+        runScroll();
+      };
+      desktop.addEventListener("change", apply);
+      window.addEventListener("resize", () => {
+        if (desktop.matches) work.style.height = `${window.innerHeight * 2.8}px`;
+      });
+      work.classList.toggle("is-pinned", desktop.matches);
+      onScroll(() => {
+        if (!work.classList.contains("is-pinned")) return;
+        const s = clamp(progressOf(work) / 0.82) * (steps.length - 1);
+        steps.forEach((step, i) => setOn(step, i <= s + 0.02));
+        work.style.setProperty("--trail", (s / (steps.length - 1)).toFixed(4));
+      });
+      apply();
+    }
+  }
+
+  /* ---------- Counters ("10,000+" counts up the first time it is seen) ---------- */
+  function initCounters() {
+    const els = [...document.querySelectorAll("[data-count]")];
+    if (reduceMotion) return;
+    const fmt = (n) => Math.round(n).toLocaleString("en-IN");
+    els.forEach((el) => {
+      el.style.fontVariantNumeric = "tabular-nums";
+      el.textContent = fmt(0) + (el.dataset.suffix || "");
+    });
+    onceInView(els, (el) => {
+      const end = Number(el.dataset.count);
+      const suffix = el.dataset.suffix || "";
+      const start = performance.now();
+      const tick = (now) => {
+        const t = clamp((now - start) / 1600);
+        el.textContent = fmt(end * (1 - Math.pow(1 - t, 4))) + suffix;
+        if (t < 1) requestAnimationFrame(tick);
+      };
+      requestAnimationFrame(tick);
+    }, { threshold: 0.6 });
+  }
+
+  /* ---------- Nav: reading progress + compact state after the hero ---------- */
+  function initNav() {
+    const nav = document.querySelector(".nav");
+    const hero = document.querySelector(".hero");
+    onScroll(() => {
+      const max = document.documentElement.scrollHeight - window.innerHeight;
+      nav.style.setProperty("--progress", max > 0 ? (window.scrollY / max).toFixed(4) : 0);
+      nav.classList.toggle("is-scrolled", window.scrollY > hero.offsetHeight - 160);
     });
   }
 
-  /* ---------- Scroll appear ----------
-     Port of Framer's in-view rule: observe the (transformed) element with 100
-     thresholds; it is "in view" when visibleHeight / min(height, viewport) >= threshold. */
-  function initReveal() {
-    const thresholds = Array.from({ length: 100 }, (_, i) => i / 100);
-    const io = new IntersectionObserver((entries) => {
-      for (const entry of entries) {
-        const el = entry.target;
-        const s = el.__reveal;
-        const box = entry.boundingClientRect;
-        const ratio = box.height === 0 ? 0 : entry.intersectionRect.height / Math.min(box.height, window.innerHeight);
-        const visible = box.height === 0 ? entry.isIntersecting : entry.isIntersecting && ratio >= s.threshold;
+  /* ---------- Pointer polish (mouse / trackpad only) ---------- */
+  function initCursor() {
+    if (!finePointer) return;
+    const targets = document.querySelectorAll("[data-youtube], [data-video]");
+    const cursor = document.createElement("div");
+    cursor.className = "cursor";
+    cursor.setAttribute("aria-hidden", "true");
+    cursor.innerHTML = 'Play <svg width="10" height="12" viewBox="0 0 10 12" fill="currentColor"><path d="M0 0l10 6-10 6z"/></svg>';
+    document.body.append(cursor);
+    document.documentElement.classList.add("has-cursor");
 
-        if (visible && !s.inView) {
-          if (s.once && s.done) continue;
-          s.done = true;
-          s.inView = true;
-          el.__motion.set(s.enter);
-          el.__motion.animate(SHOWN, s.transition);
-          if (s.once) io.unobserve(el);
-        } else if (!visible && s.inView) {
-          s.inView = false;
-          if (!s.once) el.__motion.animate(s.exit, spring(0));
+    let x = 0, y = 0, cx = 0, cy = 0, raf = 0;
+    const place = () => { cursor.style.transform = `translate(${cx.toFixed(1)}px, ${cy.toFixed(1)}px)`; };
+    const loop = () => {
+      cx += (x - cx) * 0.22;
+      cy += (y - cy) * 0.22;
+      place();
+      raf = Math.abs(x - cx) + Math.abs(y - cy) > 0.2 ? requestAnimationFrame(loop) : 0;
+    };
+    window.addEventListener("pointermove", (e) => {
+      x = e.clientX;
+      y = e.clientY;
+      if (!raf) raf = requestAnimationFrame(loop);
+    }, { passive: true });
+    targets.forEach((t) => {
+      t.addEventListener("pointerenter", (e) => {
+        cx = x = e.clientX;
+        cy = y = e.clientY;
+        place();
+        cursor.classList.add("is-on");
+      });
+      t.addEventListener("pointerleave", () => cursor.classList.remove("is-on"));
+      t.addEventListener("click", () => cursor.classList.remove("is-on"));
+    });
+  }
+
+  function initTilt() {
+    if (!finePointer || reduceMotion) return;
+    document.querySelectorAll("[data-tilt]").forEach((el) => {
+      el.addEventListener("pointermove", (e) => {
+        const r = el.getBoundingClientRect();
+        const px = (e.clientX - r.left) / r.width - 0.5;
+        const py = (e.clientY - r.top) / r.height - 0.5;
+        el.style.setProperty("--ry", `${(px * 7).toFixed(2)}deg`);
+        el.style.setProperty("--rx", `${(-py * 7).toFixed(2)}deg`);
+      });
+      el.addEventListener("pointerleave", () => {
+        el.style.removeProperty("--rx");
+        el.style.removeProperty("--ry");
+      });
+    });
+  }
+
+  function initMagnet() {
+    if (!finePointer || reduceMotion) return;
+    document.querySelectorAll(".btn").forEach((btn) => {
+      btn.addEventListener("pointermove", (e) => {
+        const r = btn.getBoundingClientRect();
+        btn.style.setProperty("--mx", `${((e.clientX - r.left - r.width / 2) * 0.22).toFixed(1)}px`);
+        btn.style.setProperty("--my", `${((e.clientY - r.top - r.height / 2) * 0.3).toFixed(1)}px`);
+      });
+      btn.addEventListener("pointerleave", () => {
+        btn.style.removeProperty("--mx");
+        btn.style.removeProperty("--my");
+      });
+    });
+  }
+
+  // Testimonial cards play a muted preview of their story on hover.
+  function initPreviews() {
+    if (!finePointer || reduceMotion) return;
+    document.querySelectorAll(".voices__thumb[data-video]").forEach((btn) => {
+      let video = null;
+      btn.addEventListener("pointerenter", () => {
+        if (!video) {
+          video = document.createElement("video");
+          video.className = "voices__preview";
+          video.src = btn.dataset.video;
+          video.muted = true;
+          video.loop = true;
+          video.playsInline = true;
+          video.setAttribute("aria-hidden", "true");
+          btn.querySelector("img").after(video);
         }
-      }
-    }, { threshold: thresholds });
-
-    document.querySelectorAll("[data-reveal]").forEach((el) => {
-      const type = el.dataset.reveal;
-      const delay = Number(el.dataset.delay) || 0;
-      const enter = ENTER[type] || ENTER.fade;
-      el.__reveal = {
-        enter,
-        exit: { opacity: 0, x: 0, y: 0 },
-        transition: el.hasAttribute("data-tween") ? tween(delay) : spring(delay),
-        threshold: el.dataset.threshold !== undefined ? Number(el.dataset.threshold) : 0.5,
-        once: !el.hasAttribute("data-repeat"),
-        inView: false,
-        done: false,
-      };
-      bind(el, enter);
-      io.observe(el);
+        video.play().then(() => btn.classList.add("is-previewing")).catch(() => {});
+      });
+      btn.addEventListener("pointerleave", () => {
+        btn.classList.remove("is-previewing");
+        if (video) video.pause();
+      });
     });
   }
 
@@ -283,9 +520,7 @@
     });
 
     const drifting = [...document.querySelectorAll("[data-parallax]")];
-    let queued = false;
-    function drift() {
-      queued = false;
+    onScroll(() => {
       const vh = window.innerHeight;
       for (const el of drifting) {
         const r = el.parentElement.getBoundingClientRect();
@@ -293,13 +528,7 @@
         const p = Math.max(-1, Math.min(1, (r.top + r.height / 2 - vh / 2) / (vh / 2 + r.height / 2)));
         el.style.setProperty("--py", `${(-p * Number(el.dataset.parallax)).toFixed(1)}px`);
       }
-    }
-    window.addEventListener("scroll", () => {
-      if (queued) return;
-      queued = true;
-      requestAnimationFrame(drift);
-    }, { passive: true });
-    drift();
+    });
   }
 
   /* ---------- Media overlays (YouTube + uploaded video) ---------- */
@@ -355,15 +584,27 @@
   /* ---------- Boot ---------- */
   function boot() {
     initOverlays();
-    document.querySelectorAll("[data-slider]").forEach(initSlider);
+    initPins();
+    // A pinned milestone row is driven by scroll; the auto slideshow is the fallback
+    document.querySelectorAll("[data-slider]").forEach((el) => {
+      if (!el.closest(".is-pinned")) initSlider(el);
+    });
     initLottie(); // after the slider clones its cards, so clones get their own animation
     document.querySelectorAll("[data-rotator]").forEach(initRotator);
     document.querySelectorAll("[data-ticker]").forEach(initTicker);
+    initRise(); // before initDraw: script words move into the rise wrappers
     initDraw();
-    initMotifs(); // after the slider clones, so cloned stars twinkle too
-    if (reduceMotion) return;
-    initAppear();
+    initMotifs();
     initReveal();
+    initUnmask();
+    initHero();
+    initCounters();
+    initNav();
+    initSmoothScroll();
+    initCursor();
+    initTilt();
+    initMagnet();
+    initPreviews();
   }
 
   if (document.readyState === "loading") document.addEventListener("DOMContentLoaded", boot);
