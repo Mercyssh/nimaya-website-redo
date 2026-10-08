@@ -45,6 +45,24 @@
     let index = 0;
     let busy = false;
 
+    // The texts are absolutely positioned, so the box is sized to the incoming text;
+    // CSS transitions the width once the first size has been set.
+    // Grows before the swap, shrinks after it, so neither text is clipped mid-animation.
+    function measure(text) {
+      const probe = document.createElement("span");
+      probe.textContent = text;
+      probe.style.visibility = "hidden";
+      el.append(probe);
+      const w = Math.ceil(probe.getBoundingClientRect().width);
+      probe.remove();
+      return w;
+    }
+    function fit(text, { grow = true, shrink = true } = {}) {
+      const w = measure(text);
+      const now = parseFloat(el.style.width) || 0;
+      if ((w > now && grow) || (w < now && shrink) || !now) el.style.width = `${w}px`;
+    }
+
     function mount(text) {
       const span = document.createElement("span");
       span.textContent = text;
@@ -55,6 +73,11 @@
       return span;
     }
 
+    fit(texts[0]);
+    document.fonts.ready.then(() => {
+      fit(texts[index]);
+      requestAnimationFrame(() => el.classList.add("is-fitted"));
+    });
     let current = mount(texts[0]);
     if (texts.length < 2 || reduceMotion) return;
     const interval = Number(el.dataset.interval) || 2000;
@@ -62,8 +85,10 @@
       if (busy) return;
       busy = true;
       index = (index + 1) % texts.length;
+      fit(texts[index], { shrink: false });
       await current.__motion.animate({ y: 30, opacity: 0 });
       current.remove();
+      fit(texts[index], { grow: false });
       current = mount(texts[index]);
       busy = false;
     }, interval);
