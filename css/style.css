@@ -239,6 +239,8 @@ main > section:nth-of-type(even) { --section-bg: #fff; background: #fff; }
   pointer-events: none;
   user-select: none;
 }
+/* Glows, blobs and sparkles drift with scroll too (translate keeps their own transforms intact) */
+[data-parallax]:not(.motif) { translate: 0 var(--py, 0px); }
 /* Black source SVGs recoloured through a mask; --c sets the colour */
 .m-mask {
   background: var(--c, var(--yellow));
