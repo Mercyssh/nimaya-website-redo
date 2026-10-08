@@ -1,0 +1,3 @@
+never use browser tool or screenshot tool unless explicitely allowed (if there is a task that will greatly benefit from this, then ASK in a form popup before continuing automatically, never ask me to write a message in chat for confirmation)
+never explain technical implementations unless asked, respond concicesly
+the website is made in framer, so only attempt to use MCP if available or write framer code components (Ask if there is a choice to be made between the two)
