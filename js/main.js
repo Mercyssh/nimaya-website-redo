@@ -227,6 +227,29 @@
     });
   }
 
+  /* ---------- Script draw-in ----------
+     Ms Madi words are written in (CSS transitions on .is-drawn) the first time
+     they are mostly on screen. The parent is observed because the hidden word's
+     own clip-path would keep its intersection ratio near zero. */
+  function initDraw() {
+    const words = [...document.querySelectorAll(".script, .voices__name")];
+    if (reduceMotion) {
+      words.forEach((w) => w.classList.add("is-drawn"));
+      return;
+    }
+    const io = new IntersectionObserver((entries) => {
+      for (const entry of entries) {
+        if (!entry.isIntersecting) continue;
+        entry.target.__drawWord.classList.add("is-drawn");
+        io.unobserve(entry.target);
+      }
+    }, { threshold: 0.6 });
+    words.forEach((w) => {
+      w.parentElement.__drawWord = w;
+      io.observe(w.parentElement);
+    });
+  }
+
   /* ---------- Media overlays (YouTube + uploaded video) ---------- */
   function openOverlay(frame) {
     const backdrop = document.createElement("div");
@@ -284,6 +307,7 @@
     initLottie(); // after the slider clones its cards, so clones get their own animation
     document.querySelectorAll("[data-rotator]").forEach(initRotator);
     document.querySelectorAll("[data-ticker]").forEach(initTicker);
+    initDraw();
     if (reduceMotion) return;
     initAppear();
     initReveal();

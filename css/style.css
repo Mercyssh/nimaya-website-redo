@@ -55,7 +55,6 @@
   --ink: #1c1972;          /* display headlines */
   --purple: #412287;       /* body, tabs, tags, buttons */
   --violet: #4900a3;       /* script accent */
-  --deep: #351b76;         /* footer band */
   --coral: #f93725;        /* inline emphasis */
   --yellow: #fcaf1f;       /* sparkles, swoosh, banner highlight */
   --teal: #5fd0b6;
@@ -65,7 +64,6 @@
   --cream: #fcf3ee;
   --lav: #f7eefc;
   --tile: #fcf3ee;
-  --role: #dfdfdf;
   --grey: #9f9f9f;
   --line: rgba(65, 34, 135, 0.2);
   --wash: linear-gradient(160deg, var(--cream) 47%, var(--lav) 100%);
@@ -80,6 +78,7 @@
   --r-tag: 16px;
 
   --serif: "Crimson Text", Georgia, serif;
+  --serif-tracking: -0.015em;   /* letter-spacing for every Crimson title; tweak here */
   --sans: "Avenir Next", "Avenir", system-ui, sans-serif;
   --script: "Ms Madi", cursive;
 
@@ -93,7 +92,7 @@
   --fs-5: 15px;
 
   --section-pad: 112px;
-  --title-gap: 56px;     /* section title -> content */
+  --title-gap: 32px;     /* section title -> content */
 
   --nav-h: 68px;
   --gutter: 60px;
@@ -126,7 +125,8 @@ main > section:nth-of-type(even) { --section-bg: #fff; background: #fff; }
 .display {
   font-family: var(--serif);
   font-weight: 700;
-  font-size: var(--fs-2);
+  letter-spacing: var(--serif-tracking);
+  font-size: var(--fs-1);
   line-height: 1;
   color: var(--ink);
 }
@@ -145,6 +145,7 @@ main > section:nth-of-type(even) { --section-bg: #fff; background: #fff; }
   padding: 0 0.08em;
   font-family: var(--script);
   font-weight: 400;
+  letter-spacing: normal;
   font-size: var(--fs-1);
   line-height: 1;
   color: var(--violet);
@@ -154,7 +155,10 @@ main > section:nth-of-type(even) { --section-bg: #fff; background: #fff; }
   transform-origin: 0 78%;   /* pivot on the first letter's baseline so it sits on the line */
   white-space: nowrap;
 }
-.display .script { margin-bottom: 0.3em; }
+.display .script { margin-bottom: 0.2em; }
+/* Long words tilt less so they don't climb too far */
+.milestones__title .script,
+.programs .display .script { transform: rotate(-4deg); }
 .script__swish {
   position: absolute;
   z-index: -1;
@@ -173,6 +177,14 @@ main > section:nth-of-type(even) { --section-bg: #fff; background: #fff; }
   aspect-ratio: 159 / 9;
   -webkit-mask-image: url("../assets/Motifs/slash-2.svg");
   mask-image: url("../assets/Motifs/slash-2.svg");
+}
+.milestones__title .script__swish,
+.programs .display .script__swish {
+  left: 4%;
+  width: 92%;
+  aspect-ratio: 235 / 12;
+  -webkit-mask-image: url("../assets/Motifs/slash-3.svg");
+  mask-image: url("../assets/Motifs/slash-3.svg");
 }
 .script__end { position: relative; }
 .script__end--tall .script__earmarks { top: 0.02em; }   /* last letter has an ascender (k) */
@@ -245,19 +257,6 @@ main > section:nth-of-type(even) { --section-bg: #fff; background: #fff; }
 .card--banner { border-radius: var(--r-banner); border-bottom-left-radius: var(--r-card); border-bottom-right-radius: var(--r-card); overflow: hidden; }
 .card__banner { padding: 14px 24px; background: var(--purple); color: #fff; text-align: center; }
 
-/* Name tag plate ("Samyak Chakrabarty / Cofounder, Nimaya") */
-.tag-plate {
-  display: inline-flex;
-  flex-direction: column;
-  gap: 6px;
-  padding: 10px 16px;
-  border-radius: var(--r-tag);
-  background: var(--purple);
-  box-shadow: var(--shadow-tag);
-  text-align: left;
-}
-.tag-plate__name { font-size: var(--fs-4); font-weight: 600; line-height: 1; color: #fff; }
-.tag-plate__role { font-size: var(--fs-5); line-height: 1; color: var(--role); }
 
 /* Outlined skill chip with a circular icon badge ("Prompting") */
 .chips { display: flex; flex-wrap: wrap; gap: 16px 18px; padding-left: 8px; }
@@ -377,6 +376,7 @@ main { padding-top: var(--nav-h); }
 .hero__title {
   font-family: var(--serif);
   font-weight: 700;
+  letter-spacing: var(--serif-tracking);
   font-size: var(--fs-2);
   line-height: 1;
   color: var(--ink);
@@ -384,11 +384,9 @@ main { padding-top: var(--nav-h); }
 .hero__naari { font-size: var(--fs-1); }
 .hero__title .line + .line { margin-top: 0.16em; }
 .hero__sub {
-  max-width: 540px;
   margin-top: 36px;
-  text-wrap: balance;
-  font-size: var(--fs-3);
-  font-weight: 500;
+  font-size: var(--fs-4);
+  font-weight: 600;
   line-height: 1.4;
   color: var(--purple);
 }
@@ -444,9 +442,9 @@ main { padding-top: var(--nav-h); }
 .why__collage { position: relative; width: 444px; height: 440px; }
 .why__collage img { width: 100%; height: 100%; object-fit: contain; }
 .why__hot { position: absolute; height: 97px; opacity: 0; }
-.why__info .display { margin-bottom: 24px; }
+.why__info .display { margin-bottom: var(--title-gap); }
 .why__lead {
-  margin-top: 24px;
+  margin-top: var(--title-gap);
   font-size: var(--fs-3);
   font-weight: 700;
   line-height: 1.3;
@@ -458,7 +456,7 @@ main { padding-top: var(--nav-h); }
 
 /* ============ Milestones ============ */
 .milestones__title { text-align: center; }
-.slider { position: relative; margin: calc(var(--title-gap) - 24px) auto 0; max-width: 1300px; }
+.slider { position: relative; margin: 0 auto; max-width: 1300px; }
 .slider__viewport {
   overflow: hidden;
   padding: 24px 0;
@@ -466,7 +464,7 @@ main { padding-top: var(--nav-h); }
   mask-image: linear-gradient(to right, transparent 0%, #000 7%, #000 93%, transparent 100%);
 }
 .slider__track {
-  --item: calc((1200px - 28px * 1.9) / 2.9);
+  --item: 300px;
   display: flex;
   gap: 28px;
   padding-left: 50px;
@@ -514,7 +512,7 @@ main { padding-top: var(--nav-h); }
 .slider__arrow--next { right: 0; }
 
 /* ============ Partners ============ */
-.partners__title { text-align: center; font-size: var(--fs-5); font-weight: 700; color: var(--purple); letter-spacing: 0.08em; text-transform: uppercase; }
+.partners__title { text-align: center; font-size: var(--fs-4); font-weight: 700; color: var(--purple); letter-spacing: 0.08em; text-transform: uppercase; }
 .ticker {
   margin-top: 24px;
   height: 104px;
@@ -545,7 +543,7 @@ main { padding-top: var(--nav-h); }
 
 /* ============ Our Programs ============ */
 .programs__head { max-width: 640px; }
-.programs__head .body { margin-top: 16px; }
+.programs__head .body { margin-top: var(--title-gap); }
 .programs__cards {
   display: grid;
   grid-template-columns: repeat(2, minmax(0, 1fr));
@@ -625,7 +623,7 @@ main { padding-top: var(--nav-h); }
 .voices { text-align: center; }
 .voices__intro { max-width: 640px; margin: 16px auto 0; }
 .voices__row { display: flex; justify-content: center; gap: 32px; margin-top: var(--title-gap); }
-.voices__card { width: 280px; }
+.voices__card { position: relative; width: 280px; }
 .voices__card:nth-child(odd) .voices__thumb { transform: rotate(-1.5deg); }
 .voices__card:nth-child(even) .voices__thumb { transform: rotate(1.5deg); }
 .voices__thumb {
@@ -646,13 +644,37 @@ main { padding-top: var(--nav-h); }
   background: linear-gradient(180deg, rgba(22, 11, 49, 0) 0%, rgba(22, 11, 49, 0.9) 100%);
   pointer-events: none;
 }
-.voices__tag { position: absolute; left: 16px; bottom: 16px; z-index: 1; }
+/* Name sits outside the thumbnail so it overhangs the card edge */
+.voices__name {
+  position: absolute;
+  left: -0.1em;
+  bottom: -0.3em;
+  z-index: 2;
+  pointer-events: none;
+  text-shadow: 0 0.04em 0.18em rgba(22, 11, 49, 0.55);
+  font-family: var(--script);
+  font-size: var(--fs-1);
+  line-height: 1;
+  color: #fff;
+  -webkit-text-stroke: 0.022em currentColor;
+  paint-order: stroke fill;
+  white-space: nowrap;
+  transform: rotate(-7deg);
+  transform-origin: 0 100%;
+}
 
 /* ============ Footer ============ */
 .footer { background: var(--wash); border-top: 1px solid var(--line); }
+.footer__invite {
+  padding-top: var(--title-gap);
+  font-size: var(--fs-4);
+  line-height: 1.64;
+  color: var(--purple);
+}
+.footer__invite b { color: var(--coral); }
 .footer__inner {
-  padding-top: 48px;
-  padding-bottom: 48px;
+  padding-top: var(--title-gap);
+  padding-bottom: var(--title-gap);
   display: flex;
   align-items: flex-end;
   justify-content: space-between;
@@ -662,18 +684,11 @@ main { padding-top: var(--nav-h); }
 .footer__logo img { width: 190px; height: auto; }
 .footer__copy { margin-top: 20px; max-width: 560px; font-size: var(--fs-5); line-height: 1.5; color: rgba(65, 34, 135, 0.75); }
 .footer__legal { margin-top: 14px; display: flex; gap: 20px; }
-.footer__legal a, .footer__social a { font-size: var(--fs-5); font-weight: 600; line-height: 1.5; color: var(--purple); }
+.footer__legal a { font-size: var(--fs-5); font-weight: 600; line-height: 1.5; color: var(--purple); }
+.footer__social a { display: block; color: var(--purple); transition: color 0.2s ease; }
+.footer__social svg { display: block; width: var(--fs-3); height: var(--fs-3); }
 .footer__legal a:hover, .footer__social a:hover { color: var(--coral); }
 .footer__social { display: flex; gap: 24px; }
-.footer__band {
-  padding: 14px var(--gutter);
-  background: var(--deep);
-  color: #fff;
-  font-style: italic;
-  font-size: var(--fs-4);
-  line-height: 1.64;
-  text-align: center;
-}
 
 /* ============ Media overlay ============ */
 .overlay {
@@ -727,7 +742,7 @@ html.is-locked { overflow: hidden; }
 }
 
 @media (max-width: 600px) {
-  :root { --section-pad: 72px; --title-gap: 40px; --gutter: 16px; --fs-1: 44px; --fs-2: 36px; --fs-3: 20px; --fs-4: 16px; --fs-5: 14px; }
+  :root { --section-pad: 72px; --title-gap: 24px; --gutter: 16px; --fs-1: 44px; --fs-2: 36px; --fs-3: 20px; --fs-4: 16px; --fs-5: 14px; }
   .hero__wrap { padding-top: 32px; }
   .hero__sub { margin-top: 24px; }
   .hero__motif { display: none; }
@@ -743,7 +758,6 @@ html.is-locked { overflow: hidden; }
   .work__text { min-height: 124px; }
   .voices__row { gap: 16px; }
   .voices__card { width: calc(50% - 8px); }
-  .tag-plate { padding: 8px 12px; }
   .footer__inner { flex-direction: column; align-items: flex-start; }
 }
 
@@ -751,8 +765,45 @@ html.is-locked { overflow: hidden; }
 .js [data-appear],
 .js [data-reveal] { opacity: 0; }
 
+/* Script draw-in: the word is "written" left to right along its tilt (clip-path wipe, in the
+   element's own rotated space), then the swish draws, then the earmarks pop. Negative insets
+   keep the swish and earmarks, which sit outside the word's box, inside the visible area. */
+.js .script,
+.js .voices__name {
+  clip-path: inset(-60% 100% -60% -20%);
+  transition: clip-path 1.1s cubic-bezier(0.65, 0, 0.35, 1);
+}
+.js .script.is-drawn,
+.js .voices__name.is-drawn { clip-path: inset(-60% -60% -60% -20%); }
+.js .script__swish {
+  clip-path: inset(0 100% 0 0);
+  transition: clip-path 0.5s cubic-bezier(0.65, 0, 0.35, 1) 0.85s;
+}
+.js .is-drawn .script__swish { clip-path: inset(0 0 0 0); }
+.js .script__earmarks {
+  opacity: 0;
+  transform: scale(0.4);
+  transform-origin: 0 100%;
+  transition: opacity 0.25s ease 1.15s, transform 0.4s cubic-bezier(0.34, 1.56, 0.64, 1) 1.15s;
+}
+.js .is-drawn .script__earmarks { opacity: 1; transform: none; }
+
+/* Sparkles: slow looping swing */
+@keyframes sparkle-swing {
+  from { rotate: -14deg; }
+  to { rotate: 14deg; }
+}
+.sparkle,
+.card__tab img,
+.chip::before { animation: sparkle-swing 2.8s ease-in-out infinite alternate; }
+.hero__sparkle--a { animation-delay: -0.9s; }
+.hero__sparkle--b { animation-delay: -1.8s; animation-duration: 3.4s; }
+.chip:nth-child(even)::before { animation-delay: -1.4s; }
+
 @media (prefers-reduced-motion: reduce) {
+  .sparkle, .card__tab img, .chip::before { animation: none; }
   .js [data-appear],
   .js [data-reveal] { opacity: 1 !important; transform: none !important; }
   .btn, .watch__thumb { transition: none; }
+  .js .script, .js .voices__name, .js .script__swish, .js .script__earmarks { transition: none !important; }
 }
