@@ -818,8 +818,8 @@ main { padding-top: var(--nav-h); }
 .voices__intro { max-width: 640px; margin: 16px auto 0; }
 .voices__row { display: flex; justify-content: center; gap: 32px; margin-top: var(--title-gap); }
 .voices__card { position: relative; width: 280px; }
-.voices__card:nth-child(odd) .voices__thumb { --tilt-base: -1.5deg; }
-.voices__card:nth-child(even) .voices__thumb { --tilt-base: 1.5deg; }
+.voices__card:nth-child(odd) .voices__thumb { --tilt-base: -2deg; }
+.voices__card:nth-child(even) .voices__thumb { --tilt-base: 2deg; }
 .voices__thumb {
   position: relative;
   display: block;
@@ -831,6 +831,8 @@ main { padding-top: var(--nav-h); }
   box-shadow: var(--shadow-card);
 }
 .voices__thumb img { width: 100%; height: 100%; object-fit: cover; transform: scale(1.2); transform-origin: 35% 65%; }
+/* Flat 2D lean that straightens on hover, like the Watch cards */
+.voices__thumb { transform: rotate(var(--tilt-base, 0deg)); transition: transform var(--t-1) var(--ease); }
 .voices__thumb:hover { --tilt-base: 0deg; }
 .voices__thumb:hover .voices__preview { scale: 1.05; }
 .voices__thumb::after {
