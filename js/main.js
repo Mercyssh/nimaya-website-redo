@@ -449,6 +449,21 @@
       t.addEventListener("pointerleave", () => cursor.classList.remove("is-on"));
       t.addEventListener("click", () => cursor.classList.remove("is-on"));
     });
+    /* Scrolling moves targets under a still pointer without firing pointerleave,
+       so re-check what is under the last known pointer position on every scroll. */
+    let inside = false;
+    document.addEventListener("pointerover", () => { inside = true; }, { passive: true });
+    document.documentElement.addEventListener("pointerleave", () => {
+      inside = false;
+      cursor.classList.remove("is-on");
+    });
+    onScroll(() => {
+      if (!inside || document.documentElement.classList.contains("is-locked")) return;
+      const el = document.elementFromPoint(x, y);
+      const over = !!(el && el.closest("[data-youtube], [data-video]"));
+      if (over && !cursor.classList.contains("is-on")) { cx = x; cy = y; place(); }
+      cursor.classList.toggle("is-on", over);
+    });
   }
 
   function initTilt() {
