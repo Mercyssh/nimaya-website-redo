@@ -494,7 +494,7 @@ main > section:nth-of-type(even)::after { background: linear-gradient(to bottom,
 main { padding-top: var(--nav-h); }
 
 /* ============ Landing ============ */
-.hero { padding-block: 32px 72px; }
+.hero { padding-block: 64px 72px; }
 .hero__glow { left: -140px; top: -120px; width: 420px; height: 420px; opacity: 0.6; }
 .hero__wrap {
   display: grid;
@@ -515,14 +515,14 @@ main { padding-top: var(--nav-h); }
 .hero__naari { font-size: var(--fs-1); }
 .hero__title .line + .line { margin-top: 0.16em; }
 .hero__sub {
-  margin-top: 36px;
+  margin-top: 24px;
   font-size: var(--fs-4);
   font-weight: 600;
   line-height: 1.4;
   color: var(--purple);
 }
 .hero__programs {
-  margin-top: 32px;
+  margin-top: 20px;
   display: flex;
   flex-wrap: wrap;
   align-items: center;
@@ -543,12 +543,12 @@ main { padding-top: var(--nav-h); }
   white-space: nowrap;
 }
 .hero__desc { margin-top: 16px; max-width: 500px; }
-.hero__cta { margin-top: 28px; display: flex; flex-wrap: wrap; gap: 12px; }
+.hero__cta { margin-top: 24px; display: flex; flex-wrap: wrap; gap: 12px; }
 .hero__watch { gap: 10px; }
 /* Accreditation: who governs and who awards the programs' credit */
 .hero__accredit {
-  margin-top: 32px;
-  padding-top: 22px;
+  margin-top: 26px;
+  padding-top: 18px;
   max-width: 560px;
   border-top: 1.5px dashed var(--line);
 }
@@ -925,7 +925,8 @@ main { padding-top: var(--nav-h); }
 .programs__head, .programs__cards { position: relative; z-index: 1; }
 .programs__star { position: relative; display: inline-block; vertical-align: top; --w: 0.42em; margin-left: 0.6em; --rot: 10deg; }
 .programs__cards > div { position: relative; }
-.program__sticker { right: -18px; top: -30px; --w: 104px; --rot: 8deg; }
+.program__sticker { right: -18px; top: -30px; --w: 124px; --rot: 8deg; gap: 5px; }
+.m-bubble__icon { width: 1.05em; height: 1.05em; flex: none; }
 .program__sticker--r { --rot: -7deg; }
 
 /* How We Work: dotted curves between the badges, a star on each badge */
@@ -1051,7 +1052,7 @@ html.is-locked { overflow: hidden; }
   .voices__quote { left: -6px; top: -14px; --w: 60px; }
   .voices__quote--end { left: auto; top: auto; right: -6px; bottom: -14px; }
   .voices__blob { left: -10%; width: 120%; }
-  .program__sticker { right: -6px; --w: 92px; }
+  .program__sticker { right: -6px; --w: 110px; }
   .footer__star--a { right: 16px; }
 }
 
