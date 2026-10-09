@@ -543,6 +543,22 @@ main { padding-top: var(--nav-h); }
   white-space: nowrap;
 }
 .hero__desc { margin-top: 16px; max-width: 500px; }
+.hero__cta { margin-top: 28px; display: flex; flex-wrap: wrap; gap: 12px; }
+.hero__watch { gap: 10px; }
+/* Proof points: the headline numbers from Milestones, so the promise above is backed up */
+.hero__proof {
+  margin-top: 32px;
+  padding-top: 22px;
+  max-width: 560px;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 14px 28px;
+  list-style: none;
+  border-top: 1.5px dashed var(--line);
+}
+.proof { display: flex; align-items: center; gap: 10px; font-size: var(--fs-5); line-height: 1.3; color: var(--purple); }
+.proof img { width: 30px; height: 30px; flex: none; }
+.proof b { display: block; font-size: var(--fs-3); font-weight: 700; line-height: 1.1; color: var(--ink); }
 .hero__media { position: relative; display: flex; justify-content: flex-end; }
 .hero__blob { right: -40px; top: -30px; width: 88%; height: 112%; }
 .hero__media-box {
@@ -587,6 +603,50 @@ main { padding-top: var(--nav-h); }
 
 /* ============ Milestones ============ */
 .milestones__title { text-align: center; }
+.milestones { position: relative; }
+.milestones__intro { max-width: 560px; margin: 14px auto 0; text-align: center; }
+/* Giant index of the milestone in the centre, behind the arc */
+.milestones__num {
+  position: absolute;
+  right: 3%;
+  top: -4%;
+  font-family: var(--serif);
+  font-weight: 700;
+  font-size: clamp(160px, 18vw, 260px);
+  line-height: 1;
+  color: var(--purple);
+  opacity: 0.06;
+  pointer-events: none;
+  user-select: none;
+  transition: opacity var(--t-1) var(--ease);
+}
+.milestones__num.is-swapping { opacity: 0; }
+/* Journey progress: one dot per milestone, filled as it reaches the centre */
+.journey { display: none; }
+.pin.is-pinned .journey { display: flex; flex-direction: column; align-items: center; gap: 12px; margin-top: -16px; }
+@media (max-width: 900px) { .milestones__num { display: none; } }
+.journey__dots { position: relative; display: flex; gap: 34px; list-style: none; }
+.journey__dots::before {
+  content: "";
+  position: absolute;
+  left: 5px;
+  right: 5px;
+  top: 50%;
+  border-top: 1.5px dashed var(--line);
+}
+.journey__dots li {
+  position: relative;
+  width: 10px;
+  height: 10px;
+  border-radius: 50%;
+  background: #fff;
+  border: 1.5px solid var(--lilac);
+  transition: background var(--t-1) var(--ease), border-color var(--t-1) var(--ease), scale var(--t-1) var(--ease);
+}
+.journey__dots li.is-lit { background: var(--coral); border-color: var(--coral); }
+.journey__dots li.is-now { scale: 1.5; }
+.journey__label { font-size: var(--fs-5); color: var(--purple); letter-spacing: 0.04em; }
+.journey__label b { color: var(--coral); }
 .slider { position: relative; margin: 0 auto; max-width: 1300px; }
 .slider__viewport {
   overflow: hidden;

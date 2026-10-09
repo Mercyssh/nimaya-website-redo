@@ -294,6 +294,11 @@
       const viewport = ms.querySelector(".slider__viewport");
       const cards = [...track.querySelectorAll(".stat")];
       const trail = ms.querySelector(".milestones__trail");
+      const dots = [...ms.querySelectorAll(".journey__dots li")];
+      const now = ms.querySelector(".journey__now");
+      const num = ms.querySelector(".milestones__num");
+      let shown = -1;
+      const pad = (n) => String(n).padStart(2, "0");
       let dist = 0, start = 0, half = 1, arc = 0, centers = [];
       ms.classList.add("is-pinned");
       const measure = () => {
@@ -328,6 +333,21 @@
           // Titles turn coral once their card reaches the centre, and stay lit after it passes
           card.classList.toggle("is-lit", d <= 0.03);
         });
+        // Progress dots, counter and the big index follow the last lit card
+        const lit = Math.max(1, cards.filter((c) => c.classList.contains("is-lit")).length);
+        if (lit !== shown) {
+          shown = lit;
+          dots.forEach((dot, i) => {
+            dot.classList.toggle("is-lit", i < lit);
+            dot.classList.toggle("is-now", i === lit - 1);
+          });
+          if (now) now.textContent = pad(lit);
+          if (num) {
+            num.classList.add("is-swapping");
+            clearTimeout(num.__t);
+            num.__t = setTimeout(() => { num.textContent = pad(lit); num.classList.remove("is-swapping"); }, 200);
+          }
+        }
       });
     }
 
@@ -620,6 +640,19 @@
     });
   }
 
+  // In-page links glide to their section instead of jumping
+  function initAnchors() {
+    document.querySelectorAll('a[href^="#"]').forEach((a) => {
+      const target = document.querySelector(a.getAttribute("href"));
+      if (!target) return;
+      a.addEventListener("click", (e) => {
+        e.preventDefault();
+        const top = target.getBoundingClientRect().top + window.scrollY - (document.querySelector(".nav")?.offsetHeight || 0);
+        window.scrollTo({ top, behavior: reduceMotion ? "auto" : "smooth" });
+      });
+    });
+  }
+
   /* ---------- Boot ---------- */
   function boot() {
     initOverlays();
@@ -644,6 +677,7 @@
     initTilt();
     initMagnet();
     initPreviews();
+    initAnchors();
   }
 
   if (document.readyState === "loading") document.addEventListener("DOMContentLoaded", boot);
