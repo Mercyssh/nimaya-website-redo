@@ -207,7 +207,7 @@
     }
 
     window.addEventListener("wheel", (e) => {
-      if (e.ctrlKey || root.classList.contains("is-locked") || root.classList.contains("is-splash") || Math.abs(e.deltaX) > Math.abs(e.deltaY)) return;
+      if (e.ctrlKey || root.classList.contains("is-locked") || Math.abs(e.deltaX) > Math.abs(e.deltaY)) return;
       e.preventDefault();
       if (!running) current = target = window.scrollY;
       const unit = e.deltaMode === 1 ? 32 : e.deltaMode === 2 ? window.innerHeight : 1;
@@ -274,8 +274,7 @@
       hero.querySelectorAll("[data-unmask]").forEach((el) => el.classList.add("is-in"));
     };
     if (reduceMotion) return go();
-    // Starts as the splash fades, so the entrance isn't spent behind it
-    Promise.all([document.fonts.ready, window.NIMAYA_SPLASH]).then(() => setTimeout(go, 60));
+    document.fonts.ready.then(() => setTimeout(go, 60));
   }
 
   /* ---------- Pinned chapters ----------

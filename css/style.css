@@ -978,7 +978,6 @@ main { padding-top: var(--nav-h); }
 }
 .splash.is-done { opacity: 0; visibility: hidden; }
 .splash__logo { width: min(52vw, 260px); aspect-ratio: 185 / 170; }
-html.is-splash { overflow: hidden; }
 
 /* ============ Media overlay ============ */
 .overlay {
