@@ -965,6 +965,21 @@ main { padding-top: var(--nav-h); }
 .footer__path { right: 3%; top: 12px; --w: 150px; --rot: -4deg; }
 .footer__star--a { right: calc(3% + 156px); top: 6px; --w: 22px; }
 
+/* ============ Splash ============ */
+.splash { display: none; }
+.js .splash {
+  position: fixed;
+  inset: 0;
+  z-index: 100;
+  display: grid;
+  place-items: center;
+  background: #fff;
+  transition: opacity 0.6s var(--ease), visibility 0s linear 0.6s;
+}
+.splash.is-done { opacity: 0; visibility: hidden; }
+.splash__logo { width: min(52vw, 260px); aspect-ratio: 185 / 170; }
+html.is-splash { overflow: hidden; }
+
 /* ============ Media overlay ============ */
 .overlay {
   position: fixed;
