@@ -294,16 +294,18 @@
       const viewport = ms.querySelector(".slider__viewport");
       const cards = [...track.querySelectorAll(".stat")];
       const trail = ms.querySelector(".milestones__trail");
-      let dist = 0, half = 1, arc = 0, centers = [];
+      let dist = 0, start = 0, half = 1, arc = 0, centers = [];
       ms.classList.add("is-pinned");
       const measure = () => {
         track.style.transform = "";
-        dist = Math.max(0, track.scrollWidth - viewport.clientWidth + parseFloat(getComputedStyle(track).paddingLeft));
+        // The row travels from the first card centred to the last card centred
+        half = viewport.clientWidth / 2;
+        centers = cards.map((c) => c.offsetLeft + c.offsetWidth / 2);
+        start = half - centers[0];
+        dist = Math.max(0, centers[centers.length - 1] - centers[0]);
         ms.style.height = `${window.innerHeight + dist * 1.3}px`;
         // Cards ride a parabola: highest at the centre, dipping `arc` px at the viewport edges
-        half = viewport.clientWidth / 2;
-        arc = Math.min(90, half * 0.16);
-        centers = cards.map((c) => c.offsetLeft + c.offsetWidth / 2);
+        arc = Math.min(56, half * 0.1);
         ms.style.setProperty("--arc", `${arc.toFixed(0)}px`);
         // The trail is a quadratic curve, i.e. the same parabola (viewBox is 40 units tall)
         const trailH = trail ? trail.getBoundingClientRect().height : 0;
@@ -317,7 +319,7 @@
       window.addEventListener("load", measure);
       onScroll(() => {
         const p = clamp((progressOf(ms) - 0.06) / 0.88);
-        const x = -p * dist;
+        const x = start - p * dist;
         track.style.transform = `translateX(${x.toFixed(1)}px)`;
         cards.forEach((card, i) => {
           const d = (centers[i] + x - half) / half; // -1 at the left edge, 1 at the right
@@ -558,12 +560,26 @@
     backdrop.className = "overlay";
     document.body.append(backdrop, frame);
     document.documentElement.classList.add("is-locked");
+    // Next frame, so the closed state paints first and the open state transitions in
+    requestAnimationFrame(() => requestAnimationFrame(() => {
+      backdrop.classList.add("is-open");
+      frame.classList.add("is-open");
+    }));
 
+    let closing = false;
     function close() {
-      backdrop.remove();
-      frame.remove();
-      document.documentElement.classList.remove("is-locked");
+      if (closing) return;
+      closing = true;
       document.removeEventListener("keydown", onKey);
+      const media = frame.querySelector("video");
+      if (media) media.pause();
+      backdrop.classList.remove("is-open");
+      frame.classList.remove("is-open");
+      setTimeout(() => {
+        backdrop.remove();
+        frame.remove();
+        document.documentElement.classList.remove("is-locked");
+      }, reduceMotion ? 0 : 450);
     }
     function onKey(e) { if (e.key === "Escape") close(); }
     backdrop.addEventListener("click", close);
