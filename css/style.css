@@ -545,20 +545,28 @@ main { padding-top: var(--nav-h); }
 .hero__desc { margin-top: 16px; max-width: 500px; }
 .hero__cta { margin-top: 28px; display: flex; flex-wrap: wrap; gap: 12px; }
 .hero__watch { gap: 10px; }
-/* Proof points: the headline numbers from Milestones, so the promise above is backed up */
-.hero__proof {
+/* Accreditation: who governs and who awards the programs' credit */
+.hero__accredit {
   margin-top: 32px;
   padding-top: 22px;
   max-width: 560px;
-  display: flex;
-  flex-wrap: wrap;
-  gap: 14px 28px;
-  list-style: none;
   border-top: 1.5px dashed var(--line);
 }
-.proof { display: flex; align-items: center; gap: 10px; font-size: var(--fs-5); line-height: 1.3; color: var(--purple); }
-.proof img { width: 30px; height: 30px; flex: none; }
-.proof b { display: block; font-size: var(--fs-3); font-weight: 700; line-height: 1.1; color: var(--ink); }
+.accredit__text { font-size: var(--fs-5); line-height: 1.5; color: var(--purple); }
+.accredit__text b { color: var(--ink); }
+.accredit__logos { margin-top: 14px; display: flex; align-items: flex-end; gap: 28px; }
+.accredit__item { display: flex; flex-direction: column; gap: 8px; }
+.accredit__item + .accredit__item { padding-left: 28px; border-left: 1px solid var(--line); }
+.accredit__logo { height: 48px; width: auto; }
+.accredit__ncvet {
+  display: inline-flex;
+  align-items: center;
+  height: 48px;
+  font-size: var(--fs-3);
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  color: var(--ink);
+}
 .hero__media { position: relative; display: flex; justify-content: flex-end; }
 .hero__blob { right: -40px; top: -30px; width: 88%; height: 112%; }
 .hero__media-box {
