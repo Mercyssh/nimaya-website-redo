@@ -292,19 +292,38 @@
     if (ms) {
       const track = ms.querySelector(".slider__track");
       const viewport = ms.querySelector(".slider__viewport");
-      let dist = 0;
+      const cards = [...track.querySelectorAll(".stat")];
+      const trail = ms.querySelector(".milestones__trail");
+      let dist = 0, half = 1, arc = 0, centers = [];
       ms.classList.add("is-pinned");
       const measure = () => {
         track.style.transform = "";
         dist = Math.max(0, track.scrollWidth - viewport.clientWidth + parseFloat(getComputedStyle(track).paddingLeft));
         ms.style.height = `${window.innerHeight + dist * 1.3}px`;
+        // Cards ride a parabola: highest at the centre, dipping `arc` px at the viewport edges
+        half = viewport.clientWidth / 2;
+        arc = Math.min(90, half * 0.16);
+        centers = cards.map((c) => c.offsetLeft + c.offsetWidth / 2);
+        ms.style.setProperty("--arc", `${arc.toFixed(0)}px`);
+        // The trail is a quadratic curve, i.e. the same parabola (viewBox is 40 units tall)
+        const trailH = trail ? trail.getBoundingClientRect().height : 0;
+        if (trailH) {
+          const k = (arc * 40) / trailH;
+          trail.querySelector("path").setAttribute("d", `M0 ${(20 + k).toFixed(1)} Q 300 ${(20 - k).toFixed(1)} 600 ${(20 + k).toFixed(1)}`);
+        }
       };
       measure();
       window.addEventListener("resize", measure);
       window.addEventListener("load", measure);
       onScroll(() => {
         const p = clamp((progressOf(ms) - 0.06) / 0.88);
-        track.style.transform = `translateX(${(-p * dist).toFixed(1)}px)`;
+        const x = -p * dist;
+        track.style.transform = `translateX(${x.toFixed(1)}px)`;
+        cards.forEach((card, i) => {
+          const d = (centers[i] + x - half) / half; // -1 at the left edge, 1 at the right
+          card.style.translate = `0 ${(arc * d * d).toFixed(1)}px`;
+          card.style.rotate = `${(Math.atan((2 * arc * d) / half) * 180 / Math.PI).toFixed(2)}deg`;
+        });
       });
     }
 
@@ -319,13 +338,13 @@
       const apply = () => {
         const pinned = desktop.matches;
         work.classList.toggle("is-pinned", pinned);
-        work.style.height = pinned ? `${window.innerHeight * 2.8}px` : "";
+        work.style.height = pinned ? `${window.innerHeight * 1.7}px` : "";
         if (!pinned) steps.forEach((s) => setOn(s, true));
         runScroll();
       };
       desktop.addEventListener("change", apply);
       window.addEventListener("resize", () => {
-        if (desktop.matches) work.style.height = `${window.innerHeight * 2.8}px`;
+        if (desktop.matches) work.style.height = `${window.innerHeight * 1.7}px`;
       });
       work.classList.toggle("is-pinned", desktop.matches);
       onScroll(() => {
@@ -383,7 +402,8 @@
     document.documentElement.classList.add("has-cursor");
 
     let x = 0, y = 0, cx = 0, cy = 0, raf = 0;
-    const place = () => { cursor.style.transform = `translate(${cx.toFixed(1)}px, ${cy.toFixed(1)}px)`; };
+    // `translate`, not `transform`: `scale` would otherwise shrink the offset and the cursor would grow in from the corner
+    const place = () => { cursor.style.translate = `${cx.toFixed(1)}px ${cy.toFixed(1)}px`; };
     const loop = () => {
       cx += (x - cx) * 0.22;
       cy += (y - cy) * 0.22;
@@ -520,13 +540,14 @@
     });
 
     const drifting = [...document.querySelectorAll("[data-parallax]")];
+    const boost = 2.2; // scales every data-parallax distance
     onScroll(() => {
       const vh = window.innerHeight;
       for (const el of drifting) {
         const r = el.parentElement.getBoundingClientRect();
         if (r.bottom < 0 || r.top > vh) continue;
         const p = Math.max(-1, Math.min(1, (r.top + r.height / 2 - vh / 2) / (vh / 2 + r.height / 2)));
-        el.style.setProperty("--py", `${(-p * Number(el.dataset.parallax)).toFixed(1)}px`);
+        el.style.setProperty("--py", `${(-p * Number(el.dataset.parallax) * boost).toFixed(1)}px`);
       }
     });
   }

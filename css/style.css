@@ -494,7 +494,7 @@ main { padding-top: var(--nav-h); }
 
 /* ============ Landing ============ */
 .hero { padding-block: 32px 72px; }
-.hero__glow { left: -140px; top: 40%; width: 420px; height: 420px; opacity: 0.6; }
+.hero__glow { left: -140px; top: -120px; width: 420px; height: 420px; opacity: 0.6; }
 .hero__wrap {
   display: grid;
   grid-template-columns: minmax(0, 1.15fr) minmax(0, 1fr);
@@ -775,7 +775,8 @@ main { padding-top: var(--nav-h); }
   bottom: -0.3em;
   z-index: 2;
   pointer-events: none;
-  text-shadow: 0 0.04em 0.18em rgba(22, 11, 49, 0.55);
+  /* Inverts what is behind it: light over the photo, dark over the page */
+  mix-blend-mode: difference;
   font-family: var(--script);
   font-size: var(--fs-1);
   line-height: 1;
@@ -835,7 +836,7 @@ main { padding-top: var(--nav-h); }
 
 /* Our Why */
 .why__star { --z: 1; right: -14px; top: -22px; --w: 36px; --rot: 6deg; }
-.why__quote { --z: 1; right: 28px; top: -46px; --w: 88px; }
+.why__quote { --z: 1; right: 28px; top: -46px; --w: 88px; scale: -1 1; }
 
 /* Milestones: one dotted trail behind the row, a tiny star between items */
 .slider__viewport { position: relative; }
@@ -880,9 +881,10 @@ main { padding-top: var(--nav-h); }
 
 /* Listen to our Naaris */
 .voices__row { position: relative; }
-.voices__card { z-index: 1; }
 .voices__blob { left: calc(50% - 330px); top: 14%; width: 660px; height: 76%; opacity: 0.45; }
 .voices__quote { left: calc(50% - 360px); top: -44px; --w: 124px; --rot: -6deg; }
+/* Closing mark: the same glyph turned upside down */
+.voices__quote--end { left: auto; top: auto; right: calc(50% - 360px); bottom: -44px; --rot: 174deg; }
 .voices__star { --z: 2; right: -12px; top: -16px; --w: 30px; --rot: 8deg; }
 
 /* Footer */
@@ -969,6 +971,7 @@ html.is-locked { overflow: hidden; }
   .hero__star { left: -4px; top: -40px; --w: 30px; }
   .why__quote { --w: 64px; top: -36px; }
   .voices__quote { left: -6px; top: -14px; --w: 60px; }
+  .voices__quote--end { left: auto; top: auto; right: -6px; bottom: -14px; }
   .voices__blob { left: -10%; width: 120%; }
   .program__sticker { right: -6px; --w: 92px; }
   .footer__star--a { right: 16px; }
@@ -1038,6 +1041,9 @@ html.is-locked { overflow: hidden; }
   justify-content: center;
 }
 .pin.is-pinned .slider__arrow { display: none; }
+/* Milestones ride an arc (main.js sets --arc and each card's translate/rotate) */
+.pin.is-pinned .slider__viewport { padding-bottom: calc(24px + var(--arc, 0px)); }
+.pin.is-pinned .stat { transform-origin: 50% 120px; }
 .pin.is-pinned .work__trail { clip-path: inset(-50% calc(100% - var(--trail, 0) * 100%) -50% -50%); }
 .pin.is-pinned .work__text { opacity: 0.28; transition: opacity var(--t-1) var(--ease); }
 .pin.is-pinned .work__step .badge { scale: 0.82; filter: grayscale(1) opacity(0.45); transition: scale var(--t-1) var(--ease), filter var(--t-1) var(--ease); }
@@ -1146,6 +1152,9 @@ html.is-locked { overflow: hidden; }
 .js [data-draw="down"] { clip-path: inset(-20% -20% 100% -20%); }
 .js [data-draw].is-drawn { clip-path: inset(-20%); }
 .js .hero [data-draw] { transition-delay: 1.25s; }
+/* The arced milestone trail bows well outside its 40px box */
+.js .pin.is-pinned .milestones__trail { clip-path: inset(-400% 100% -400% -20%); }
+.js .pin.is-pinned .milestones__trail.is-drawn { clip-path: inset(-400% -20%); }
 .sparkle,
 .card__tab img,
 .chip::before { animation: sparkle-swing 2.8s ease-in-out infinite alternate; }
