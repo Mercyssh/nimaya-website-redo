@@ -325,6 +325,8 @@
           const d = (centers[i] + x - half) / half; // -1 at the left edge, 1 at the right
           card.style.translate = `0 ${(arc * d * d).toFixed(1)}px`;
           card.style.rotate = `${(Math.atan((2 * arc * d) / half) * 180 / Math.PI).toFixed(2)}deg`;
+          // Titles turn coral once their card reaches the centre, and stay lit after it passes
+          card.classList.toggle("is-lit", d <= 0.03);
         });
       });
     }

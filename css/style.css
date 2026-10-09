@@ -191,6 +191,7 @@ main > section:nth-of-type(even)::after { background: linear-gradient(to bottom,
 /* Long words tilt less so they don't climb too far */
 .milestones__title .script,
 .programs .display .script { transform: rotate(-4deg); }
+.hero .script { transform: rotate(-3.5deg); }
 .script__swish {
   position: absolute;
   z-index: -1;
@@ -620,7 +621,8 @@ main { padding-top: var(--nav-h); }
 }
 .stat__media > img { height: 210px; width: auto; object-fit: contain; }
 .stat__lottie { position: relative; inset: auto; width: 290px; height: 230px; flex: none; }
-.stat__title { font-size: var(--fs-3); font-weight: 600; line-height: 1.25; color: var(--ink); }
+.stat__title { font-size: var(--fs-3); font-weight: 600; line-height: 1.25; color: var(--ink);; transition: color var(--t-1) var(--ease); }
+.stat.is-lit .stat__title { color: var(--coral); }
 .stat__title .pill-hl { font-size: var(--fs-4); }
 .stat__desc { font-size: var(--fs-5); line-height: 1.5; color: var(--purple); white-space: pre-wrap; }
 .slider__arrow {
