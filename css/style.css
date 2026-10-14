@@ -2697,3 +2697,9 @@ main > section:has(+ .ai)::after { display: none; }
   .milestones__grid .stat__media { padding: 10px; border-radius: 14px; }
   .milestones__grid .stat__desc { font-size: 13px; }
 }
+
+/* Home hero: the positioning line carries the most weight after the headline */
+.hero--home .hero__title, .hero--home .hero__title .script { font-size: clamp(52px, 5.4vw, 78px); }
+.hero--home .hero__sub { max-width: 560px; font-size: 21px; font-weight: 600; line-height: 1.4; color: var(--ink); text-wrap: balance; }
+.hero--home .hero__accredit { margin-top: 22px; }
+@media (max-width: 600px) { .hero--home .hero__sub { font-size: 18px; } }

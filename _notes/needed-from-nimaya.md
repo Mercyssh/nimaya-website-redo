@@ -39,4 +39,8 @@ colour grade (warm, slightly muted) so they read as one shoot.
 - [ ] Samyak to sign off the "How AI runs Nimaya" section (draft written from his call notes).
       The live feed lines ("checking in with Naaris in Guwahati", etc.) are illustrative.
 - [ ] Program 2 (Fellowship) colour: coral was chosen by us; Navya only asked for "a different colour".
-- [ ] Final website copy review (partner/funder-facing pass in progress).
+- [ ] Founders to review the partner/funder-facing copy pass (14 Oct): new hero positioning line
+      ("Nimaya is a non-profit preparing young Indian women, our Naaris, for careers alongside AI"),
+      program pages rewritten in third person for partners, Fellowship FAQs reframed.
+- [ ] Confirm claims used in copy: "since 2021", "India's first immersive GenAI curriculum for young
+      women", "researched with hundreds of CEOs", PepsiCo and JCL capstones, IndiaAI program status.
