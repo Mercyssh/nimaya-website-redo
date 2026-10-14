@@ -5,6 +5,7 @@
  * points        [longitude, latitude] for each pin; the card anchors to the first
  * lines         one row per program in that place: a highlighted number (optional) + what it means
  * partners      logo files in assets/img/logos (or assets/img for partner-*.png)
+ * photo         optional photo (under assets/) shown in the city card on the home page
  * status        "live" (filled pin) | "new" (just launched) | "soon" (hollow pin, coming soon)
  * open          card is open when the map first appears (keep to 2-3 that don't overlap)
  * side          preferred placement for the card: right | left | top | bottom, optionally with
@@ -13,6 +14,8 @@
 window.NIMAYA_REACH = [
   {
     id: "mumbai",
+    photo: "img/photos/naaris-laptop.webp", // TODO: swap for a photo taken in this city
+    photoAlt: "Naaris working together on a laptop",
     name: "Mumbai",
     state: "Maharashtra",
     points: [[72.8777, 19.076]],
@@ -27,6 +30,8 @@ window.NIMAYA_REACH = [
   },
   {
     id: "haryana",
+    photo: "img/program-genai.jpg", // TODO: swap for a photo taken in this city
+    photoAlt: "Naaris learning on computers",
     name: "Haryana",
     state: "Haryana",
     subtitle: "Faridabad · Kurukshetra · Bahadurgarh · Gurgaon",
@@ -40,6 +45,8 @@ window.NIMAYA_REACH = [
 
   {
     id: "lucknow",
+    photo: "img/photos/naari-phone.webp", // TODO: swap for a photo taken in this city
+    photoAlt: "A Naari working on her phone",
     name: "Lucknow",
     state: "Uttar Pradesh",
     points: [[80.9462, 26.8467]],
@@ -86,6 +93,8 @@ window.NIMAYA_REACH = [
 
   {
     id: "guwahati",
+    photo: "img/photos/naaris-computer.webp", // TODO: swap for a photo taken in this city
+    photoAlt: "Naaris at a computer",
     name: "Guwahati",
     state: "Assam",
     points: [[91.7362, 26.1445]],

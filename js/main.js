@@ -766,6 +766,145 @@
     else pageVisible.then(() => onceInView([root], start, { threshold: 0.3 }));
   }
 
+  /* ---------- Atlas (home) ----------
+     A calmer take on the reach map: one city is always selected and its story sits in a
+     single docked card, so nothing pops over the map. Hovering a pin only shows its name;
+     a click (or the city chips, or the card's arrows) changes the selection. */
+  function initAtlas(root) {
+    const geo = window.NIMAYA_INDIA;
+    const places = window.NIMAYA_REACH;
+    if (!geo || !places) return;
+    const NS = "http://www.w3.org/2000/svg";
+    const assets = root.dataset.assets || "assets/";
+    const box = root.querySelector(".atlas__box");
+    const chipsEl = root.querySelector(".atlas__chips");
+    const card = root.querySelector(".atlas__card");
+    const stepper = root.classList.contains("atlas--stage");
+
+    const svg = document.createElementNS(NS, "svg");
+    svg.setAttribute("class", "atlas__svg");
+    svg.setAttribute("viewBox", `0 0 ${geo.width} ${geo.height}`);
+    svg.setAttribute("aria-hidden", "true");
+    const live = new Set(places.filter((p) => p.status !== "soon").map((p) => p.state));
+    const statePath = {};
+    Object.entries(geo.states).forEach(([name, d], i) => {
+      const path = document.createElementNS(NS, "path");
+      path.setAttribute("d", d);
+      path.setAttribute("class", `atlas__state${live.has(name) ? " is-active" : ""}`);
+      path.style.setProperty("--i", i);
+      statePath[name] = path;
+      svg.append(path);
+    });
+    const layer = document.createElement("div");
+    layer.className = "atlas__pins";
+    box.append(svg, layer);
+
+    const pct = ([lon, lat]) => {
+      const [x, y] = geo.project(lon, lat);
+      return [(x / geo.width) * 100, (y / geo.height) * 100];
+    };
+    const items = places.map((place, i) => {
+      // Secondary towns of a place are quiet dots; the first point is the pin
+      place.points.slice(1).forEach((pt) => {
+        const [x, y] = pct(pt);
+        const dot = document.createElement("span");
+        dot.className = "atlas__minor";
+        dot.style.cssText = `left:${x}%;top:${y}%`;
+        dot.dataset.place = place.id;
+        layer.append(dot);
+      });
+      const [x, y] = pct(place.points[0]);
+      const pin = document.createElement("button");
+      pin.type = "button";
+      pin.className = `atlas__pin${place.status === "soon" ? " is-soon" : ""}`;
+      pin.style.cssText = `left:${x}%;top:${y}%;--k:${i}`;
+      pin.setAttribute("aria-label", `${place.name}, ${place.subtitle || place.state}`);
+      pin.setAttribute("aria-pressed", "false");
+      pin.innerHTML = `<span class="atlas__dot"></span><span class="atlas__tag" aria-hidden="true">${place.name}</span>`;
+      pin.addEventListener("click", () => select(i));
+      layer.append(pin);
+
+      let chip = null;
+      if (chipsEl) {
+        chip = document.createElement("button");
+        chip.type = "button";
+        chip.className = `atlas__chip${place.status === "soon" ? " is-soon" : ""}`;
+        chip.setAttribute("aria-pressed", "false");
+        chip.textContent = place.name;
+        chip.addEventListener("click", () => select(i));
+        chip.addEventListener("keydown", (e) => {
+          const step = e.key === "ArrowRight" || e.key === "ArrowDown" ? 1 : e.key === "ArrowLeft" || e.key === "ArrowUp" ? -1 : 0;
+          if (!step) return;
+          e.preventDefault();
+          const next = (i + step + places.length) % places.length;
+          select(next);
+          items[next].chip.focus();
+        });
+        // A pin and its chip light up together
+        const hint = (on) => { pin.classList.toggle("is-hint", on); chip.classList.toggle("is-hint", on); };
+        [pin, chip].forEach((el) => {
+          el.addEventListener("pointerenter", () => hint(true));
+          el.addEventListener("pointerleave", () => hint(false));
+        });
+        chipsEl.append(chip);
+      }
+      // Warm the photo so switching cities never waits on the network
+      if (place.photo) { const img = new Image(); img.src = assets + place.photo; }
+      return { place, pin, chip };
+    });
+
+    const html = (p, i) => `
+      <div class="atlas__card-in">
+        ${p.photo ? `<figure class="atlas__photo"><img src="${assets}${p.photo}" alt="${p.photoAlt || ""}"></figure>` : ""}
+        <div class="atlas__body">
+          <p class="atlas__region">${p.subtitle || p.state}</p>
+          <h3 class="atlas__place">${p.name}${p.status === "soon" ? ' <span class="atlas__badge">Launching soon</span>' : ""}</h3>
+          <ul class="atlas__lines">${p.lines.filter((l) => l.num !== "Soon").map((l) => `<li>${l.num ? `<b>${l.num}</b>` : ""}<span>${l.text}</span></li>`).join("")}</ul>
+          ${p.partners ? `<div class="atlas__logos"><span>With</span>${p.partners.map((src) => `<img src="${assets}img/${src}" alt="">`).join("")}</div>` : ""}
+          ${stepper ? `<div class="atlas__nav">
+            <button class="atlas__step" type="button" data-step="-1" aria-label="Previous city"><svg viewBox="0 0 16 16" aria-hidden="true"><path d="M10 3L5 8l5 5"/></svg></button>
+            <span class="atlas__count"><b>${String(i + 1).padStart(2, "0")}</b> / ${String(places.length).padStart(2, "0")}</span>
+            <button class="atlas__step" type="button" data-step="1" aria-label="Next city"><svg viewBox="0 0 16 16" aria-hidden="true"><path d="M6 3l5 5-5 5"/></svg></button>
+          </div>` : ""}
+        </div>
+      </div>`;
+
+    let current = -1;
+    let swapTimer = 0;
+    function select(i, instant = false) {
+      if (i === current) return;
+      const prev = items[current];
+      current = i;
+      const { place } = items[i];
+      items.forEach((it, k) => {
+        const on = k === i;
+        it.pin.classList.toggle("is-current", on);
+        it.pin.setAttribute("aria-pressed", String(on));
+        if (it.chip) { it.chip.classList.toggle("is-current", on); it.chip.setAttribute("aria-pressed", String(on)); }
+      });
+      layer.querySelectorAll(".atlas__minor").forEach((d) => d.classList.toggle("is-current", d.dataset.place === place.id));
+      if (prev) statePath[prev.place.state]?.classList.remove("is-selected");
+      statePath[place.state]?.classList.add("is-selected");
+      clearTimeout(swapTimer);
+      if (instant || reduceMotion) { card.innerHTML = html(place, i); return; }
+      card.classList.add("is-swapping");
+      swapTimer = setTimeout(() => {
+        card.innerHTML = html(place, i);
+        requestAnimationFrame(() => card.classList.remove("is-swapping"));
+      }, 220);
+    }
+    card.addEventListener("click", (e) => {
+      const btn = e.target.closest("[data-step]");
+      if (btn) select((current + Number(btn.dataset.step) + places.length) % places.length);
+    });
+    const start = Math.max(0, places.findIndex((p) => p.id === root.dataset.default));
+    select(start, true);
+
+    const show = () => root.classList.add("is-in");
+    if (reduceMotion) show();
+    else pageVisible.then(() => onceInView([root], show, { threshold: 0.25 }));
+  }
+
   /* ---------- How AI runs Nimaya ----------
      An AI core, four agents around it and a ring of Naaris outside. Signals travel
      Naari -> agent -> core and back; a feed under it types out what is happening.
@@ -1155,6 +1294,7 @@
     document.querySelectorAll("[data-bars]").forEach(initBars);
     document.querySelectorAll("[data-reach-map]").forEach(initReachMap);
     document.querySelectorAll("[data-ai-net]").forEach(initAiNet);
+    document.querySelectorAll("[data-atlas]").forEach(initAtlas);
     initSmoothScroll();
     initCursor();
     initTilt();
