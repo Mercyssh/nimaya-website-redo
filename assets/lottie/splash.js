@@ -23,6 +23,8 @@
     finished = true;
     ["wheel", "touchmove", "keydown"].forEach((t) => window.removeEventListener(t, block, opts));
     splash.classList.add("is-done");
+    // main.js holds the hero entrance until the page is actually visible
+    window.dispatchEvent(new Event("nimaya:splash-done"));
     setTimeout(() => splash.remove(), 700);
   }
 

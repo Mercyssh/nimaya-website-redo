@@ -12,6 +12,15 @@
   window.addEventListener("scroll", runScroll, { passive: true });
   window.addEventListener("resize", runScroll);
 
+  // Resolves once the splash has lifted (or straight away on pages without one), so the
+  // hero's entrance plays where it can be seen instead of underneath the splash.
+  const pageVisible = new Promise((resolve) => {
+    const splash = document.querySelector(".splash");
+    if (!splash || splash.classList.contains("is-done")) return resolve();
+    window.addEventListener("nimaya:splash-done", resolve, { once: true });
+    setTimeout(resolve, 6500);
+  });
+
   // Fires `fn(el)` once, the first time each element scrolls into view.
   function onceInView(els, fn, options = {}) {
     const io = new IntersectionObserver((entries) => {
@@ -224,12 +233,14 @@
      Blocks fade up, titles rise line by line, photos open out of a smaller window.
      All timing lives in CSS (--ease, --t-*); JS only flips the classes. */
   function initReveal() {
-    const els = [...document.querySelectorAll("[data-reveal]")];
-    els.forEach((el) => {
+    const all = [...document.querySelectorAll("[data-reveal]")];
+    all.forEach((el) => {
       const d = Number(el.dataset.delay) || 0;
       if (d) el.style.setProperty("--d", `${d}s`);
     });
-    if (reduceMotion) return els.forEach((el) => el.classList.add("is-in"));
+    if (reduceMotion) return all.forEach((el) => el.classList.add("is-in"));
+    // The hero's own blocks start with the hero (initHero), not on intersection
+    const els = all.filter((el) => !el.closest(".hero"));
     onceInView(els, (el) => el.classList.add("is-in"), { threshold: 0.15, rootMargin: "0px 0px -8% 0px" });
   }
 
@@ -268,13 +279,14 @@
      The stagger lives in CSS; this starts it once the fonts are in. */
   function initHero() {
     const hero = document.querySelector(".hero");
+    if (!hero) return;
     const go = () => {
       hero.classList.add("is-in");
       hero.querySelector(".hero__title").classList.add("is-risen");
-      hero.querySelectorAll("[data-unmask]").forEach((el) => el.classList.add("is-in"));
+      hero.querySelectorAll("[data-unmask], [data-reveal]").forEach((el) => el.classList.add("is-in"));
     };
     if (reduceMotion) return go();
-    document.fonts.ready.then(() => setTimeout(go, 60));
+    Promise.all([document.fonts.ready, pageVisible]).then(() => setTimeout(go, 60));
   }
 
   /* ---------- Pinned chapters ----------
@@ -410,8 +422,458 @@
     onScroll(() => {
       const max = document.documentElement.scrollHeight - window.innerHeight;
       nav.style.setProperty("--progress", max > 0 ? (window.scrollY / max).toFixed(4) : 0);
-      nav.classList.toggle("is-scrolled", window.scrollY > hero.offsetHeight - 160);
+      nav.classList.toggle("is-scrolled", window.scrollY > (hero ? hero.offsetHeight : 0) - 160);
     });
+  }
+
+  /* ---------- Mobile menu ----------
+     Below 900px the links fold into a sheet under the bar. Closes on a link,
+     on Escape, or when the screen grows back past the breakpoint. */
+  function initMenu() {
+    const nav = document.querySelector(".nav");
+    const btn = nav && nav.querySelector(".nav__toggle");
+    if (!btn) return;
+    const wide = window.matchMedia("(min-width: 901px)");
+    const set = (open) => {
+      nav.classList.toggle("is-open", open);
+      btn.setAttribute("aria-expanded", String(open));
+      btn.setAttribute("aria-label", open ? "Close menu" : "Open menu");
+      document.documentElement.classList.toggle("is-locked", open);
+    };
+    btn.addEventListener("click", () => set(!nav.classList.contains("is-open")));
+    nav.querySelectorAll(".nav__links a").forEach((a) => a.addEventListener("click", () => set(false)));
+    document.addEventListener("keydown", (e) => {
+      if (e.key === "Escape" && nav.classList.contains("is-open")) { set(false); btn.focus(); }
+    });
+    wide.addEventListener("change", () => wide.matches && set(false));
+  }
+
+  /* ---------- Programs dropdown ----------
+     Hover and focus open it in CSS; a click toggles it for touch and keyboard. */
+  function initDropdown() {
+    document.querySelectorAll(".nav__drop").forEach((drop) => {
+      const btn = drop.querySelector(".nav__drop-btn");
+      const set = (open) => {
+        drop.classList.toggle("is-open", open);
+        btn.setAttribute("aria-expanded", String(open));
+      };
+      btn.addEventListener("click", () => set(!drop.classList.contains("is-open")));
+      document.addEventListener("click", (e) => { if (!drop.contains(e.target)) set(false); });
+      document.addEventListener("keydown", (e) => { if (e.key === "Escape") set(false); });
+    });
+  }
+
+  /* ---------- Tabs (curriculum segments, Impact program switch) ---------- */
+  function initTabs(root) {
+    const tabs = [...root.querySelectorAll('[role="tab"]')].filter((t) => t.closest("[data-tabs]") === root);
+    const select = (tab, focus) => {
+      tabs.forEach((t) => {
+        const on = t === tab;
+        t.setAttribute("aria-selected", String(on));
+        t.tabIndex = on ? 0 : -1;
+        document.getElementById(t.getAttribute("aria-controls")).hidden = !on;
+      });
+      root.style.setProperty("--tab-i", tabs.indexOf(tab));
+      if (focus) tab.focus();
+    };
+    tabs.forEach((tab, i) => {
+      tab.addEventListener("click", () => select(tab));
+      tab.addEventListener("keydown", (e) => {
+        const step = e.key === "ArrowRight" ? 1 : e.key === "ArrowLeft" ? -1 : 0;
+        if (step) select(tabs[(i + step + tabs.length) % tabs.length], true);
+      });
+    });
+    select(tabs.find((t) => t.getAttribute("aria-selected") === "true") || tabs[0]);
+  }
+
+  /* ---------- Before / after bars ----------
+     Bars grow from the baseline the first time they are seen; each bar shows its
+     value in a tooltip on hover or focus. */
+  function initBars(root) {
+    const tip = document.createElement("div");
+    tip.className = "ba__tip";
+    tip.setAttribute("role", "status");
+    root.querySelector(".ba__rows").append(tip);
+    root.querySelectorAll(".ba__bar").forEach((bar) => {
+      const show = () => {
+        const rows = root.querySelector(".ba__rows").getBoundingClientRect();
+        const r = bar.getBoundingClientRect();
+        tip.textContent = bar.dataset.tip;
+        tip.style.left = `${r.right - rows.left}px`;
+        tip.style.top = `${r.top - rows.top}px`;
+        tip.classList.add("is-on");
+      };
+      const hide = () => tip.classList.remove("is-on");
+      bar.tabIndex = 0;
+      bar.addEventListener("pointerenter", show);
+      bar.addEventListener("pointerleave", hide);
+      bar.addEventListener("focus", show);
+      bar.addEventListener("blur", hide);
+    });
+    if (reduceMotion) return root.classList.add("is-in");
+    onceInView([root], (el) => el.classList.add("is-in"), { threshold: 0.3 });
+  }
+
+  /* ---------- Reach map ----------
+     State outlines come from india-map-data.js, places from reach-data.js. Each place
+     gets a pin; clicking it opens its card beside the pin. When a new card needs the
+     space an open one is using, the older card closes (and at most three stay open).
+     On narrow screens one card at a time shows in a panel under the map instead. */
+  function initReachMap(root) {
+    const geo = window.NIMAYA_INDIA;
+    const places = window.NIMAYA_REACH;
+    if (!geo || !places) return;
+    const NS = "http://www.w3.org/2000/svg";
+    const assets = root.dataset.assets || "assets/";
+    const GAP = 16;     // pin -> card
+    const BLEED = 40;   // how far a card may hang outside the map box
+    const MAX_OPEN = 3;
+    const narrow = window.matchMedia("(max-width: 700px)");
+
+    // data-hover: pins open on hover (mouse only); data-quiet: no cards open by default
+    const hover = root.hasAttribute("data-hover") && finePointer;
+    const quiet = root.hasAttribute("data-quiet");
+    const hint = root.querySelector(".reach-map__hint");
+    if (hint && !hover) hint.textContent = hint.textContent.replace(/^Hover/, "Tap");
+    function hoverOpens(el, item) {
+      el.addEventListener("pointerenter", () => {
+        clearTimeout(item.timer);
+        if (!narrow.matches && !isOpen(item)) open(item);
+      });
+      el.addEventListener("pointerleave", () => {
+        if (!item.stuck) item.timer = setTimeout(() => close(item), 260);
+      });
+    }
+
+    const box = root.querySelector(".reach-map__box");
+    const panel = root.querySelector(".reach-map__panel");
+    const svg = document.createElementNS(NS, "svg");
+    svg.setAttribute("class", "reach-map__svg");
+    svg.setAttribute("viewBox", `0 0 ${geo.width} ${geo.height}`);
+    svg.setAttribute("aria-hidden", "true");
+    const stateOf = {};
+    places.forEach((p) => {
+      if (p.status === "live") stateOf[p.state] = "is-active";
+      else if (p.status === "new" && !stateOf[p.state]) stateOf[p.state] = "is-new";
+    });
+    let order = 0;
+    Object.entries(geo.states).forEach(([name, d], i) => {
+      const path = document.createElementNS(NS, "path");
+      path.setAttribute("d", d);
+      path.setAttribute("class", `reach-map__state ${stateOf[name] || ""}`);
+      path.style.setProperty("--i", i);
+      if (stateOf[name]) path.style.setProperty("--o", order++);
+      svg.append(path);
+    });
+    const layer = document.createElement("div");
+    layer.className = "reach-map__layer";
+    box.append(svg, layer);
+
+    const uid = Math.random().toString(36).slice(2, 7);
+    let pinIndex = 0;
+    const items = places.map((place) => {
+      const card = document.createElement("div");
+      card.className = "reach-card";
+      card.id = `reach-${uid}-${place.id}`;
+      card.setAttribute("role", "group");
+      card.setAttribute("aria-label", `${place.name}, ${place.subtitle || place.state}`);
+      card.innerHTML = `
+        <button class="reach-card__close" type="button" aria-label="Close ${place.name}">
+          <svg viewBox="0 0 12 12" width="12" height="12" aria-hidden="true"><path d="M1 1l10 10M11 1L1 11" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/></svg>
+        </button>
+        <p class="reach-card__place">${place.name}<span>${place.subtitle || place.state}</span></p>
+        <ul class="reach-card__lines">${place.lines.map((l) => `<li>${l.num ? `<b>${l.num}</b>` : ""}<span>${l.text}</span></li>`).join("")}</ul>
+        ${place.note ? `<p class="reach-card__note">${place.note}</p>` : ""}
+        ${place.partners ? `<div class="reach-card__logos">${place.partners.map((src) => `<img src="${assets}img/${src}" alt="" loading="lazy">`).join("")}</div>` : ""}`;
+      layer.append(card);
+
+      const pins = place.points.map(([lon, lat], k) => {
+        const [x, y] = geo.project(lon, lat);
+        const pin = document.createElement("button");
+        pin.type = "button";
+        pin.className = `reach-pin reach-pin--${place.status}${k ? " reach-pin--minor" : ""}`;
+        pin.style.left = `${(x / geo.width) * 100}%`;
+        pin.style.top = `${(y / geo.height) * 100}%`;
+        pin.style.setProperty("--pi", pinIndex++);
+        pin.setAttribute("aria-label", `${place.name}, ${place.subtitle || place.state}`);
+        pin.setAttribute("aria-expanded", "false");
+        pin.setAttribute("aria-controls", card.id);
+        pin.innerHTML = `<span class="reach-pin__dot"></span><span class="reach-pin__tag" aria-hidden="true">${place.name}</span>`;
+        layer.append(pin);
+        return { pin, fx: x / geo.width, fy: y / geo.height };
+      });
+      const item = { place, card, pins, rect: null, stuck: false, timer: 0 };
+      pins.forEach(({ pin }) => {
+        pin.addEventListener("click", () => {
+          // Hover maps: a click keeps the card open after the pointer leaves
+          if (hover) {
+            if (isOpen(item) && item.stuck) close(item);
+            else { item.stuck = true; if (!isOpen(item)) open(item); }
+            return;
+          }
+          isOpen(item) ? close(item) : open(item);
+        });
+        pin.addEventListener("pointerenter", () => card.classList.add("is-hot"));
+        pin.addEventListener("pointerleave", () => card.classList.remove("is-hot"));
+        if (hover) hoverOpens(pin, item);
+      });
+      if (hover) hoverOpens(card, item);
+      card.querySelector(".reach-card__close").addEventListener("click", () => {
+        close(item);
+        pins[0].pin.focus();
+      });
+      return item;
+    });
+
+    let opened = []; // oldest first
+    const isOpen = (item) => opened.includes(item);
+    const overlaps = (a, b, m = 8) => a.left < b.left + b.w + m && b.left < a.left + a.w + m && a.top < b.top + b.h + m && b.top < a.top + a.h + m;
+
+    // Card placements around a pin: the side it sits on, then which way it extends
+    // ("right-down" sits right of the pin and hangs downward from it).
+    const SIDES = ["right", "right-down", "right-up", "left", "left-down", "left-up",
+      "bottom", "bottom-right", "bottom-left", "top", "top-right", "top-left"];
+    const HANG = 26; // how far a hanging card reaches back past its pin
+
+    function placeCard(item) {
+      const W = layer.clientWidth;
+      const H = layer.clientHeight;
+      const w = item.card.offsetWidth;
+      const h = item.card.offsetHeight;
+      const px = item.pins[0].fx * W;
+      const py = item.pins[0].fy * H;
+      const along = { "": 0.5, down: 0, up: 1, right: 0, left: 1 };
+      const rectFor = (name) => {
+        const [side, dir = ""] = name.split("-");
+        const k = along[dir];
+        const r = side === "right" || side === "left"
+          ? { left: side === "right" ? px + GAP : px - GAP - w, top: dir ? (k ? py + HANG - h : py - HANG) : py - h / 2 }
+          : { top: side === "bottom" ? py + GAP : py - GAP - h, left: dir ? (k ? px + HANG - w : px - HANG) : px - w / 2 };
+        // Keep it inside the map (plus a little bleed), then make sure it isn't covering its own pin
+        r.left = clamp(r.left, -BLEED, W + BLEED - w);
+        r.top = clamp(r.top, -BLEED, H + BLEED - h);
+        const covers = px > r.left - 8 && px < r.left + w + 8 && py > r.top - 8 && py < r.top + h + 8;
+        return covers ? null : { side, ...r, w, h };
+      };
+      const names = [item.place.side, ...SIDES].filter((s, i, a) => s && a.indexOf(s) === i);
+      const options = names.map(rectFor).filter(Boolean);
+      const others = opened.filter((o) => o !== item);
+      const pick = options.find((r) => !others.some((o) => overlaps(r, o.rect))) || options[0];
+      const across = pick.side === "left" || pick.side === "right";
+      const card = item.card;
+      card.dataset.side = pick.side;
+      card.style.left = `${pick.left.toFixed(1)}px`;
+      card.style.top = `${pick.top.toFixed(1)}px`;
+      card.style.setProperty("--tail", `${clamp(across ? py - pick.top : px - pick.left, 18, (across ? h : w) - 18).toFixed(1)}px`);
+      item.rect = pick;
+    }
+
+    function open(item) {
+      const card = item.card;
+      if (narrow.matches) {
+        opened.forEach((o) => setOpen(o, false));
+        opened = [item];
+        panel.append(card);
+        setOpen(item, true);
+        return;
+      }
+      placeCard(item);
+      // Make room: close open cards the new one would cover, then the oldest beyond the cap
+      opened.filter((o) => o !== item && overlaps(item.rect, o.rect)).forEach(close);
+      opened = opened.filter((o) => o !== item).concat(item);
+      while (opened.length > MAX_OPEN) close(opened[0]);
+      setOpen(item, true);
+      // Raise the newest card above the others
+      opened.forEach((o, i) => { o.card.style.zIndex = 3 + i; });
+    }
+
+    function close(item) {
+      opened = opened.filter((o) => o !== item);
+      item.stuck = false;
+      setOpen(item, false);
+    }
+
+    function setOpen(item, on) {
+      item.card.classList.toggle("is-open", on);
+      item.pins.forEach(({ pin }) => pin.setAttribute("aria-expanded", String(on)));
+    }
+
+    function reset() {
+      opened.slice().forEach(close);
+      items.forEach((item) => {
+        if (narrow.matches) panel.append(item.card);
+        else layer.append(item.card);
+        item.card.removeAttribute("style");
+      });
+      const defaults = quiet ? [] : items.filter((i) => i.place.open);
+      (narrow.matches ? defaults.slice(0, 1) : defaults).forEach(open);
+    }
+
+    /* Photos pinned to places: each hangs off its place's first pin by a dotted
+       leader line, and hovering (or tapping) the photo opens that place's card. */
+    const photos = [...box.querySelectorAll(".reach-photo[data-place]")]
+      .map((el) => ({ el, item: items.find((i) => i.place.id === el.dataset.place) }))
+      .filter((p) => p.item);
+    if (photos.length) {
+      const links = document.createElementNS(NS, "svg");
+      links.setAttribute("class", "reach-map__links");
+      links.setAttribute("aria-hidden", "true");
+      svg.after(links);
+      const drawLinks = () => {
+        const W = box.clientWidth;
+        const H = box.clientHeight;
+        links.setAttribute("viewBox", `0 0 ${W} ${H}`);
+        links.innerHTML = photos.map(({ el, item }) => {
+          const px = item.pins[0].fx * W;
+          const py = item.pins[0].fy * H;
+          // Run to the nearest point on the photo's edge
+          const l = el.offsetLeft, t = el.offsetTop, r = l + el.offsetWidth, b = t + el.offsetHeight;
+          const x = clamp(px, l, r);
+          const y = clamp(py, t, b);
+          return `<path d="M${px.toFixed(1)} ${py.toFixed(1)} L${x.toFixed(1)} ${y.toFixed(1)}"/>`;
+        }).join("");
+      };
+      new ResizeObserver(drawLinks).observe(box);
+      photos.forEach(({ el, item }) => {
+        if (hover) hoverOpens(el, item);
+        el.addEventListener("click", () => {
+          item.stuck = true;
+          if (!isOpen(item)) open(item);
+        });
+      });
+    }
+
+    let started = false;
+    const start = () => {
+      started = true;
+      root.classList.add("is-in");
+      setTimeout(reset, reduceMotion ? 0 : 1500);
+    };
+    narrow.addEventListener("change", () => started && reset());
+    let lastW = 0;
+    new ResizeObserver(() => {
+      if (!started || narrow.matches || layer.clientWidth === lastW) return;
+      lastW = layer.clientWidth;
+      // Re-place open cards oldest first so the same overlap rule applies
+      const keep = opened.slice();
+      opened = [];
+      keep.forEach(open);
+    }).observe(layer);
+    document.addEventListener("keydown", (e) => {
+      if (e.key === "Escape" && opened.length && root.contains(document.activeElement)) close(opened[opened.length - 1]);
+    });
+    if (reduceMotion) start();
+    else pageVisible.then(() => onceInView([root], start, { threshold: 0.3 }));
+  }
+
+  /* ---------- How AI runs Nimaya ----------
+     An AI core, four agents around it and a ring of Naaris outside. Signals travel
+     Naari -> agent -> core and back; a feed under it types out what is happening.
+     Animation pauses while off screen. */
+  function initAiNet(root) {
+    const NS = "http://www.w3.org/2000/svg";
+    const C = 300;
+    const rad = (deg) => (deg * Math.PI) / 180;
+    const at = (r, deg) => [C + r * Math.cos(rad(deg)), C + r * Math.sin(rad(deg))];
+    const f = (n) => n.toFixed(1);
+    const icons = {
+      phone: '<path d="M7 3h3l1.5 4-2 1.5a11 11 0 0 0 6 6l1.5-2 4 1.5v3a2 2 0 0 1-2 2A17 17 0 0 1 5 5a2 2 0 0 1 2-2z"/>',
+      chat: '<path d="M4 5h16v11H9l-5 4z"/><path d="M8 9.5h8M8 12.5h5"/>',
+      book: '<path d="M4 5c3-1 6-1 8 1 2-2 5-2 8-1v14c-3-1-6-1-8 1-2-2-5-2-8-1z"/><path d="M12 6v14"/>',
+      spark: '<path d="M12 3l2.2 5.6L20 9.3l-4.5 3.9 1.4 5.8L12 16l-4.9 3 1.4-5.8L4 9.3l5.8-.7z"/>',
+    };
+    const agents = [
+      { name: "Outreach", icon: "phone", deg: -135 },
+      { name: "Feedback", icon: "chat", deg: -45 },
+      { name: "Curriculum", icon: "book", deg: 45 },
+      { name: "Smart Didi", icon: "spark", deg: 135 },
+    ].map((a) => ({ ...a, xy: at(150, a.deg) }));
+    const faces = ["t-anjali", "t-chandani", "t-jyoti", "t-khushi", "t-mahak", "t-mahek", "story-amisha", "story-nayonica"];
+    const naaris = faces.map((src, i) => {
+      const deg = -112 + i * 45 + (i % 2 ? 8 : -8);
+      // Each Naari talks to the agent closest to her
+      const near = (a) => Math.cos(rad(a.deg - deg));
+      const agent = agents.reduce((best, a) => (near(a) > near(best) ? a : best));
+      return { src, xy: at(256, deg), agent };
+    });
+
+    const links = [];
+    naaris.forEach((n) => {
+      const [x1, y1] = n.xy;
+      const [x2, y2] = n.agent.xy;
+      // Bow the line slightly outward so it reads as a signal path
+      const mx = (x1 + x2) / 2 + (y2 - y1) * 0.12;
+      const my = (y1 + y2) / 2 - (x2 - x1) * 0.12;
+      links.push({ d: `M${f(x1)} ${f(y1)} Q${f(mx)} ${f(my)} ${f(x2)} ${f(y2)}`, kind: "naari" });
+    });
+    agents.forEach((a) => links.push({ d: `M${f(a.xy[0])} ${f(a.xy[1])} L${C} ${C}`, kind: "core" }));
+    // Curriculum agent hands updates on to Smart Didi: the feedback loop
+    links.push({ d: `M${f(agents[1].xy[0])} ${f(agents[1].xy[1])} A150 150 0 0 1 ${f(agents[2].xy[0])} ${f(agents[2].xy[1])}`, kind: "loop" });
+
+    const crowd = [];
+    for (let i = 0; i < 64; i++) {
+      const [x, y] = at(i % 2 ? 288 : 270, i * (360 / 64) + 3);
+      crowd.push(`<circle class="ai-net__crowd" cx="${f(x)}" cy="${f(y)}" r="${i % 3 ? 2.4 : 3.2}" style="--i:${i}"/>`);
+    }
+    const assets = root.dataset.assets || "assets/";
+    const packets = links.map((l, i) => {
+      const dur = (2.6 + (i % 5) * 0.45).toFixed(2);
+      const begin = (-(i * 0.73) % 4).toFixed(2);
+      const back = i % 2 ? ' keyPoints="1;0" keyTimes="0;1" calcMode="linear"' : "";
+      return `<circle class="ai-net__packet ai-net__packet--${l.kind}" r="${l.kind === "core" ? 4.5 : 3.5}"><animateMotion dur="${dur}s" begin="${begin}s" repeatCount="indefinite" path="${l.d}"${back}/></circle>`;
+    });
+
+    root.querySelector(".ai__net").innerHTML = `
+      <svg class="ai-net" viewBox="0 0 600 600" role="img" aria-label="Diagram: Naaris connect to four AI agents (Outreach, Feedback, Curriculum and Smart Didi), which connect to Nimaya's AI core">
+        <defs>
+          <radialGradient id="ai-core-fill" cx="50%" cy="40%" r="60%"><stop offset="0" stop-color="#6b3fd1"/><stop offset="1" stop-color="#2a1677"/></radialGradient>
+          ${naaris.map((n, i) => `<clipPath id="ai-face-${i}"><circle cx="${f(n.xy[0])}" cy="${f(n.xy[1])}" r="24"/></clipPath>`).join("")}
+        </defs>
+        <circle class="ai-net__ring" cx="${C}" cy="${C}" r="150"/>
+        <circle class="ai-net__ring ai-net__ring--outer" cx="${C}" cy="${C}" r="256"/>
+        ${crowd.join("")}
+        ${links.map((l) => `<path class="ai-net__link ai-net__link--${l.kind}" d="${l.d}"/>`).join("")}
+        ${packets.join("")}
+        <circle class="ai-net__halo" cx="${C}" cy="${C}" r="74"/>
+        <circle class="ai-net__core" cx="${C}" cy="${C}" r="62"/>
+        <text class="ai-net__core-name" x="${C}" y="${C + 2}" text-anchor="middle">Nimaya</text>
+        <text class="ai-net__core-sub" x="${C}" y="${C + 22}" text-anchor="middle">AI core</text>
+        ${agents.map((a) => `
+          <g class="ai-net__agent" transform="translate(${f(a.xy[0])} ${f(a.xy[1])})">
+            <circle r="32"/>
+            <g class="ai-net__icon" transform="translate(-12 -12)">${icons[a.icon]}</g>
+            <text y="${a.deg < 0 ? -44 : 54}" text-anchor="middle">${a.name}</text>
+          </g>`).join("")}
+        ${naaris.map((n, i) => `
+          <circle class="ai-net__face-ring" cx="${f(n.xy[0])}" cy="${f(n.xy[1])}" r="27"/>
+          <image href="${assets}img/people/${n.src}.webp" x="${f(n.xy[0] - 24)}" y="${f(n.xy[1] - 24)}" width="48" height="48" preserveAspectRatio="xMidYMin slice" clip-path="url(#ai-face-${i})"/>`).join("")}
+      </svg>`;
+    const svg = root.querySelector("svg");
+
+    const lines = [
+      "Outreach agent: checking in with Naaris in Guwahati",
+      "Feedback agent: session feedback received from Lucknow",
+      "Curriculum agent: module updated from Naari feedback",
+      "Smart Didi: mock interview ready for a Naari in Mumbai",
+    ];
+    const text = root.querySelector(".ai__feed-text");
+    if (reduceMotion) {
+      svg.pauseAnimations();
+      text.textContent = lines[0];
+      return;
+    }
+    let line = 0, char = 0, timer = 0, running = false;
+    const type = () => {
+      const s = lines[line];
+      char += 1;
+      text.textContent = s.slice(0, char);
+      if (char < s.length) timer = setTimeout(type, 28);
+      else timer = setTimeout(() => { line = (line + 1) % lines.length; char = 0; type(); }, 2200);
+    };
+    new IntersectionObserver(([e]) => {
+      if (e.isIntersecting && !running) { running = true; svg.unpauseAnimations(); type(); }
+      else if (!e.isIntersecting && running) { running = false; svg.pauseAnimations(); clearTimeout(timer); }
+    }).observe(root);
   }
 
   /* ---------- Pointer polish (mouse / trackpad only) ---------- */
@@ -687,6 +1149,12 @@
     initHero();
     initCounters();
     initNav();
+    initMenu();
+    initDropdown();
+    document.querySelectorAll("[data-tabs]").forEach(initTabs);
+    document.querySelectorAll("[data-bars]").forEach(initBars);
+    document.querySelectorAll("[data-reach-map]").forEach(initReachMap);
+    document.querySelectorAll("[data-ai-net]").forEach(initAiNet);
     initSmoothScroll();
     initCursor();
     initTilt();
