@@ -767,19 +767,18 @@
   }
 
   /* ---------- Atlas (home) ----------
-     A calmer take on the reach map: one city is always selected and its story sits in a
-     single docked card, so nothing pops over the map. Hovering a pin only shows its name;
-     a click (or the city chips, or the card's arrows) changes the selection. */
+     India at night: every city where Naaris train is a light, labelled on the map.
+     Clicking a city (or anything marked data-atlas-city="id") opens one popup anchored
+     to it; only one is ever open. Hover only brightens. Esc, the close button or a
+     click elsewhere closes it. */
   function initAtlas(root) {
     const geo = window.NIMAYA_INDIA;
     const places = window.NIMAYA_REACH;
     if (!geo || !places) return;
     const NS = "http://www.w3.org/2000/svg";
     const assets = root.dataset.assets || "assets/";
+    const base = assets.replace(/assets\/$/, "");
     const box = root.querySelector(".atlas__box");
-    const chipsEl = root.querySelector(".atlas__chips");
-    const card = root.querySelector(".atlas__card");
-    const stepper = root.classList.contains("atlas--stage");
 
     const svg = document.createElementNS(NS, "svg");
     svg.setAttribute("class", "atlas__svg");
@@ -795,16 +794,38 @@
       statePath[name] = path;
       svg.append(path);
     });
+    // A faint route joining the cities, north to south and out east: one network
+    const byId = Object.fromEntries(places.map((p) => [p.id, p]));
+    const route = ["kashmir", "haryana", "jaipur", "ahmedabad", "mumbai", "nagpur", "lucknow", "varanasi", "guwahati"]
+      .filter((id) => byId[id]).map((id) => geo.project(...byId[id].points[0]));
+    route.slice(1).forEach(([x2, y2], k) => {
+      const [x1, y1] = route[k];
+      const mx = (x1 + x2) / 2, my = (y1 + y2) / 2;
+      const len = Math.hypot(x2 - x1, y2 - y1);
+      const bow = Math.min(60, len * 0.22);
+      const arc = document.createElementNS(NS, "path");
+      arc.setAttribute("d", `M${x1},${y1} Q${mx + ((y1 - y2) / len) * bow},${my + ((x2 - x1) / len) * bow} ${x2},${y2}`);
+      arc.setAttribute("class", "atlas__route");
+      arc.style.setProperty("--k", k);
+      svg.append(arc);
+    });
     const layer = document.createElement("div");
     layer.className = "atlas__pins";
     box.append(svg, layer);
+
+    const pop = document.createElement("div");
+    pop.className = "atlas__pop";
+    pop.setAttribute("role", "dialog");
+    pop.setAttribute("aria-live", "polite");
+    pop.hidden = true;
+    root.append(pop);
 
     const pct = ([lon, lat]) => {
       const [x, y] = geo.project(lon, lat);
       return [(x / geo.width) * 100, (y / geo.height) * 100];
     };
+    const triggers = (id) => document.querySelectorAll(`[data-atlas-city="${id}"]`);
     const items = places.map((place, i) => {
-      // Secondary towns of a place are quiet dots; the first point is the pin
       place.points.slice(1).forEach((pt) => {
         const [x, y] = pct(pt);
         const dot = document.createElement("span");
@@ -816,93 +837,149 @@
       const [x, y] = pct(place.points[0]);
       const pin = document.createElement("button");
       pin.type = "button";
-      pin.className = `atlas__pin${place.status === "soon" ? " is-soon" : ""}`;
+      pin.className = `atlas__pin atlas__pin--${place.label || "right"}${place.status === "soon" ? " is-soon" : ""}`;
       pin.style.cssText = `left:${x}%;top:${y}%;--k:${i}`;
-      pin.setAttribute("aria-label", `${place.name}, ${place.subtitle || place.state}`);
-      pin.setAttribute("aria-pressed", "false");
-      pin.innerHTML = `<span class="atlas__dot"></span><span class="atlas__tag" aria-hidden="true">${place.name}</span>`;
-      pin.addEventListener("click", () => select(i));
+      pin.setAttribute("aria-label", `${place.name}, ${place.subtitle || place.state}${place.status === "soon" ? ", coming soon" : ""}`);
+      pin.setAttribute("aria-expanded", "false");
+      pin.innerHTML = `<span class="atlas__dot"></span><span class="atlas__label" aria-hidden="true">${place.name}</span>`;
+      pin.addEventListener("click", () => (current === i ? close() : open(i)));
       layer.append(pin);
-
-      let chip = null;
-      if (chipsEl) {
-        chip = document.createElement("button");
-        chip.type = "button";
-        chip.className = `atlas__chip${place.status === "soon" ? " is-soon" : ""}`;
-        chip.setAttribute("aria-pressed", "false");
-        chip.textContent = place.name;
-        chip.addEventListener("click", () => select(i));
-        chip.addEventListener("keydown", (e) => {
-          const step = e.key === "ArrowRight" || e.key === "ArrowDown" ? 1 : e.key === "ArrowLeft" || e.key === "ArrowUp" ? -1 : 0;
-          if (!step) return;
-          e.preventDefault();
-          const next = (i + step + places.length) % places.length;
-          select(next);
-          items[next].chip.focus();
-        });
-        // A pin and its chip light up together
-        const hint = (on) => { pin.classList.toggle("is-hint", on); chip.classList.toggle("is-hint", on); };
-        [pin, chip].forEach((el) => {
-          el.addEventListener("pointerenter", () => hint(true));
-          el.addEventListener("pointerleave", () => hint(false));
-        });
-        chipsEl.append(chip);
-      }
-      // Warm the photo so switching cities never waits on the network
       if (place.photo) { const img = new Image(); img.src = assets + place.photo; }
-      return { place, pin, chip };
+      return { place, pin };
     });
 
-    const html = (p, i) => `
-      <div class="atlas__card-in">
-        ${p.photo ? `<figure class="atlas__photo"><img src="${assets}${p.photo}" alt="${p.photoAlt || ""}"></figure>` : ""}
-        <div class="atlas__body">
-          <p class="atlas__region">${p.subtitle || p.state}</p>
-          <h3 class="atlas__place">${p.name}${p.status === "soon" ? ' <span class="atlas__badge">Launching soon</span>' : ""}</h3>
-          <ul class="atlas__lines">${p.lines.filter((l) => l.num !== "Soon").map((l) => `<li>${l.num ? `<b>${l.num}</b>` : ""}<span>${l.text}</span></li>`).join("")}</ul>
-          ${p.partners ? `<div class="atlas__logos"><span>With</span>${p.partners.map((src) => `<img src="${assets}img/${src}" alt="">`).join("")}</div>` : ""}
-          ${stepper ? `<div class="atlas__nav">
-            <button class="atlas__step" type="button" data-step="-1" aria-label="Previous city"><svg viewBox="0 0 16 16" aria-hidden="true"><path d="M10 3L5 8l5 5"/></svg></button>
-            <span class="atlas__count"><b>${String(i + 1).padStart(2, "0")}</b> / ${String(places.length).padStart(2, "0")}</span>
-            <button class="atlas__step" type="button" data-step="1" aria-label="Next city"><svg viewBox="0 0 16 16" aria-hidden="true"><path d="M6 3l5 5-5 5"/></svg></button>
-          </div>` : ""}
-        </div>
+    // Optional city index (a list of buttons) somewhere else on the page
+    const index = root.dataset.index && document.querySelector(root.dataset.index);
+    if (index) {
+      index.innerHTML = places.map((p) => {
+        const top = p.lines.find((l) => l.num && l.num !== "Soon");
+        return `<li><button class="atlas-index__row${p.status === "soon" ? " is-soon" : ""}" type="button" data-atlas-city="${p.id}">
+          <span class="atlas-index__name">${p.name}${p.state === p.name ? "" : `<small>${p.state}</small>`}</span>
+          <span class="atlas-index__num">${p.status === "soon" ? "Soon" : top ? top.num : "New"}</span></button></li>`;
+      }).join("");
+    }
+
+    // Anything else on the page can open a city: photos, index rows
+    places.forEach((p, i) => triggers(p.id).forEach((el) => {
+      el.addEventListener("click", () => open(i, el));
+      el.addEventListener("pointerenter", () => items[i].pin.classList.add("is-hint"));
+      el.addEventListener("pointerleave", () => items[i].pin.classList.remove("is-hint"));
+    }));
+
+    const html = (p) => p.status === "soon" ? `
+      <button class="atlas__x" type="button" aria-label="Close"><svg viewBox="0 0 16 16" aria-hidden="true"><path d="M4 4l8 8M12 4l-8 8"/></svg></button>
+      <div class="atlas__pop-body">
+        <span class="atlas__badge">Coming soon</span>
+        <h3 class="atlas__place">${p.name}</h3>
+        <p class="atlas__region">${p.state}</p>
+        <p class="atlas__soon">GenAI Ready Naari opens here next.</p>
+        <a class="atlas__soon-link" href="${base}contact-us/">Help us launch here <span aria-hidden="true">→</span></a>
+      </div>` : `
+      <button class="atlas__x" type="button" aria-label="Close"><svg viewBox="0 0 16 16" aria-hidden="true"><path d="M4 4l8 8M12 4l-8 8"/></svg></button>
+      ${p.photo ? `<figure class="atlas__photo"><img src="${assets}${p.photo}" alt="${p.photoAlt || ""}"></figure>` : ""}
+      <div class="atlas__pop-body">
+        <p class="atlas__region">${p.subtitle || p.state}</p>
+        <h3 class="atlas__place">${p.name}</h3>
+        <ul class="atlas__lines">${p.lines.map((l) => `<li>${l.num ? `<b>${l.num}</b>` : ""}<span>${l.text}</span></li>`).join("")}</ul>
+        ${p.partners ? `<div class="atlas__logos"><span>With</span>${p.partners.map((src) => `<img src="${assets}img/${src}" alt="">`).join("")}</div>` : ""}
       </div>`;
 
+    // Above the city when there is room, then below, then beside it; kept inside the panel
+    function position() {
+      root.classList.toggle("is-narrow", root.offsetWidth < 520);
+      if (current < 0) return;
+      const r = root.getBoundingClientRect();
+      const p = items[current].pin.getBoundingClientRect();
+      const px = p.left + p.width / 2 - r.left;
+      const py = p.top + p.height / 2 - r.top;
+      // It may bleed a little past the panel's top and bottom, never past its sides
+      const w = pop.offsetWidth, h = pop.offsetHeight, gap = 16, edge = 10, bleed = 36;
+      const room = { above: py - gap + bleed, below: r.height - py - gap + bleed, right: r.width - px - gap - edge, left: px - gap - edge };
+      const fits = { above: room.above >= h, below: room.below >= h, right: room.right >= w, left: room.left >= w };
+      const side = ["above", "below", "right", "left"].find((k) => fits[k]) || (room.above > room.below ? "above" : "below");
+      let left, top;
+      if (side === "above" || side === "below") {
+        left = clamp(px - w / 2, edge, Math.max(edge, r.width - w - edge));
+        top = side === "above" ? py - gap - h : py + gap;
+        // Nothing fits cleanly (small screens): keep it inside the panel anyway
+        if (!fits[side]) top = clamp(top, -bleed, Math.max(-bleed, r.height - h + bleed));
+        pop.style.setProperty("--ax", `${clamp(px - left, 22, w - 22)}px`);
+      } else {
+        top = clamp(py - h / 2, -bleed, Math.max(-bleed, r.height - h + bleed));
+        left = side === "right" ? px + gap : px - gap - w;
+        pop.style.setProperty("--ay", `${clamp(py - top, 22, h - 22)}px`);
+      }
+      pop.style.left = `${left}px`;
+      pop.style.top = `${top}px`;
+      pop.dataset.side = side;
+    }
+
     let current = -1;
-    let swapTimer = 0;
-    function select(i, instant = false) {
-      if (i === current) return;
-      const prev = items[current];
-      current = i;
-      const { place } = items[i];
+    let swap = 0;
+    let opener = null;
+    function mark(i) {
       items.forEach((it, k) => {
         const on = k === i;
         it.pin.classList.toggle("is-current", on);
-        it.pin.setAttribute("aria-pressed", String(on));
-        if (it.chip) { it.chip.classList.toggle("is-current", on); it.chip.setAttribute("aria-pressed", String(on)); }
+        it.pin.setAttribute("aria-expanded", String(on));
+        triggers(it.place.id).forEach((el) => el.classList.toggle("is-current", on));
       });
-      layer.querySelectorAll(".atlas__minor").forEach((d) => d.classList.toggle("is-current", d.dataset.place === place.id));
-      if (prev) statePath[prev.place.state]?.classList.remove("is-selected");
-      statePath[place.state]?.classList.add("is-selected");
-      clearTimeout(swapTimer);
-      if (instant || reduceMotion) { card.innerHTML = html(place, i); return; }
-      card.classList.add("is-swapping");
-      swapTimer = setTimeout(() => {
-        card.innerHTML = html(place, i);
-        requestAnimationFrame(() => card.classList.remove("is-swapping"));
-      }, 220);
+      layer.querySelectorAll(".atlas__minor").forEach((d) => d.classList.toggle("is-current", i >= 0 && d.dataset.place === items[i].place.id));
+      Object.values(statePath).forEach((s) => s.classList.remove("is-selected"));
+      if (i >= 0) statePath[items[i].place.state]?.classList.add("is-selected");
     }
-    card.addEventListener("click", (e) => {
-      const btn = e.target.closest("[data-step]");
-      if (btn) select((current + Number(btn.dataset.step) + places.length) % places.length);
+    function render(i) {
+      const { place: p } = items[i];
+      pop.innerHTML = html(p);
+      pop.classList.toggle("is-soon", p.status === "soon");
+      pop.setAttribute("aria-label", p.name);
+      pop.hidden = false;
+      position();
+      requestAnimationFrame(() => pop.classList.add("is-open"));
+    }
+    function open(i, from) {
+      opener = from || items[i].pin;
+      // Opened from a photo or list further down the page: bring the map into view
+      if (from) {
+        const r = root.getBoundingClientRect();
+        if (r.top < 0 || r.bottom > window.innerHeight) root.scrollIntoView({ behavior: reduceMotion ? "auto" : "smooth", block: "center" });
+      }
+      if (i === current) return;
+      const was = current;
+      current = i;
+      mark(i);
+      clearTimeout(swap);
+      if (was < 0 || reduceMotion) return render(i);
+      pop.classList.remove("is-open");
+      swap = setTimeout(() => render(i), 160);
+    }
+    function close(restore) {
+      if (current < 0) return;
+      current = -1;
+      mark(-1);
+      clearTimeout(swap);
+      pop.classList.remove("is-open");
+      swap = setTimeout(() => { pop.hidden = true; }, reduceMotion ? 0 : 200);
+      if (restore) opener?.focus();
+    }
+    pop.addEventListener("click", (e) => { if (e.target.closest(".atlas__x")) close(true); });
+    document.addEventListener("keydown", (e) => { if (e.key === "Escape" && current >= 0) close(true); });
+    document.addEventListener("pointerdown", (e) => {
+      if (current < 0 || pop.contains(e.target) || e.target.closest(".atlas__pin, [data-atlas-city]")) return;
+      close();
     });
-    const start = Math.max(0, places.findIndex((p) => p.id === root.dataset.default));
-    select(start, true);
+    window.addEventListener("resize", position);
+    // Photos and logos can land after the popup opens; follow its size as they do
+    new ResizeObserver(() => position()).observe(pop);
+    position();
 
-    const show = () => root.classList.add("is-in");
+    const show = () => {
+      root.classList.add("is-in");
+      const first = places.findIndex((p) => p.id === root.dataset.open);
+      if (first >= 0) setTimeout(() => open(first), reduceMotion ? 0 : 1300);
+    };
     if (reduceMotion) show();
-    else pageVisible.then(() => onceInView([root], show, { threshold: 0.25 }));
+    else pageVisible.then(() => onceInView([root], show, { threshold: 0.3 }));
   }
 
   /* ---------- How AI runs Nimaya ----------

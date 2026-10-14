@@ -129,14 +129,17 @@
           </div>
           <div data-reveal="up" data-delay="0.15"><ul class="where__stats"><li><span class="big-num" data-count="10000" data-suffix="+">10,000+</span><span class="big-num__label">Naaris trained</span></li><li><span class="big-num" data-count="6">6</span><span class="big-num__label">States</span></li><li><span class="big-num" data-count="10">10</span><span class="big-num__label">Cities</span></li><li><span class="big-num" data-count="9" data-suffix="+">9+</span><span class="big-num__label">Partners</span></li></ul></div>
         </div>
-        <div class="atlas atlas--panel" data-atlas data-assets="../../assets/" data-default="haryana">
+        <div class="where__grid">
+          <ul class="atlas-index" id="city-index" aria-label="Cities"></ul>
+          <div class="atlas atlas--night" data-atlas data-assets="../../assets/" data-index="#city-index">
           <div class="atlas__map"><div class="atlas__box"></div></div>
-          <div class="atlas__side">
-            <div class="atlas__chips" role="group" aria-label="Choose a city"></div>
-            <article class="atlas__card" aria-live="polite"></article>
+          <div class="atlas__foot">
+            <span class="atlas__key"><i></i>Live programs</span>
+            <span class="atlas__key"><i class="is-soon"></i>Coming soon</span>
+            <p class="atlas__credit">Map: <a href="https://github.com/datameet/maps" target="_blank" rel="noopener">DataMeet</a>, CC BY 4.0</p>
           </div>
         </div>
-        <p class="atlas__credit">Map: <a href="https://github.com/datameet/maps" target="_blank" rel="noopener">DataMeet</a>, CC BY 4.0</p>
+        </div>
       </div>
     </section>
 
@@ -425,6 +428,6 @@
   <script src="../../js/reach-data.js" defer></script>
   <script src="../../js/motion.js" defer></script>
   <script src="../../js/main.js" defer></script>
-  <nav class="preview-bar" aria-label="Landing versions"><span>Landing preview</span><a href="../a/">A · Editorial</a><a href="../b/">B · Atlas</a><a href="../c/" aria-current="page">C · Reel</a><a href="../../">Current</a></nav>
+  <nav class="preview-bar" aria-label="Landing versions"><span>Landing preview</span><a href="../b/">B · Atlas</a><a href="../c/" aria-current="page">C · Reel</a><a href="../d/">D · Map + Naaris</a><a href="../../">Current</a></nav>
 </body>
 </html>

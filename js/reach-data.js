@@ -6,6 +6,7 @@
  * lines         one row per program in that place: a highlighted number (optional) + what it means
  * partners      logo files in assets/img/logos (or assets/img for partner-*.png)
  * photo         optional photo (under assets/) shown in the city card on the home page
+ * label         side of the pin its name sits on in the home atlas: right (default) | left | top | bottom
  * status        "live" (filled pin) | "new" (just launched) | "soon" (hollow pin, coming soon)
  * open          card is open when the map first appears (keep to 2-3 that don't overlap)
  * side          preferred placement for the card: right | left | top | bottom, optionally with
@@ -14,6 +15,7 @@
 window.NIMAYA_REACH = [
   {
     id: "mumbai",
+    label: "left",
     photo: "img/photos/naaris-laptop.webp", // TODO: swap for a photo taken in this city
     photoAlt: "Naaris working together on a laptop",
     name: "Mumbai",
@@ -30,6 +32,7 @@ window.NIMAYA_REACH = [
   },
   {
     id: "haryana",
+    label: "right",
     photo: "img/program-genai.jpg", // TODO: swap for a photo taken in this city
     photoAlt: "Naaris learning on computers",
     name: "Haryana",
@@ -45,6 +48,7 @@ window.NIMAYA_REACH = [
 
   {
     id: "lucknow",
+    label: "right",
     photo: "img/photos/naari-phone.webp", // TODO: swap for a photo taken in this city
     photoAlt: "A Naari working on her phone",
     name: "Lucknow",
@@ -61,6 +65,9 @@ window.NIMAYA_REACH = [
   },
   {
     id: "varanasi",
+    label: "right",
+    photo: "img/photos/naaris-working.webp", // TODO: swap for a photo taken in this city
+    photoAlt: "Naaris in a computer class",
     name: "Varanasi",
     state: "Uttar Pradesh",
     points: [[82.9739, 25.3176]],
@@ -72,6 +79,9 @@ window.NIMAYA_REACH = [
 
   {
     id: "jaipur",
+    label: "left",
+    photo: "img/photos/naari-presenting.webp", // TODO: swap for a photo taken in this city
+    photoAlt: "Naaris at a workshop",
     name: "Jaipur",
     state: "Rajasthan",
     points: [[75.7873, 26.9124]],
@@ -82,6 +92,9 @@ window.NIMAYA_REACH = [
   },
   {
     id: "ahmedabad",
+    label: "top",
+    photo: "img/photos/placement.webp", // TODO: swap for a photo taken in this city
+    photoAlt: "Naaris with their trainers",
     name: "Ahmedabad",
     state: "Gujarat",
     points: [[72.5714, 23.0225]],
@@ -93,6 +106,7 @@ window.NIMAYA_REACH = [
 
   {
     id: "guwahati",
+    label: "bottom",
     photo: "img/photos/naaris-computer.webp", // TODO: swap for a photo taken in this city
     photoAlt: "Naaris at a computer",
     name: "Guwahati",
@@ -105,6 +119,7 @@ window.NIMAYA_REACH = [
 
   {
     id: "nagpur",
+    label: "right",
     name: "Nagpur",
     state: "Maharashtra",
     points: [[79.0882, 21.1458]],
@@ -114,6 +129,7 @@ window.NIMAYA_REACH = [
   },
   {
     id: "kashmir",
+    label: "right",
     name: "Srinagar",
     state: "Jammu & Kashmir",
     points: [[74.7973, 34.0837]],
