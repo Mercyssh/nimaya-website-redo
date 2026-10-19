@@ -919,26 +919,35 @@
     /* Cursor depth (data-motion, mouse only): the map, its photos and the offset
        silhouette drift by different amounts with the pointer. One loop eases the
        values and keeps the photo leader lines attached while photos move. */
+    /* Each loop runs while any of the map is on screen, tracked by its own observer:
+       the tour's stricter inView (40% visible) only turns true after this observer has
+       already fired, so a loop tied to it would stop on its first frame and never restart. */
+    let onScreen = false;
+    const whileOnScreen = (tick) => {
+      let raf = 0;
+      const loop = () => { tick(); raf = onScreen ? requestAnimationFrame(loop) : 0; };
+      new IntersectionObserver(([e]) => {
+        onScreen = e.isIntersecting;
+        if (onScreen && !raf) raf = requestAnimationFrame(loop);
+      }).observe(root);
+    };
     if (motion && finePointer && !reduceMotion) {
-      let tx = 0, ty = 0, mx = 0, my = 0, raf = 0;
+      let tx = 0, ty = 0, mx = 0, my = 0;
       const tick = () => {
         mx += (tx - mx) * 0.08;
         my += (ty - my) * 0.08;
         root.style.setProperty("--mx", mx.toFixed(4));
         root.style.setProperty("--my", my.toFixed(4));
         drawLinks();
-        raf = inView ? requestAnimationFrame(tick) : 0;
       };
       window.addEventListener("pointermove", (e) => {
         tx = clamp((e.clientX / innerWidth) * 2 - 1, -1, 1);
         ty = clamp((e.clientY / innerHeight) * 2 - 1, -1, 1);
       }, { passive: true });
-      new IntersectionObserver(([e]) => { if (e.isIntersecting && !raf) raf = requestAnimationFrame(tick); }).observe(root);
+      whileOnScreen(tick);
     } else if (motion && !reduceMotion) {
       // No pointer: still keep leader lines attached to the floating photos
-      let raf = 0;
-      const tick = () => { drawLinks(); raf = inView ? requestAnimationFrame(tick) : 0; };
-      new IntersectionObserver(([e]) => { if (e.isIntersecting && !raf) raf = requestAnimationFrame(tick); }).observe(root);
+      whileOnScreen(drawLinks);
     }
     narrow.addEventListener("change", () => started && reset());
     let lastW = 0;
