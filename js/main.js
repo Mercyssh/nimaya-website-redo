@@ -1073,6 +1073,11 @@
       "Smart Didi: mock interview ready for a Naari in Mumbai",
     ];
     const text = root.querySelector(".ai__feed-text");
+    if (!text) {
+      if (reduceMotion) svg.pauseAnimations();
+      else new IntersectionObserver(([e]) => { e.isIntersecting ? svg.unpauseAnimations() : svg.pauseAnimations(); }).observe(root);
+      return;
+    }
     if (reduceMotion) {
       svg.pauseAnimations();
       text.textContent = lines[0];
