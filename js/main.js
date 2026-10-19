@@ -568,14 +568,10 @@
       if (stateOf[name]) path.style.setProperty("--o", order++);
       svg.append(path);
     });
-    /* data-holo: two candidate looks, switched by data-look on the map (TODO: keep one).
-       "simple": solid borders (a silhouette plus the state lines) with a band of light
-         sweeping along them. The silhouette is a wide stroke drawn under the fills, so
-         only its outer half shows.
-       "tech": India as a dot matrix on a faint lat/long grid, a hairline silhouette
-         (cut from a stroke with a mask, as the dotted fill can't hide it), and one scan
-         sweep when the map appears and when a place opens. */
-    let scan = () => {};
+    /* data-holo: solid borders (a silhouette plus the state lines) with a band of
+       electric pink sweeping along them, and a faint hollow copy of the silhouette
+       offset behind. The silhouette is a wide stroke drawn under the fills, so only
+       its outer half shows; the hollow copy is cut from a stroke with a mask. */
     if (root.hasAttribute("data-holo")) {
       const id = `reach-holo-${Math.random().toString(36).slice(2, 7)}`;
       const W = geo.width, H = geo.height;
@@ -583,69 +579,24 @@
       const paths = (attrs = "") => shapes.map((d) => `<path d="${d}"${attrs}/>`).join("");
       const sweep = reduceMotion ? "" : `<animateTransform attributeName="gradientTransform" type="translate" values="${-W} ${-H}; ${W} ${H}" dur="4s" repeatCount="indefinite"/>`;
       const edges = (cls) => `<g class="reach-map__edge ${cls}" stroke="url(#${id}-sweep)">${paths(' vector-effect="non-scaling-stroke"')}</g>`;
-      const dots = (cid, r) => `<pattern id="${id}-${cid}" patternUnits="userSpaceOnUse" width="13" height="13"><circle cx="6.5" cy="6.5" r="${r}"/></pattern>`;
-      // Graticule every 5 degrees, labelled along the left and bottom edges
-      const grid = [];
-      for (let lon = 70; lon <= 95; lon += 5) {
-        const [x] = geo.project(lon, 0);
-        grid.push(`<line x1="${x}" y1="0" x2="${x}" y2="${H}"/><text x="${x + 5}" y="${H - 8}">${lon}°E</text>`);
-      }
-      for (let lat = 10; lat <= 35; lat += 5) {
-        const [, y] = geo.project(70, lat);
-        grid.push(`<line x1="0" y1="${y}" x2="${W}" y2="${y}"/><text x="6" y="${y - 6}">${lat}°N</text>`);
-      }
       svg.insertAdjacentHTML("afterbegin", `
         <defs>
           <linearGradient id="${id}-sweep" gradientUnits="userSpaceOnUse" x1="0" y1="0" x2="${W}" y2="${H}">
-            <stop offset="0.4" stop-color="#412287"/>
-            <stop offset="0.47" stop-color="#c98fd6"/>
-            <stop offset="0.5" stop-color="#ffc8e0"/>
-            <stop offset="0.53" stop-color="#c98fd6"/>
-            <stop offset="0.6" stop-color="#412287"/>
+            <stop offset="0.42" stop-color="#412287"/>
+            <stop offset="0.48" stop-color="#ce52b0"/>
+            <stop offset="0.5" stop-color="#ff7bbd"/>
+            <stop offset="0.52" stop-color="#ce52b0"/>
+            <stop offset="0.58" stop-color="#412287"/>
             ${sweep}
           </linearGradient>
-          ${dots("dots", 1.9)}
-          ${dots("dots-on", 2.9)}
-          <linearGradient id="${id}-scan" gradientUnits="userSpaceOnUse" x1="0" y1="0" x2="0" y2="${H}" gradientTransform="translate(0 ${-H})">
-            <stop offset="0.42" stop-color="#ffc8e0" stop-opacity="0"/>
-            <stop offset="0.5" stop-color="#ff8fbf" stop-opacity="0.55"/>
-            <stop offset="0.51" stop-color="#ff8fbf" stop-opacity="0"/>
-            <animateTransform attributeName="gradientTransform" type="translate" values="0 ${-H * 0.6}; 0 ${H * 0.6}" dur="1.3s" begin="indefinite" fill="freeze"/>
-          </linearGradient>
-          <clipPath id="${id}-clip">${paths()}</clipPath>
           <mask id="${id}-hollow" maskUnits="userSpaceOnUse" x="-40" y="-40" width="${W + 80}" height="${H + 80}">
             <g fill="none" stroke="#fff" stroke-width="3" stroke-linejoin="round">${paths()}</g>
             <g fill="#000">${paths()}</g>
           </mask>
         </defs>
-        <g class="reach-map__grid">${grid.join("")}</g>
         <g class="reach-map__ghost" transform="translate(14 18)"><rect x="-40" y="-40" width="${W + 80}" height="${H + 80}" mask="url(#${id}-hollow)"/></g>
         ${edges("reach-map__edge--outline")}`);
-      svg.insertAdjacentHTML("beforeend", `
-        ${edges("reach-map__edge--lines")}
-        <g class="reach-map__hair">${paths(' vector-effect="non-scaling-stroke"')}</g>
-        <rect class="reach-map__rim" x="-40" y="-40" width="${W + 80}" height="${H + 80}" mask="url(#${id}-hollow)"/>
-        <rect class="reach-map__scanbar" width="${W}" height="${H}" fill="url(#${id}-scan)" clip-path="url(#${id}-clip)"/>`);
-      // TODO: temporary switch between the two looks, remove once one is chosen
-      const switcher = document.querySelector("[data-look-switch]");
-      const setLook = (look) => {
-        root.dataset.look = look;
-        try { localStorage.setItem("nimaya-map-look", look); } catch {}
-        switcher?.querySelectorAll("button").forEach((b) => b.setAttribute("aria-pressed", String(b.dataset.look === look)));
-      };
-      let saved = null;
-      try { saved = localStorage.getItem("nimaya-map-look"); } catch {}
-      setLook(saved || root.dataset.look || "simple");
-      switcher?.querySelectorAll("button").forEach((b) => b.addEventListener("click", () => { setLook(b.dataset.look); scan(); }));
-      root.style.setProperty("--dots", `url(#${id}-dots)`);
-      root.style.setProperty("--dots-on", `url(#${id}-dots-on)`);
-      const run = svg.querySelector(`#${id}-scan animateTransform`);
-      let last = 0;
-      scan = () => {
-        if (reduceMotion || root.dataset.look !== "tech" || performance.now() - last < 1200) return;
-        last = performance.now();
-        run.beginElement();
-      };
+      svg.insertAdjacentHTML("beforeend", edges("reach-map__edge--lines"));
     }
     const layer = document.createElement("div");
     layer.className = "reach-map__layer";
@@ -783,7 +734,6 @@
       opened = opened.filter((o) => o !== item).concat(item);
       while (opened.length > MAX_OPEN) close(opened[0]);
       setOpen(item, true);
-      scan();
       // Raise the newest card above the others
       opened.forEach((o, i) => { o.card.style.zIndex = 3 + i; });
     }
@@ -869,7 +819,6 @@
     const start = () => {
       started = true;
       root.classList.add("is-in");
-      setTimeout(scan, 700);
       setTimeout(reset, reduceMotion ? 0 : 1500);
       // Entrance staggers done: photos now show and hide without delay
       setTimeout(() => root.classList.add("is-settled"), reduceMotion ? 0 : 2600);
