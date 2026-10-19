@@ -2085,7 +2085,7 @@ html.is-locked { overflow: hidden; }
 
 /* Hero entrance: headline rises, photo opens, the word is written, cards pop in, paths draw */
 .hero__media-box { --d: 0.35s; }
-.hero .script { --write-delay: 0.75s; }
+.hero .script { --write-delay: 0.4s; }
 .js .hero__blob,
 .js .hero__glow { opacity: 0; scale: 0.92; transition: opacity var(--t-3) var(--ease) 0.2s, scale var(--t-3) var(--ease) 0.2s; }
 .js .hero.is-in .hero__blob { opacity: 1; scale: 1; }
@@ -2171,26 +2171,31 @@ html.is-locked { overflow: hidden; }
 
 /* Script draw-in: the word is "written" left to right along its tilt (clip-path wipe, in the
    element's own rotated space), then the swish draws, then the earmarks pop. Negative insets
-   keep the swish and earmarks, which sit outside the word's box, inside the visible area. */
+   keep the swish and earmarks, which sit outside the word's box, inside the visible area.
+   In a rising title the word starts with the rise (is-risen), not on its own later trigger,
+   so it is written while the serif words are still settling. */
 .js .script,
 .js .voices__name {
   clip-path: inset(-60% 100% -60% -20%);
-  transition: clip-path var(--t-3) var(--ease) var(--write-delay, 0.45s);
+  transition: clip-path 0.9s var(--ease) var(--write-delay, 0.25s);
 }
 .js .script.is-drawn,
+.js .is-risen .script,
 .js .voices__name.is-drawn { clip-path: inset(-60% -60% -60% -20%); }
 .js .script__swish {
   clip-path: inset(0 100% 0 0);
-  transition: clip-path var(--t-1) var(--ease) calc(var(--write-delay, 0.45s) + 0.7s);
+  transition: clip-path 0.5s var(--ease) calc(var(--write-delay, 0.25s) + 0.45s);
 }
-.js .is-drawn .script__swish { clip-path: inset(0 0 0 0); }
+.js .is-drawn .script__swish,
+.js .is-risen .script__swish { clip-path: inset(0 0 0 0); }
 .js .script__earmarks {
   opacity: 0;
   transform: scale(0.4);
   transform-origin: 0 100%;
-  transition: opacity var(--t-1) var(--ease) calc(var(--write-delay, 0.45s) + 1s), transform var(--t-1) var(--ease) calc(var(--write-delay, 0.45s) + 1s);
+  transition: opacity 0.4s var(--ease) calc(var(--write-delay, 0.25s) + 0.7s), transform 0.5s var(--ease) calc(var(--write-delay, 0.25s) + 0.7s);
 }
-.js .is-drawn .script__earmarks { opacity: 1; transform: none; }
+.js .is-drawn .script__earmarks,
+.js .is-risen .script__earmarks { opacity: 1; transform: none; }
 
 /* Sparkles: slow looping swing around their resting tilt */
 @keyframes sparkle-swing {
@@ -3382,7 +3387,7 @@ main > section:has(+ .ai)::after { display: none; }
 .js .landing.is-in .landing__shade { opacity: 1; }
 .js .landing .is-risen .rise { animation-delay: calc(var(--d, 0s) + 0.55s); }
 .js .landing .is-risen .rise__in { transition-delay: calc(var(--d, 0s) + 0.55s); }
-.landing .script { --write-delay: 1.35s; }
+.landing .script { --write-delay: 0.8s; }
 
 /* Transparent bar over the dark landing until the page scrolls past it */
 .has-dark-landing .nav:not(.is-scrolled):not(.is-open) { background: transparent; border-bottom-color: transparent; -webkit-backdrop-filter: none; backdrop-filter: none; }
