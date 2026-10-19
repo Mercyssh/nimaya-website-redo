@@ -660,7 +660,8 @@
         <p class="reach-card__place">${place.name}<span>${place.subtitle || place.state}</span></p>
         <ul class="reach-card__lines">${place.lines.map((l) => `<li>${l.num ? `<b>${l.num}</b>` : ""}<span>${l.text}</span></li>`).join("")}</ul>
         ${place.note ? `<p class="reach-card__note">${place.note}</p>` : ""}
-        ${place.partners ? `<div class="reach-card__logos">${place.partners.map((src) => `<img src="${assets}img/${src}" alt="" loading="lazy">`).join("")}</div>` : ""}`;
+        ${place.partners ? `<div class="reach-card__logos">${place.partners.map((src) => `<img src="${assets}img/${src}" alt="" loading="lazy">`).join("")}</div>` : ""}
+        <span class="reach-card__timer" aria-hidden="true"></span>`;
       layer.append(card);
 
       const pins = place.points.map(([lon, lat], k) => {
@@ -822,6 +823,7 @@
 
     function setOpen(item, on) {
       item.card.classList.toggle("is-open", on);
+      if (!on) item.card.classList.remove("is-touring");
       item.pins.forEach(({ pin }) => pin.setAttribute("aria-expanded", String(on)));
       syncPhotos();
     }
@@ -833,6 +835,8 @@
     let touring = null; // the place the idle tour has open
     let inView = false, onPlace = false, tourOff = reduceMotion || !motion || !route.length;
     let tourTimer = 0, tourIndex = 0;
+    const TOUR_MS = 3400; // time on each place
+    root.style.setProperty("--tour-ms", `${TOUR_MS}ms`);
     function syncPhotos() {
       const picky = photos.some((p) => p.el.hasAttribute("data-default"));
       photos.forEach((p) => {
@@ -925,7 +929,9 @@
       if (touring) close(touring);
       touring = route[tourIndex++ % route.length];
       open(touring);
-      tourTimer = setTimeout(tourStep, 3400);
+      // The bar along the card's foot fills over the time until the next place
+      touring.card.classList.add("is-touring");
+      tourTimer = setTimeout(tourStep, TOUR_MS);
     }
     function tourLater(ms) { clearTimeout(tourTimer); if (tourActive()) tourTimer = setTimeout(tourStep, ms); }
     function pauseTour(item) {
@@ -933,7 +939,7 @@
       onPlace = true;
       clearTimeout(tourTimer);
       // The hovered place now belongs to the pointer: it stays open, and closes as the pointer leaves
-      if (touring === item) touring = null;
+      if (touring === item) { item.card.classList.remove("is-touring"); touring = null; }
       else stopTour();
     }
     function resumeTour() {
