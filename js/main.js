@@ -568,17 +568,35 @@
       if (stateOf[name]) path.style.setProperty("--o", order++);
       svg.append(path);
     });
-    /* data-shimmer: solid borders (a bold silhouette plus the state lines) with a
-       band of light sweeping along them. The silhouette is a wide stroke drawn under
-       the fills, so only its outer half shows. */
-    if (root.hasAttribute("data-shimmer")) {
-      const id = `reach-edge-${Math.random().toString(36).slice(2, 7)}`;
+    /* data-holo: two candidate looks, switched by data-look on the map (TODO: keep one).
+       "simple": solid borders (a silhouette plus the state lines) with a band of light
+         sweeping along them. The silhouette is a wide stroke drawn under the fills, so
+         only its outer half shows.
+       "tech": India as a dot matrix on a faint lat/long grid, a hairline silhouette
+         (cut from a stroke with a mask, as the dotted fill can't hide it), and one scan
+         sweep when the map appears and when a place opens. */
+    let scan = () => {};
+    if (root.hasAttribute("data-holo")) {
+      const id = `reach-holo-${Math.random().toString(36).slice(2, 7)}`;
       const W = geo.width, H = geo.height;
+      const shapes = Object.values(geo.states);
+      const paths = (attrs = "") => shapes.map((d) => `<path d="${d}"${attrs}/>`).join("");
       const sweep = reduceMotion ? "" : `<animateTransform attributeName="gradientTransform" type="translate" values="${-W} ${-H}; ${W} ${H}" dur="4s" repeatCount="indefinite"/>`;
-      const edges = (cls) => `<g class="reach-map__edge ${cls}" stroke="url(#${id})">${Object.values(geo.states).map((d) => `<path d="${d}" vector-effect="non-scaling-stroke"/>`).join("")}</g>`;
+      const edges = (cls) => `<g class="reach-map__edge ${cls}" stroke="url(#${id}-sweep)">${paths(' vector-effect="non-scaling-stroke"')}</g>`;
+      const dots = (cid, r) => `<pattern id="${id}-${cid}" patternUnits="userSpaceOnUse" width="13" height="13"><circle cx="6.5" cy="6.5" r="${r}"/></pattern>`;
+      // Graticule every 5 degrees, labelled along the left and bottom edges
+      const grid = [];
+      for (let lon = 70; lon <= 95; lon += 5) {
+        const [x] = geo.project(lon, 0);
+        grid.push(`<line x1="${x}" y1="0" x2="${x}" y2="${H}"/><text x="${x + 5}" y="${H - 8}">${lon}°E</text>`);
+      }
+      for (let lat = 10; lat <= 35; lat += 5) {
+        const [, y] = geo.project(70, lat);
+        grid.push(`<line x1="0" y1="${y}" x2="${W}" y2="${y}"/><text x="6" y="${y - 6}">${lat}°N</text>`);
+      }
       svg.insertAdjacentHTML("afterbegin", `
         <defs>
-          <linearGradient id="${id}" gradientUnits="userSpaceOnUse" x1="0" y1="0" x2="${W}" y2="${H}">
+          <linearGradient id="${id}-sweep" gradientUnits="userSpaceOnUse" x1="0" y1="0" x2="${W}" y2="${H}">
             <stop offset="0.4" stop-color="#412287"/>
             <stop offset="0.47" stop-color="#c98fd6"/>
             <stop offset="0.5" stop-color="#ffc8e0"/>
@@ -586,9 +604,48 @@
             <stop offset="0.6" stop-color="#412287"/>
             ${sweep}
           </linearGradient>
+          ${dots("dots", 1.9)}
+          ${dots("dots-on", 2.9)}
+          <linearGradient id="${id}-scan" gradientUnits="userSpaceOnUse" x1="0" y1="0" x2="0" y2="${H}" gradientTransform="translate(0 ${-H})">
+            <stop offset="0.42" stop-color="#ffc8e0" stop-opacity="0"/>
+            <stop offset="0.5" stop-color="#ff8fbf" stop-opacity="0.55"/>
+            <stop offset="0.51" stop-color="#ff8fbf" stop-opacity="0"/>
+            <animateTransform attributeName="gradientTransform" type="translate" values="0 ${-H * 0.6}; 0 ${H * 0.6}" dur="1.3s" begin="indefinite" fill="freeze"/>
+          </linearGradient>
+          <clipPath id="${id}-clip">${paths()}</clipPath>
+          <mask id="${id}-hollow" maskUnits="userSpaceOnUse" x="-40" y="-40" width="${W + 80}" height="${H + 80}">
+            <g fill="none" stroke="#fff" stroke-width="3" stroke-linejoin="round">${paths()}</g>
+            <g fill="#000">${paths()}</g>
+          </mask>
         </defs>
+        <g class="reach-map__grid">${grid.join("")}</g>
+        <g class="reach-map__ghost" transform="translate(14 18)"><rect x="-40" y="-40" width="${W + 80}" height="${H + 80}" mask="url(#${id}-hollow)"/></g>
         ${edges("reach-map__edge--outline")}`);
-      svg.insertAdjacentHTML("beforeend", edges("reach-map__edge--lines"));
+      svg.insertAdjacentHTML("beforeend", `
+        ${edges("reach-map__edge--lines")}
+        <g class="reach-map__hair">${paths(' vector-effect="non-scaling-stroke"')}</g>
+        <rect class="reach-map__rim" x="-40" y="-40" width="${W + 80}" height="${H + 80}" mask="url(#${id}-hollow)"/>
+        <rect class="reach-map__scanbar" width="${W}" height="${H}" fill="url(#${id}-scan)" clip-path="url(#${id}-clip)"/>`);
+      // TODO: temporary switch between the two looks, remove once one is chosen
+      const switcher = document.querySelector("[data-look-switch]");
+      const setLook = (look) => {
+        root.dataset.look = look;
+        try { localStorage.setItem("nimaya-map-look", look); } catch {}
+        switcher?.querySelectorAll("button").forEach((b) => b.setAttribute("aria-pressed", String(b.dataset.look === look)));
+      };
+      let saved = null;
+      try { saved = localStorage.getItem("nimaya-map-look"); } catch {}
+      setLook(saved || root.dataset.look || "simple");
+      switcher?.querySelectorAll("button").forEach((b) => b.addEventListener("click", () => { setLook(b.dataset.look); scan(); }));
+      root.style.setProperty("--dots", `url(#${id}-dots)`);
+      root.style.setProperty("--dots-on", `url(#${id}-dots-on)`);
+      const run = svg.querySelector(`#${id}-scan animateTransform`);
+      let last = 0;
+      scan = () => {
+        if (reduceMotion || root.dataset.look !== "tech" || performance.now() - last < 1200) return;
+        last = performance.now();
+        run.beginElement();
+      };
     }
     const layer = document.createElement("div");
     layer.className = "reach-map__layer";
@@ -602,10 +659,11 @@
       card.id = `reach-${uid}-${place.id}`;
       card.setAttribute("role", "group");
       card.setAttribute("aria-label", `${place.name}, ${place.subtitle || place.state}`);
-      card.innerHTML = `
+      // Hover maps close a card as the pointer leaves, so only tap maps need a close button
+      card.innerHTML = `${hover ? "" : `
         <button class="reach-card__close" type="button" aria-label="Close ${place.name}">
           <svg viewBox="0 0 12 12" width="12" height="12" aria-hidden="true"><path d="M1 1l10 10M11 1L1 11" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/></svg>
-        </button>
+        </button>`}
         <p class="reach-card__place">${place.name}<span>${place.subtitle || place.state}</span></p>
         <ul class="reach-card__lines">${place.lines.map((l) => `<li>${l.num ? `<b>${l.num}</b>` : ""}<span>${l.text}</span></li>`).join("")}</ul>
         ${place.note ? `<p class="reach-card__note">${place.note}</p>` : ""}
@@ -629,13 +687,9 @@
       });
       const item = { place, card, pins, rect: null, stuck: false, timer: 0 };
       pins.forEach(({ pin }) => {
-        pin.addEventListener("click", () => {
-          // Hover maps: a click keeps the card open after the pointer leaves
-          if (hover) {
-            if (isOpen(item) && item.stuck) close(item);
-            else { item.stuck = true; if (!isOpen(item)) open(item); }
-            return;
-          }
+        pin.addEventListener("click", (e) => {
+          // Hover maps: hovering already opened it, so only a keyboard press toggles
+          if (hover && e.detail > 0) return;
           isOpen(item) ? close(item) : open(item);
         });
         pin.addEventListener("pointerenter", () => card.classList.add("is-hot"));
@@ -643,12 +697,28 @@
         if (hover) hoverOpens(pin, item);
       });
       if (hover) hoverOpens(card, item);
-      card.querySelector(".reach-card__close").addEventListener("click", () => {
+      card.querySelector(".reach-card__close")?.addEventListener("click", () => {
         close(item);
         pins[0].pin.focus();
       });
       return item;
     });
+
+    // Pins that land on (almost) the same spot are nudged apart so each can be hovered on its own
+    const allPins = items.flatMap((i) => i.pins);
+    const MIN = 30; // map units, about one pin's width
+    for (let pass = 0; pass < 8; pass++) {
+      allPins.forEach((a, i) => allPins.slice(i + 1).forEach((b) => {
+        let dx = (b.fx - a.fx) * geo.width, dy = (b.fy - a.fy) * geo.height;
+        let d = Math.hypot(dx, dy);
+        if (d >= MIN) return;
+        if (d < 0.01) { dx = 1; dy = 0; d = 1; }
+        const push = (MIN - d) / 2;
+        a.fx -= (dx / d) * push / geo.width; a.fy -= (dy / d) * push / geo.height;
+        b.fx += (dx / d) * push / geo.width; b.fy += (dy / d) * push / geo.height;
+      }));
+    }
+    allPins.forEach((p) => { p.pin.style.left = `${p.fx * 100}%`; p.pin.style.top = `${p.fy * 100}%`; });
 
     let opened = []; // oldest first
     const isOpen = (item) => opened.includes(item);
@@ -683,7 +753,12 @@
       const names = [item.place.side, ...SIDES].filter((s, i, a) => s && a.indexOf(s) === i);
       const options = names.map(rectFor).filter(Boolean);
       const others = opened.filter((o) => o !== item);
-      const pick = options.find((r) => !others.some((o) => overlaps(r, o.rect))) || options[0];
+      // Photos that will be on show (this place's own, plus any already visible) are kept clear too
+      const shots = photos.filter((p) => p.item === item || !p.el.classList.contains("is-hidden"))
+        .map(({ el }) => ({ left: el.offsetLeft, top: el.offsetTop, w: el.offsetWidth, h: el.offsetHeight }));
+      const clearOfCards = (r) => !others.some((o) => overlaps(r, o.rect));
+      const pick = options.find((r) => clearOfCards(r) && !shots.some((s) => overlaps(r, s)))
+        || options.find(clearOfCards) || options[0];
       const across = pick.side === "left" || pick.side === "right";
       const card = item.card;
       card.dataset.side = pick.side;
@@ -708,6 +783,7 @@
       opened = opened.filter((o) => o !== item).concat(item);
       while (opened.length > MAX_OPEN) close(opened[0]);
       setOpen(item, true);
+      scan();
       // Raise the newest card above the others
       opened.forEach((o, i) => { o.card.style.zIndex = 3 + i; });
     }
@@ -783,7 +859,7 @@
       photos.forEach(({ el, item }) => {
         if (hover) hoverOpens(el, item);
         el.addEventListener("click", () => {
-          item.stuck = true;
+          if (!hover) item.stuck = true;
           if (!isOpen(item)) open(item);
         });
       });
@@ -793,6 +869,7 @@
     const start = () => {
       started = true;
       root.classList.add("is-in");
+      setTimeout(scan, 700);
       setTimeout(reset, reduceMotion ? 0 : 1500);
       // Entrance staggers done: photos now show and hide without delay
       setTimeout(() => root.classList.add("is-settled"), reduceMotion ? 0 : 2600);

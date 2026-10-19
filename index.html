@@ -69,7 +69,7 @@
 
         <!-- Naaris across India: photos hang off their city's pin; hovering a pin or photo opens its numbers.
              TODO: swap each photo for one taken in that city (Guwahati trip photos from Samyak). -->
-        <div class="reach-map reach-map--hero" data-reach-map data-assets="assets/" data-hover data-quiet data-shimmer>
+        <div class="reach-map reach-map--hero" data-reach-map data-assets="assets/" data-hover data-quiet data-holo data-look="simple">
           <div class="reach-map__box">
             <figure class="reach-photo" data-place="haryana" data-default style="--x: -18%; --y: 13%; --k: 0">
               <img src="assets/img/program-genai.jpg" alt="Naaris learning on computers" width="1600" height="696">
@@ -94,9 +94,9 @@
             <ul class="reach-map__legend">
               <li><i></i>Active</li>
               <li><i class="is-soon"></i>Coming soon</li>
-              <li class="reach-map__credit">Map: <a href="https://github.com/datameet/maps" target="_blank" rel="noopener">DataMeet</a>, CC BY 4.0</li>
             </ul>
           </div>
+          <p class="hero__credit">Map: <a href="https://github.com/datameet/maps" target="_blank" rel="noopener">DataMeet</a>, CC BY 4.0</p>
         </div>
       </div>
 
@@ -362,6 +362,13 @@
     </section>
 
   </main>
+
+  <!-- TODO: temporary, compare the two map looks; remove once one is chosen -->
+  <div class="look-switch" data-look-switch role="group" aria-label="Map look">
+    <span>Map look</span>
+    <button type="button" data-look="simple">Simplified</button>
+    <button type="button" data-look="tech">Light-tech</button>
+  </div>
 
   <!-- Footer -->
   <footer class="footer">

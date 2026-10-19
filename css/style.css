@@ -103,6 +103,7 @@
 
   --nav-h: 68px;
   --gutter: 60px;
+  --mono: ui-monospace, "SF Mono", "Cascadia Mono", Menlo, Consolas, monospace;
 }
 
 /* ============ Base ============ */
@@ -2317,30 +2318,117 @@ html.is-locked { overflow: hidden; }
 .reach-photo.is-hidden { opacity: 0; scale: 0.94; pointer-events: none; transition-delay: 0s; }
 .js .reach-map.is-settled .reach-photo { transition-delay: 0s; }
 
-/* Home hero map: bolder fills inside a solid border that a band of light runs along */
-.reach-map--hero .reach-map__svg { filter: drop-shadow(-12px 18px 28px rgba(28, 25, 114, 0.18)); }
-.reach-map--hero .reach-map__state { fill: #ddd0f5; stroke: none; }
+/* Home hero map, "simple" look: light fills inside a solid border that a band of light runs along */
+.reach-map--hero .reach-map__svg { filter: none; }
+.reach-map--hero .reach-map__state { fill: #ece4f9; stroke: none; }
 .js .reach-map--hero .reach-map__state.is-active,
-.js .reach-map--hero .reach-map__state.is-new { fill: #ddd0f5; }
+.js .reach-map--hero .reach-map__state.is-new { fill: #ece4f9; }
 .reach-map--hero .reach-map__state.is-active,
-.js .reach-map--hero.is-in .reach-map__state.is-active { fill: #a789e4; }
+.js .reach-map--hero.is-in .reach-map__state.is-active { fill: #cdb9f1; }
 .reach-map--hero .reach-map__state.is-new,
-.js .reach-map--hero.is-in .reach-map__state.is-new { fill: #c5b1ef; }
+.js .reach-map--hero.is-in .reach-map__state.is-new { fill: #dfd2f6; }
 .reach-map__edge { fill: none; stroke-linejoin: round; pointer-events: none; }
-.reach-map__edge--outline { stroke-width: 3; }
-.reach-map__edge--lines { stroke-width: 1.2; }
+.reach-map__edge--outline { stroke-width: 1.8; }
+.reach-map__edge--lines { stroke-width: 0.75; }
 .js .reach-map__edge { opacity: 0; transition: opacity 0.8s var(--ease) 0.6s; }
 .js .reach-map.is-in .reach-map__edge { opacity: 1; }
+/* A faint hollow copy of the silhouette, offset down and to the right */
+.reach-map__ghost { fill: var(--purple); opacity: 0.14; pointer-events: none; }
+.js .reach-map__ghost { opacity: 0; transition: opacity 0.8s var(--ease) 0.9s; }
+.js .reach-map.is-in .reach-map__ghost { opacity: 0.14; }
+.reach-map[data-look="tech"] .reach-map__ghost { display: none; }
+/* Layers only the "tech" look uses */
+.reach-map__grid, .reach-map__hair, .reach-map__rim, .reach-map__scanbar { display: none; pointer-events: none; }
+
+/* Home hero map, "tech" look: dot-matrix India on a faint lat/long grid, hairlines,
+   crosshair pins and monospace labels */
+.reach-map[data-look="tech"] .reach-map__edge { display: none; }
+.reach-map[data-look="tech"] :is(.reach-map__grid, .reach-map__hair, .reach-map__rim, .reach-map__scanbar) { display: inline; }
+.js .reach-map--hero[data-look="tech"] .reach-map__state { fill: var(--dots); }
+.js .reach-map--hero[data-look="tech"] .reach-map__state.is-active { fill: var(--dots-on); }
+.js .reach-map--hero[data-look="tech"] .reach-map__state.is-new { fill: var(--dots-on); fill-opacity: 0.6; }
+.reach-map__svg pattern[id$="-dots"] circle { fill: rgba(65, 34, 135, 0.3); }
+.reach-map__svg pattern[id$="-dots-on"] circle { fill: var(--purple); }
+.reach-map__grid line { stroke: rgba(65, 34, 135, 0.1); stroke-width: 1; vector-effect: non-scaling-stroke; }
+.reach-map__grid text { fill: rgba(65, 34, 135, 0.45); font: 500 15px/1 var(--mono); letter-spacing: 0.04em; }
+.reach-map__hair path { fill: none; stroke: rgba(65, 34, 135, 0.22); stroke-width: 0.75; }
+.reach-map__rim { fill: var(--purple); }
+.js .reach-map__grid, .js .reach-map__rim, .js .reach-map__hair { opacity: 0; transition: opacity 0.8s var(--ease) 0.5s; }
+.js .reach-map.is-in :is(.reach-map__grid, .reach-map__rim, .reach-map__hair) { opacity: 1; }
+.reach-map[data-look="tech"] .reach-map__links { stroke-dasharray: none; stroke-width: 1; stroke-opacity: 0.4; }
+
+.reach-map[data-look="tech"] .reach-pin__dot { width: 7px; height: 7px; box-shadow: 0 0 0 3px #fff, 0 0 0 4px var(--coral); }
+.reach-map[data-look="tech"] .reach-pin--soon .reach-pin__dot { background: #fff; box-shadow: 0 0 0 3px #fff, 0 0 0 4px var(--purple); }
+.reach-map[data-look="tech"] .reach-pin__dot::after {
+  display: block;
+  inset: -10px;
+  border: 0;
+  border-radius: 0;
+  animation: none;
+  background: linear-gradient(currentColor, currentColor) center / 1px 100% no-repeat, linear-gradient(currentColor, currentColor) center / 100% 1px no-repeat;
+  color: var(--coral);
+  opacity: 0.6;
+  -webkit-mask: radial-gradient(circle, transparent 7px, #000 7.5px);
+  mask: radial-gradient(circle, transparent 7px, #000 7.5px);
+}
+.reach-map[data-look="tech"] .reach-pin--soon .reach-pin__dot::after { color: var(--purple); }
+.reach-map[data-look="tech"] :is(.reach-pin__tag, .reach-card__place, .reach-photo figcaption) { font-family: var(--mono); text-transform: uppercase; letter-spacing: 0.08em; }
+.reach-map[data-look="tech"] .reach-pin__tag { border-radius: 3px; font-size: 11px; }
+.reach-map[data-look="tech"] .reach-card { border-radius: 6px; box-shadow: 0 10px 30px rgba(28, 25, 114, 0.1); }
+.reach-map[data-look="tech"] .reach-card::before { border-radius: 0; }
+.reach-map[data-look="tech"] .reach-photo { padding: 3px 3px 0; border-radius: 5px; box-shadow: 0 8px 24px rgba(28, 25, 114, 0.1); }
+.reach-map[data-look="tech"] .reach-photo img { border-radius: 3px; }
+.reach-map[data-look="tech"] .reach-photo figcaption { font-size: 10px; font-weight: 600; }
+.reach-map[data-look="tech"] .reach-photo figcaption::before { width: 6px; height: 6px; border-radius: 0; }
+.reach-map[data-look="tech"] .reach-map__legend i { border-radius: 2px; }
+
+/* TODO: temporary switch between the two map looks */
+.look-switch {
+  position: fixed;
+  left: 50%;
+  bottom: 16px;
+  z-index: 200;
+  translate: -50% 0;
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  padding: 5px 5px 5px 14px;
+  border-radius: 999px;
+  background: var(--ink);
+  color: #fff;
+  font-size: 13px;
+  font-weight: 600;
+  box-shadow: 0 10px 30px rgba(28, 25, 114, 0.3);
+}
+.look-switch span { margin-right: 6px; opacity: 0.7; }
+.look-switch button { padding: 7px 14px; border-radius: 999px; color: inherit; }
+.look-switch button[aria-pressed="true"] { background: #fff; color: var(--ink); }
+
+/* Map credit: level with the map, set vertically against the right edge of the screen
+   (the map's right edge sits one gutter, plus any centring margin, in from it) */
+.hero__credit {
+  position: absolute;
+  top: 50%;
+  right: calc(12px - var(--gutter) - max(0px, (100vw - 1400px) / 2));
+  translate: 0 -50%;
+  z-index: 2;
+  writing-mode: vertical-rl;
+  font-size: 11px;
+  line-height: 1;
+  color: var(--grey);
+}
+.hero__credit a { text-decoration: underline; }
 
 /* Hover maps: a card or photo the pointer has left goes quickly */
 .reach-map[data-hover] .reach-card:not(.is-open) { transition-duration: 0.12s, 0.12s, 0.12s, 0s; transition-delay: 0s, 0s, 0s, 0.12s; }
 .js .reach-map[data-hover].is-settled .reach-photo.is-hidden { transition-duration: 0.12s; }
 
 /* Legend and map credit share one small line */
+/* Legend sits just above the hover hint, both centred */
+.reach-map--hero .reach-map__foot { flex-direction: column; justify-content: flex-start; gap: 6px; }
+.reach-map--hero .reach-map__foot .reach-map__legend { order: -1; }
 .reach-map--hero .reach-map__legend { gap: 6px 16px; font-size: 12px; }
 .reach-map--hero .reach-map__legend i { width: 10px; height: 10px; }
-.reach-map--hero .reach-map__foot .reach-map__credit { margin: 0; font-size: 11px; }
-
 /* Quick numbers under the hero */
 .hero__stats {
   position: relative;
