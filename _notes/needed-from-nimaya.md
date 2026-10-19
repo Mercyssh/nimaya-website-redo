@@ -26,8 +26,8 @@ colour grade (warm, slightly muted) so they read as one shoot.
 
 | # | Where | What to shoot / send | Format |
 |---|---|---|---|
-| 1 | Home hero map | One photo per city: Mumbai, Faridabad (Haryana), Lucknow, Guwahati, Ahmedabad, Jaipur. Naaris mid-task (laptops, presenting, working together), faces visible, natural light, not posed | Landscape 4:3, 1600px+ |
-| 2 | Home > Our Why | One signature image: a single Naari portrait with eye contact or mid-speech. Replaces the "girl speaking to a hall" photo that is now used on 3 pages | Portrait 4:5, 2000px |
+| 1 | Home hero map | One photo per city: Mumbai, Faridabad (Haryana), Lucknow, Ahmedabad, Jaipur (Guwahati done, Oct shoot). Naaris mid-task (laptops, presenting, working together), faces visible, natural light, not posed | Landscape 4:3, 1600px+ |
+| 2 | Home > Our Why | Done: Guwahati Naari speaking in the hall (Oct shoot) | Portrait 4:5, 2000px |
 | 3 | Home / About | Navya and Samyak with Naaris in session (Guwahati trip raw files) | Landscape 3:2 |
 | 4 | Program cards + program pages | GenAI Ready Naari: a classroom of Naaris on laptops. Fellowship: a fellow 1:1 with her mentor, or at a corporate office | Wide 16:9 |
 | 5 | Home > How We Work (6 steps) | Real photos of: outreach meeting with an NGO/college, orientation session, an in-person interview (not a Zoom screenshot), training in progress, a Naari's first day at work, an alumni meetup | Portrait 3:4 |

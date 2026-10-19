@@ -107,8 +107,8 @@ window.NIMAYA_REACH = [
   {
     id: "guwahati",
     label: "bottom",
-    photo: "img/photos/naaris-computer.webp", // TODO: swap for a photo taken in this city
-    photoAlt: "Naaris at a computer",
+    photo: "img/photos/guwahati-naaris-phones.webp",
+    photoAlt: "Naaris filming a session on their phones",
     name: "Guwahati",
     state: "Assam",
     points: [[91.7362, 26.1445]],

@@ -1,5 +1,7 @@
 # Photo placement plan: Guwahati shoot (Oct 2026)
 
+**Status (19 Oct):** the 11 swaps in section 1 are done. The exports are in `assets/img/photos/`, named `guwahati-*.webp` / `assam-*.webp`, and cropped to each slot's aspect ratio. Sections 3–5 are still open.
+
 Source: `D:\Downloads\Photodump\_Shortlist\_Graded\` (97 graded photos, A_ = strongest).
 File names below are the graded files without the tier prefix. All photos are from Assam / Guwahati.
 

@@ -2536,7 +2536,7 @@ main > section:has(+ .ai)::after { display: none; }
 }
 .why__media { display: block; }
 .why__photo { width: 100%; aspect-ratio: 1 / 1.05; }
-.why__photo img { object-position: 30% 50%; }
+.why__photo img { object-position: 50% 40%; }
 .why__quote-big {
   margin: 32px 0 28px;
   padding: 28px 0;
