@@ -2262,8 +2262,6 @@ html.is-locked { overflow: hidden; }
 .hero--home .hero__pill:hover { background: var(--ink); }
 
 .reach-map--hero { max-width: max(420px, min(600px, calc((100svh - var(--nav-h) - 170px) * 1000 / 1115))); margin-inline: auto 0; }
-/* Static hero: pins don't pulse */
-.reach-map--hero .reach-pin__dot::after { display: none; }
 .reach-map__layer { z-index: 3; pointer-events: none; }
 .reach-pin, .reach-card { pointer-events: auto; }
 .reach-map__links {
@@ -2335,6 +2333,37 @@ html.is-locked { overflow: hidden; }
 .reach-map__ghost { fill: var(--purple); opacity: 0.14; pointer-events: none; }
 .js .reach-map__ghost { opacity: 0; transition: opacity 0.8s var(--ease) 0.9s; }
 .js .reach-map.is-in .reach-map__ghost { opacity: 0.14; }
+
+/* Map motion (data-motion): pinging cities, pulses along the route, floating photos
+   and cursor depth (--mx / --my run -1..1, eased in JS) */
+.reach-map--hero .reach-pin__dot::after { display: block; animation-duration: 3.2s; }
+.reach-map--hero :is(.reach-pin--minor, .reach-pin--soon) .reach-pin__dot::after { display: none; }
+.reach-map__routes path { fill: none; stroke: var(--purple); stroke-opacity: 0.28; stroke-width: 1; stroke-dasharray: 2 4; stroke-linecap: round; }
+.reach-map__routes circle { fill: #ff7bbd; }
+.js .reach-map__routes { opacity: 0; transition: opacity 1s var(--ease) 1.2s; }
+.js .reach-map.is-in .reach-map__routes { opacity: 1; }
+.reach-map[data-motion] .reach-photo { animation: photo-float calc(6s + var(--k) * 0.9s) ease-in-out calc(var(--k) * -1.6s) infinite; }
+@keyframes photo-float {
+  0%, 100% { transform: translate(0, 0) rotate(0deg); }
+  33% { transform: translate(2px, -6px) rotate(-0.7deg); }
+  66% { transform: translate(-2px, -3px) rotate(0.5deg); }
+}
+.reach-map[data-motion] .reach-map__box { translate: calc(var(--mx, 0) * 6px) calc(var(--my, 0) * 6px); }
+.reach-map[data-motion] .reach-map__ghost { transform: translate(calc(var(--mx, 0) * -14px), calc(var(--my, 0) * -14px)); }
+.js .reach-map[data-motion].is-settled .reach-photo {
+  translate: calc(var(--mx, 0) * 10px) calc(var(--my, 0) * 10px);
+  /* translate is eased in JS, so it isn't transitioned here */
+  transition: opacity var(--t-1) var(--ease), scale var(--t-1) var(--ease), box-shadow var(--t-1) var(--ease);
+}
+@media (prefers-reduced-motion: reduce) {
+  .reach-map[data-motion] .reach-photo { animation: none; }
+  .reach-map--hero .reach-pin__dot::after { display: none; }
+}
+
+/* Hero map popups: no border or highlight ring, just a soft dark shadow */
+.reach-map--hero .reach-card { border: 0; box-shadow: 0 14px 36px rgba(20, 12, 60, 0.18), 0 2px 8px rgba(20, 12, 60, 0.08); }
+.reach-map--hero .reach-card.is-hot { box-shadow: 0 14px 36px rgba(20, 12, 60, 0.18), 0 2px 8px rgba(20, 12, 60, 0.08); }
+.reach-map--hero .reach-card::before { border: 0; }
 
 /* Map credit: level with the map, set vertically against the right edge of the screen
    (the map's right edge sits one gutter, plus any centring margin, in from it) */

@@ -594,7 +594,7 @@
             <g fill="#000">${paths()}</g>
           </mask>
         </defs>
-        <g class="reach-map__ghost" transform="translate(14 18)"><rect x="-40" y="-40" width="${W + 80}" height="${H + 80}" mask="url(#${id}-hollow)"/></g>
+        <g class="reach-map__ghost"><g transform="translate(14 18)"><rect x="-40" y="-40" width="${W + 80}" height="${H + 80}" mask="url(#${id}-hollow)"/></g></g>
         ${edges("reach-map__edge--outline")}`);
       svg.insertAdjacentHTML("beforeend", edges("reach-map__edge--lines"));
     }
@@ -671,6 +671,35 @@
     }
     allPins.forEach((p) => { p.pin.style.left = `${p.fx * 100}%`; p.pin.style.top = `${p.fy * 100}%`; });
 
+    /* data-motion: live places joined into one route (nearest neighbour from the first),
+       drawn as gentle arcs with pink pulses travelling along them */
+    const motion = root.hasAttribute("data-motion");
+    const route = [];
+    if (motion) {
+      const left = items.filter((i) => i.place.status === "live");
+      const at = (i) => [i.pins[0].fx * geo.width, i.pins[0].fy * geo.height];
+      if (left.length) route.push(left.shift());
+      while (left.length) {
+        const [x, y] = at(route[route.length - 1]);
+        left.sort((a, b) => Math.hypot(at(a)[0] - x, at(a)[1] - y) - Math.hypot(at(b)[0] - x, at(b)[1] - y));
+        route.push(left.shift());
+      }
+      const arcs = route.slice(1).map((item, i) => {
+        const [x1, y1] = at(route[i]);
+        const [x2, y2] = at(item);
+        // Bow each arc sideways by a fifth of its length
+        const cx = (x1 + x2) / 2 + (y2 - y1) * 0.2;
+        const cy = (y1 + y2) / 2 - (x2 - x1) * 0.2;
+        return `M${x1.toFixed(1)} ${y1.toFixed(1)} Q${cx.toFixed(1)} ${cy.toFixed(1)} ${x2.toFixed(1)} ${y2.toFixed(1)}`;
+      });
+      const pulses = reduceMotion ? "" : arcs.map((d, i) => `
+        <circle r="4" opacity="0">
+          <animateMotion path="${d}" dur="2.4s" begin="${(i * 0.8).toFixed(1)}s" repeatCount="indefinite"/>
+          <animate attributeName="opacity" values="0;1;1;0" keyTimes="0;0.15;0.8;1" dur="2.4s" begin="${(i * 0.8).toFixed(1)}s" repeatCount="indefinite"/>
+        </circle>`).join("");
+      svg.insertAdjacentHTML("beforeend", `<g class="reach-map__routes">${arcs.map((d) => `<path d="${d}" vector-effect="non-scaling-stroke"/>`).join("")}${pulses}</g>`);
+    }
+
     let opened = []; // oldest first
     const isOpen = (item) => opened.includes(item);
     const overlaps = (a, b, m = 8) => a.left < b.left + b.w + m && b.left < a.left + a.w + m && a.top < b.top + b.h + m && b.top < a.top + a.h + m;
@@ -704,11 +733,16 @@
       const names = [item.place.side, ...SIDES].filter((s, i, a) => s && a.indexOf(s) === i);
       const options = names.map(rectFor).filter(Boolean);
       const others = opened.filter((o) => o !== item);
-      // Photos that will be on show (this place's own, plus any already visible) are kept clear too
-      const shots = photos.filter((p) => p.item === item || !p.el.classList.contains("is-hidden"))
-        .map(({ el }) => ({ left: el.offsetLeft, top: el.offsetTop, w: el.offsetWidth, h: el.offsetHeight }));
+      // Photos that will be on show once this opens are kept clear too: its own photo above
+      // all, then those of other open places, and the default photos while they're at rest
+      const rectOf = ({ el }) => ({ left: el.offsetLeft, top: el.offsetTop, w: el.offsetWidth, h: el.offsetHeight });
+      const own = photos.filter((p) => p.item === item).map(rectOf);
+      const shots = photos.filter((p) => p.item !== item && (isOpen(p.item)
+        || (!exploring && !touring && p.el.hasAttribute("data-default")))).map(rectOf);
       const clearOfCards = (r) => !others.some((o) => overlaps(r, o.rect));
-      const pick = options.find((r) => clearOfCards(r) && !shots.some((s) => overlaps(r, s)))
+      const clearOfOwn = (r) => !own.some((s) => overlaps(r, s));
+      const pick = options.find((r) => clearOfCards(r) && clearOfOwn(r) && !shots.some((s) => overlaps(r, s)))
+        || options.find((r) => clearOfCards(r) && clearOfOwn(r))
         || options.find(clearOfCards) || options[0];
       const across = pick.side === "left" || pick.side === "right";
       const card = item.card;
@@ -754,10 +788,11 @@
        photos of open places show. Without data-default, every photo always shows. */
     let photos = [];
     let exploring = false;
+    let touring = null; // the place the idle tour has open
     function syncPhotos() {
       const picky = photos.some((p) => p.el.hasAttribute("data-default"));
       photos.forEach((p) => {
-        const on = !picky || isOpen(p.item) || (!exploring && p.el.hasAttribute("data-default"));
+        const on = !picky || isOpen(p.item) || (!exploring && !touring && p.el.hasAttribute("data-default"));
         p.el.classList.toggle("is-hidden", !on);
         p.link?.classList.toggle("is-hidden", !on);
       });
@@ -776,6 +811,7 @@
 
     /* Photos pinned to places: each hangs off its place's first pin by a dotted
        leader line, and hovering (or tapping) the photo opens that place's card. */
+    let drawLinks = () => {};
     photos = [...box.querySelectorAll(".reach-photo[data-place]")]
       .map((el) => ({ el, item: items.find((i) => i.place.id === el.dataset.place), link: null }))
       .filter((p) => p.item);
@@ -788,24 +824,28 @@
       links.setAttribute("class", "reach-map__links");
       links.setAttribute("aria-hidden", "true");
       svg.after(links);
-      const drawLinks = () => {
+      photos.forEach((p) => {
+        p.link = document.createElementNS(NS, "path");
+        links.append(p.link);
+      });
+      // Measured from the rendered boxes, so lines stay attached while photos float and drift
+      drawLinks = () => {
         const W = box.clientWidth;
         const H = box.clientHeight;
+        const base = box.getBoundingClientRect();
         links.setAttribute("viewBox", `0 0 ${W} ${H}`);
-        links.innerHTML = photos.map(({ el, item }) => {
+        photos.forEach(({ el, item, link }) => {
           const px = item.pins[0].fx * W;
           const py = item.pins[0].fy * H;
           // Run to the nearest point on the photo's edge
-          const l = el.offsetLeft, t = el.offsetTop, r = l + el.offsetWidth, b = t + el.offsetHeight;
-          const x = clamp(px, l, r);
-          const y = clamp(py, t, b);
-          return `<path d="M${px.toFixed(1)} ${py.toFixed(1)} L${x.toFixed(1)} ${y.toFixed(1)}"/>`;
-        }).join("");
-        photos.forEach((p, i) => { p.link = links.children[i]; });
-        syncPhotos();
+          const r = el.getBoundingClientRect();
+          const x = clamp(px, r.left - base.left, r.right - base.left);
+          const y = clamp(py, r.top - base.top, r.bottom - base.top);
+          link.setAttribute("d", `M${px.toFixed(1)} ${py.toFixed(1)} L${x.toFixed(1)} ${y.toFixed(1)}`);
+        });
       };
       syncPhotos();
-      new ResizeObserver(drawLinks).observe(box);
+      new ResizeObserver(() => drawLinks()).observe(box);
       photos.forEach(({ el, item }) => {
         if (hover) hoverOpens(el, item);
         el.addEventListener("click", () => {
@@ -823,6 +863,60 @@
       // Entrance staggers done: photos now show and hide without delay
       setTimeout(() => root.classList.add("is-settled"), reduceMotion ? 0 : 2600);
     };
+
+    /* Idle tour (data-motion): while the map is on screen and nobody is using it,
+       open each place on the route in turn. Hovering pauses it; a tap ends it. */
+    let inView = false, pointerIn = false, tourOff = reduceMotion || !motion || !route.length;
+    let tourTimer = 0, tourIndex = 0;
+    function stopTour() {
+      clearTimeout(tourTimer);
+      const was = touring;
+      touring = null;
+      if (was) close(was);
+      syncPhotos();
+    }
+    function tourStep() {
+      if (tourOff || !inView || pointerIn || narrow.matches) return stopTour();
+      if (touring) close(touring);
+      touring = route[tourIndex++ % route.length];
+      open(touring);
+      tourTimer = setTimeout(tourStep, 3400);
+    }
+    const tourLater = (ms) => { clearTimeout(tourTimer); if (!tourOff) tourTimer = setTimeout(tourStep, ms); };
+    if (motion) {
+      box.addEventListener("pointerenter", () => { pointerIn = true; stopTour(); });
+      box.addEventListener("pointerleave", () => { pointerIn = false; tourLater(4000); });
+      box.addEventListener("pointerdown", (e) => { if (e.pointerType !== "mouse") { tourOff = true; stopTour(); } });
+      new IntersectionObserver(([e]) => {
+        inView = e.isIntersecting;
+        inView ? tourLater(4500) : stopTour();
+      }, { threshold: 0.4 }).observe(root);
+    }
+
+    /* Cursor depth (data-motion, mouse only): the map, its photos and the offset
+       silhouette drift by different amounts with the pointer. One loop eases the
+       values and keeps the photo leader lines attached while photos move. */
+    if (motion && finePointer && !reduceMotion) {
+      let tx = 0, ty = 0, mx = 0, my = 0, raf = 0;
+      const tick = () => {
+        mx += (tx - mx) * 0.08;
+        my += (ty - my) * 0.08;
+        root.style.setProperty("--mx", mx.toFixed(4));
+        root.style.setProperty("--my", my.toFixed(4));
+        drawLinks();
+        raf = inView ? requestAnimationFrame(tick) : 0;
+      };
+      window.addEventListener("pointermove", (e) => {
+        tx = clamp((e.clientX / innerWidth) * 2 - 1, -1, 1);
+        ty = clamp((e.clientY / innerHeight) * 2 - 1, -1, 1);
+      }, { passive: true });
+      new IntersectionObserver(([e]) => { if (e.isIntersecting && !raf) raf = requestAnimationFrame(tick); }).observe(root);
+    } else if (motion && !reduceMotion) {
+      // No pointer: still keep leader lines attached to the floating photos
+      let raf = 0;
+      const tick = () => { drawLinks(); raf = inView ? requestAnimationFrame(tick) : 0; };
+      new IntersectionObserver(([e]) => { if (e.isIntersecting && !raf) raf = requestAnimationFrame(tick); }).observe(root);
+    }
     narrow.addEventListener("change", () => started && reset());
     let lastW = 0;
     new ResizeObserver(() => {
