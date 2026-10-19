@@ -538,6 +538,7 @@
     function hoverOpens(el, item) {
       el.addEventListener("pointerenter", () => {
         clearTimeout(item.timer);
+        pauseTour(item);
         // Moving on to another place closes the last hovered one at once
         opened.filter((o) => o !== item && !o.stuck).forEach((o) => { clearTimeout(o.timer); close(o); });
         if (!narrow.matches && !isOpen(item)) open(item);
@@ -545,6 +546,7 @@
       el.addEventListener("pointerleave", () => {
         // Short grace so the pointer can cross from a pin to its card or photo
         if (!item.stuck) item.timer = setTimeout(() => close(item), 120);
+        resumeTour();
       });
     }
 
@@ -738,7 +740,7 @@
       const rectOf = ({ el }) => ({ left: el.offsetLeft, top: el.offsetTop, w: el.offsetWidth, h: el.offsetHeight });
       const own = photos.filter((p) => p.item === item).map(rectOf);
       const shots = photos.filter((p) => p.item !== item && (isOpen(p.item)
-        || (!exploring && !touring && p.el.hasAttribute("data-default")))).map(rectOf);
+        || (!exploring && !tourActive() && p.el.hasAttribute("data-default")))).map(rectOf);
       const clearOfCards = (r) => !others.some((o) => overlaps(r, o.rect));
       const clearOfOwn = (r) => !own.some((s) => overlaps(r, s));
       const pick = options.find((r) => clearOfCards(r) && clearOfOwn(r) && !shots.some((s) => overlaps(r, s)))
@@ -789,10 +791,13 @@
     let photos = [];
     let exploring = false;
     let touring = null; // the place the idle tour has open
+    let inView = false, onPlace = false, tourOff = reduceMotion || !motion || !route.length;
+    let tourTimer = 0, tourIndex = 0;
     function syncPhotos() {
       const picky = photos.some((p) => p.el.hasAttribute("data-default"));
       photos.forEach((p) => {
-        const on = !picky || isOpen(p.item) || (!exploring && !touring && p.el.hasAttribute("data-default"));
+        // Default photos only stand in where there's no tour to show the places
+        const on = !picky || isOpen(p.item) || (!exploring && !tourActive() && p.el.hasAttribute("data-default"));
         p.el.classList.toggle("is-hidden", !on);
         p.link?.classList.toggle("is-hidden", !on);
       });
@@ -864,10 +869,10 @@
       setTimeout(() => root.classList.add("is-settled"), reduceMotion ? 0 : 2600);
     };
 
-    /* Idle tour (data-motion): while the map is on screen and nobody is using it,
-       open each place on the route in turn. Hovering pauses it; a tap ends it. */
-    let inView = false, pointerIn = false, tourOff = reduceMotion || !motion || !route.length;
-    let tourTimer = 0, tourIndex = 0;
+    /* Idle tour (data-motion): while the map is on screen, open each place on the
+       route in turn. Hovering a place (its pin, card or photo) pauses it, keeping that
+       place open if the tour had it; it picks up again 4s after. A tap ends it. */
+    function tourActive() { return !tourOff && !narrow.matches; }
     function stopTour() {
       clearTimeout(tourTimer);
       const was = touring;
@@ -876,21 +881,37 @@
       syncPhotos();
     }
     function tourStep() {
-      if (tourOff || !inView || pointerIn || narrow.matches) return stopTour();
+      if (!tourActive() || !inView || onPlace) return stopTour();
       if (touring) close(touring);
       touring = route[tourIndex++ % route.length];
       open(touring);
       tourTimer = setTimeout(tourStep, 3400);
     }
-    const tourLater = (ms) => { clearTimeout(tourTimer); if (!tourOff) tourTimer = setTimeout(tourStep, ms); };
+    function tourLater(ms) { clearTimeout(tourTimer); if (tourActive()) tourTimer = setTimeout(tourStep, ms); }
+    function pauseTour(item) {
+      if (!tourActive()) return;
+      onPlace = true;
+      clearTimeout(tourTimer);
+      // The hovered place now belongs to the pointer: it stays open, and closes as the pointer leaves
+      if (touring === item) touring = null;
+      else stopTour();
+    }
+    function resumeTour() {
+      if (!tourActive()) return;
+      onPlace = false;
+      tourLater(4000);
+    }
     if (motion) {
-      box.addEventListener("pointerenter", () => { pointerIn = true; stopTour(); });
-      box.addEventListener("pointerleave", () => { pointerIn = false; tourLater(4000); });
-      box.addEventListener("pointerdown", (e) => { if (e.pointerType !== "mouse") { tourOff = true; stopTour(); } });
+      box.addEventListener("pointerdown", (e) => {
+        if (e.pointerType === "mouse" || tourOff) return;
+        tourOff = true;
+        stopTour();
+      });
       new IntersectionObserver(([e]) => {
         inView = e.isIntersecting;
-        inView ? tourLater(4500) : stopTour();
+        inView ? tourLater(2800) : stopTour();
       }, { threshold: 0.4 }).observe(root);
+      narrow.addEventListener("change", () => { stopTour(); tourLater(2800); });
     }
 
     /* Cursor depth (data-motion, mouse only): the map, its photos and the offset
