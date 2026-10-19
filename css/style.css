@@ -462,16 +462,6 @@ main > section:nth-of-type(even)::after { background: linear-gradient(to bottom,
   z-index: 10;
   transition: height var(--t-1) var(--ease), background-color var(--t-1) var(--ease), box-shadow var(--t-1) var(--ease);
 }
-.nav__progress {
-  position: absolute;
-  left: 0;
-  bottom: -1px;
-  width: 100%;
-  height: 2px;
-  background: var(--coral);
-  transform-origin: 0 50%;
-  scale: var(--progress, 0) 1;
-}
 .nav__logo img { transform-origin: 0 50%; transition: scale var(--t-1) var(--ease); }
 @media (min-width: 901px) {
   .nav.is-scrolled { height: 56px; background: rgba(255, 255, 255, 0.96); box-shadow: 0 8px 28px rgba(32, 9, 60, 0.06); }
@@ -3401,7 +3391,6 @@ main > section:has(+ .ai)::after { display: none; }
 .has-dark-landing .nav:not(.is-scrolled):not(.is-open) .nav__drop-btn { color: #fff; }
 .has-dark-landing .nav:not(.is-scrolled):not(.is-open) .nav__links a.is-active { color: var(--yellow); }
 .has-dark-landing .nav:not(.is-scrolled):not(.is-open) .nav__toggle span { background: #fff; }
-.has-dark-landing .nav:not(.is-scrolled) .nav__progress { opacity: 0; }
 
 /* Light look */
 .landing[data-look="light"] { justify-content: flex-start; height: auto; min-height: calc(100svh - var(--nav-h)); margin-top: 0; padding-block: clamp(28px, 5vh, 56px) 72px; background: var(--wash); }

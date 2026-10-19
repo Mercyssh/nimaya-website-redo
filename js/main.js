@@ -455,13 +455,11 @@
     }, { threshold: 0.6 });
   }
 
-  /* ---------- Nav: reading progress + compact state after the hero ---------- */
+  /* ---------- Nav: compact state after the hero ---------- */
   function initNav() {
     const nav = document.querySelector(".nav");
     const hero = document.querySelector(".hero");
     onScroll(() => {
-      const max = document.documentElement.scrollHeight - window.innerHeight;
-      nav.style.setProperty("--progress", max > 0 ? (window.scrollY / max).toFixed(4) : 0);
       nav.classList.toggle("is-scrolled", window.scrollY > (hero ? hero.offsetHeight : 0) - 160);
     });
   }
