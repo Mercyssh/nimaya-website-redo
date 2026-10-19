@@ -538,10 +538,13 @@
     function hoverOpens(el, item) {
       el.addEventListener("pointerenter", () => {
         clearTimeout(item.timer);
+        // Moving on to another place closes the last hovered one at once
+        opened.filter((o) => o !== item && !o.stuck).forEach((o) => { clearTimeout(o.timer); close(o); });
         if (!narrow.matches && !isOpen(item)) open(item);
       });
       el.addEventListener("pointerleave", () => {
-        if (!item.stuck) item.timer = setTimeout(() => close(item), 260);
+        // Short grace so the pointer can cross from a pin to its card or photo
+        if (!item.stuck) item.timer = setTimeout(() => close(item), 120);
       });
     }
 
@@ -565,22 +568,27 @@
       if (stateOf[name]) path.style.setProperty("--o", order++);
       svg.append(path);
     });
-    // data-shimmer: a band of light sweeps across the country, clipped to its outline
+    /* data-shimmer: solid borders (a bold silhouette plus the state lines) with a
+       band of light sweeping along them. The silhouette is a wide stroke drawn under
+       the fills, so only its outer half shows. */
     if (root.hasAttribute("data-shimmer")) {
-      const id = `reach-shine-${Math.random().toString(36).slice(2, 7)}`;
+      const id = `reach-edge-${Math.random().toString(36).slice(2, 7)}`;
       const W = geo.width, H = geo.height;
-      const sweep = reduceMotion ? "" : `<animateTransform attributeName="gradientTransform" type="translate" values="${-W} ${-H}; ${W} ${H}" dur="5s" repeatCount="indefinite"/>`;
-      svg.insertAdjacentHTML("beforeend", `
+      const sweep = reduceMotion ? "" : `<animateTransform attributeName="gradientTransform" type="translate" values="${-W} ${-H}; ${W} ${H}" dur="4s" repeatCount="indefinite"/>`;
+      const edges = (cls) => `<g class="reach-map__edge ${cls}" stroke="url(#${id})">${Object.values(geo.states).map((d) => `<path d="${d}" vector-effect="non-scaling-stroke"/>`).join("")}</g>`;
+      svg.insertAdjacentHTML("afterbegin", `
         <defs>
-          <clipPath id="${id}-clip">${Object.values(geo.states).map((d) => `<path d="${d}"/>`).join("")}</clipPath>
-          <linearGradient id="${id}-grad" gradientUnits="userSpaceOnUse" x1="0" y1="0" x2="${W}" y2="${H}">
-            <stop offset="0.38" stop-color="#fff" stop-opacity="0"/>
-            <stop offset="0.5" stop-color="#fff" stop-opacity="0.35"/>
-            <stop offset="0.62" stop-color="#fff" stop-opacity="0"/>
+          <linearGradient id="${id}" gradientUnits="userSpaceOnUse" x1="0" y1="0" x2="${W}" y2="${H}">
+            <stop offset="0.4" stop-color="#412287"/>
+            <stop offset="0.47" stop-color="#c98fd6"/>
+            <stop offset="0.5" stop-color="#ffc8e0"/>
+            <stop offset="0.53" stop-color="#c98fd6"/>
+            <stop offset="0.6" stop-color="#412287"/>
             ${sweep}
           </linearGradient>
         </defs>
-        <rect class="reach-map__shine" width="${W}" height="${H}" fill="url(#${id}-grad)" clip-path="url(#${id}-clip)"/>`);
+        ${edges("reach-map__edge--outline")}`);
+      svg.insertAdjacentHTML("beforeend", edges("reach-map__edge--lines"));
     }
     const layer = document.createElement("div");
     layer.className = "reach-map__layer";
