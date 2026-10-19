@@ -565,6 +565,23 @@
       if (stateOf[name]) path.style.setProperty("--o", order++);
       svg.append(path);
     });
+    // data-shimmer: a band of light sweeps across the country, clipped to its outline
+    if (root.hasAttribute("data-shimmer")) {
+      const id = `reach-shine-${Math.random().toString(36).slice(2, 7)}`;
+      const W = geo.width, H = geo.height;
+      const sweep = reduceMotion ? "" : `<animateTransform attributeName="gradientTransform" type="translate" values="${-W} ${-H}; ${W} ${H}" dur="5s" repeatCount="indefinite"/>`;
+      svg.insertAdjacentHTML("beforeend", `
+        <defs>
+          <clipPath id="${id}-clip">${Object.values(geo.states).map((d) => `<path d="${d}"/>`).join("")}</clipPath>
+          <linearGradient id="${id}-grad" gradientUnits="userSpaceOnUse" x1="0" y1="0" x2="${W}" y2="${H}">
+            <stop offset="0.38" stop-color="#fff" stop-opacity="0"/>
+            <stop offset="0.5" stop-color="#fff" stop-opacity="0.35"/>
+            <stop offset="0.62" stop-color="#fff" stop-opacity="0"/>
+            ${sweep}
+          </linearGradient>
+        </defs>
+        <rect class="reach-map__shine" width="${W}" height="${H}" fill="url(#${id}-grad)" clip-path="url(#${id}-clip)"/>`);
+    }
     const layer = document.createElement("div");
     layer.className = "reach-map__layer";
     box.append(svg, layer);
@@ -696,6 +713,20 @@
     function setOpen(item, on) {
       item.card.classList.toggle("is-open", on);
       item.pins.forEach(({ pin }) => pin.setAttribute("aria-expanded", String(on)));
+      syncPhotos();
+    }
+
+    /* data-default photos show at rest; once the pointer is on the map, only the
+       photos of open places show. Without data-default, every photo always shows. */
+    let photos = [];
+    let exploring = false;
+    function syncPhotos() {
+      const picky = photos.some((p) => p.el.hasAttribute("data-default"));
+      photos.forEach((p) => {
+        const on = !picky || isOpen(p.item) || (!exploring && p.el.hasAttribute("data-default"));
+        p.el.classList.toggle("is-hidden", !on);
+        p.link?.classList.toggle("is-hidden", !on);
+      });
     }
 
     function reset() {
@@ -711,10 +742,14 @@
 
     /* Photos pinned to places: each hangs off its place's first pin by a dotted
        leader line, and hovering (or tapping) the photo opens that place's card. */
-    const photos = [...box.querySelectorAll(".reach-photo[data-place]")]
-      .map((el) => ({ el, item: items.find((i) => i.place.id === el.dataset.place) }))
+    photos = [...box.querySelectorAll(".reach-photo[data-place]")]
+      .map((el) => ({ el, item: items.find((i) => i.place.id === el.dataset.place), link: null }))
       .filter((p) => p.item);
     if (photos.length) {
+      if (hover) {
+        box.addEventListener("pointerenter", () => { exploring = true; syncPhotos(); });
+        box.addEventListener("pointerleave", () => { exploring = false; syncPhotos(); });
+      }
       const links = document.createElementNS(NS, "svg");
       links.setAttribute("class", "reach-map__links");
       links.setAttribute("aria-hidden", "true");
@@ -732,7 +767,10 @@
           const y = clamp(py, t, b);
           return `<path d="M${px.toFixed(1)} ${py.toFixed(1)} L${x.toFixed(1)} ${y.toFixed(1)}"/>`;
         }).join("");
+        photos.forEach((p, i) => { p.link = links.children[i]; });
+        syncPhotos();
       };
+      syncPhotos();
       new ResizeObserver(drawLinks).observe(box);
       photos.forEach(({ el, item }) => {
         if (hover) hoverOpens(el, item);
@@ -748,6 +786,8 @@
       started = true;
       root.classList.add("is-in");
       setTimeout(reset, reduceMotion ? 0 : 1500);
+      // Entrance staggers done: photos now show and hide without delay
+      setTimeout(() => root.classList.add("is-settled"), reduceMotion ? 0 : 2600);
     };
     narrow.addEventListener("change", () => started && reset());
     let lastW = 0;

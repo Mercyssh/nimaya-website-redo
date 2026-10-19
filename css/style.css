@@ -2310,6 +2310,30 @@ html.is-locked { overflow: hidden; }
 .js .reach-map.is-in .reach-photo { opacity: 1; translate: none; }
 .js .reach-map__links { opacity: 0; transition: opacity var(--t-2) var(--ease) 1.6s; }
 .js .reach-map.is-in .reach-map__links { opacity: 1; }
+/* Photos that step aside while the pointer explores the map */
+.reach-map__links path { transition: opacity var(--t-1) var(--ease); }
+.reach-map__links path.is-hidden { opacity: 0; }
+.js .reach-map.is-in .reach-photo.is-hidden,
+.reach-photo.is-hidden { opacity: 0; scale: 0.94; pointer-events: none; transition-delay: 0s; }
+.js .reach-map.is-settled .reach-photo { transition-delay: 0s; }
+
+/* Home hero map: bolder fills with a light sweep, so India stands off the light page */
+.reach-map--hero .reach-map__svg { filter: drop-shadow(-12px 18px 28px rgba(28, 25, 114, 0.22)); }
+.reach-map--hero .reach-map__state { fill: #b9a3e6; stroke: rgba(255, 255, 255, 0.85); stroke-width: 1.2; }
+.js .reach-map--hero .reach-map__state.is-active,
+.js .reach-map--hero .reach-map__state.is-new { fill: #b9a3e6; }
+.reach-map--hero .reach-map__state.is-active,
+.js .reach-map--hero.is-in .reach-map__state.is-active { fill: var(--purple); }
+.reach-map--hero .reach-map__state.is-new,
+.js .reach-map--hero.is-in .reach-map__state.is-new { fill: #7a5bc9; }
+.reach-map__shine { pointer-events: none; }
+.js .reach-map__shine { opacity: 0; transition: opacity 1s var(--ease) 1.4s; }
+.js .reach-map.is-in .reach-map__shine { opacity: 1; }
+
+/* Legend and map credit share one small line */
+.reach-map--hero .reach-map__legend { gap: 6px 16px; font-size: 12px; }
+.reach-map--hero .reach-map__legend i { width: 10px; height: 10px; }
+.reach-map--hero .reach-map__foot .reach-map__credit { margin: 0; font-size: 11px; }
 
 /* Quick numbers under the hero */
 .hero__stats {
