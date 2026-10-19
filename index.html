@@ -51,20 +51,44 @@
 
   <main>
 
-    <!-- Landing: who we are, and where our Naaris are across India -->
-    <section class="hero hero--home">
+    <!-- Landing: the name, one line, and our Naaris. A div rather than a section so the
+         alternating section backgrounds below keep their order.
+         data-look: "dark" (full-bleed, cinematic) or "light" (editorial). TEMP: ?look=light to compare.
+         TODO: the third photo becomes an industry visit (PepsiCo / office) once a high-res one arrives. -->
+    <div class="hero landing" data-landing data-look="dark">
+      <div class="landing__panels">
+        <figure class="landing__panel" style="--i: 0"><img src="assets/img/photos/hero-audience.webp" alt="Naaris raising their hands in a packed hall in Guwahati" width="1000" height="1600"></figure>
+        <figure class="landing__panel" style="--i: 1"><img src="assets/img/photos/hero-voice.webp" alt="A Naari standing up to ask a question" width="1000" height="1600"></figure>
+        <figure class="landing__panel" style="--i: 2"><img src="assets/img/photos/hero-stage.webp" alt="A Naari speaking on a panel" width="1000" height="1600"></figure>
+      </div>
+      <div class="landing__shade" aria-hidden="true"></div>
+      <div class="wrap landing__content">
+        <h1 class="hero__title landing__title">
+          <span class="line landing__brand">
+            <img class="landing__logo landing__logo--white" src="assets/img/logo-vertical-white.svg" alt="Nimaya" width="2750" height="2471">
+            <img class="landing__logo landing__logo--color" src="assets/img/logo-vertical.svg" alt="" width="2750" height="2471">
+          </span>
+          <span class="line landing__line">Making every Naari <span class="script script--long"><span class="script__swish" aria-hidden="true"></span>Future Read<span class="script__end">y<img class="script__earmarks" src="assets/Motifs/earmarks.svg" alt="" width="17" height="18"></span></span></span>
+        </h1>
+        <div class="hero__cta landing__cta" data-reveal="up" data-delay="0.9">
+          <a class="btn landing__btn" href="#programs">Explore our programs</a>
+          <button class="btn landing__btn landing__btn--ghost hero__watch" type="button" data-youtube="D2q-qB-J1Dk" aria-label="Play: EKL x Nimaya Documentary"><svg width="10" height="12" viewBox="0 0 10 12" fill="currentColor" aria-hidden="true"><path d="M0 0l10 6-10 6z"/></svg>Watch our story</button>
+        </div>
+      </div>
+      <a class="landing__cue" href="#across-india" aria-label="Scroll to where we work"><span></span></a>
+      <button class="landing__look" type="button" data-look-toggle>Look: <b>Dark</b></button>
+    </div>
+
+    <!-- Naaris across India: the map, our numbers -->
+    <section class="hero hero--home" id="across-india">
       <div class="glow hero__glow" aria-hidden="true" data-parallax="40"></div>
       <div class="wrap hero__wrap">
         <div class="hero__info">
-          <h1 class="hero__title">
-            <span class="line">Making every</span>
-            <span class="line">Naari <span class="script script--long"><span class="script__swish" aria-hidden="true"></span>Future Read<span class="script__end">y<img class="script__earmarks" src="assets/Motifs/earmarks.svg" alt="" width="17" height="18"></span></span></span>
-          </h1>
+          <h2 class="hero__title">
+            <span class="line">Naaris across</span>
+            <span class="line"><span class="script"><span class="script__swish" aria-hidden="true"></span>Indi<span class="script__end">a<img class="script__earmarks" src="assets/Motifs/earmarks.svg" alt="" width="17" height="18"></span></span></span>
+          </h2>
           <p class="hero__sub" data-reveal="up" data-delay="0.45">Nimaya is a non-profit giving young women from low-income backgrounds, our Naaris, free GenAI training and placement support for careers alongside AI.</p>
-          <div class="hero__cta" data-reveal="up" data-delay="0.6">
-            <a class="btn btn--filled" href="#programs">Explore our programs</a>
-            <button class="btn btn--outline hero__watch" type="button" data-youtube="D2q-qB-J1Dk" aria-label="Play: EKL x Nimaya Documentary"><svg width="10" height="12" viewBox="0 0 10 12" fill="currentColor" aria-hidden="true"><path d="M0 0l10 6-10 6z"/></svg>Watch our story</button>
-          </div>
         </div>
 
         <!-- Naaris across India: photos hang off their city's pin; hovering a pin or photo opens its numbers.
@@ -195,19 +219,23 @@
       <div class="wrap why">
         <i class="motif m-mask m-star2 m-big why__big" aria-hidden="true" data-parallax="60"></i>
         <div class="why__media" data-reveal="up">
-          <figure class="frame why__photo" data-unmask>
-            <img src="assets/img/photos/guwahati-naari-question.webp" alt="A Naari standing up to speak in a packed hall in Guwahati" width="1334" height="1400">
+          <!-- Naaris speaking up: the photos cross-fade in turn (data-fade) -->
+          <figure class="frame why__photo" data-unmask data-fade="4">
+            <img class="is-on" src="assets/img/photos/guwahati-naari-question.webp" alt="A Naari standing up to speak in a packed hall in Guwahati" width="1334" height="1400">
+            <img src="assets/img/photos/why-naari-2.webp" alt="Naaris speaking at a session in Assam" width="1333" height="1400" loading="lazy">
+            <img src="assets/img/photos/why-naari-3.webp" alt="A Naari speaking into the mic in front of her class" width="1333" height="1400" loading="lazy">
+            <img src="assets/img/photos/why-naari-4.webp" alt="A smiling Naari among her classmates" width="1333" height="1400" loading="lazy">
           </figure>
         </div>
 
         <div class="why__info">
           <h2 class="display">Our <span class="script"><span class="script__swish" aria-hidden="true"></span>Wh<span class="script__end">y<img class="script__earmarks" src="assets/Motifs/earmarks.svg" alt="" width="17" height="18"></span></span></h2>
-          <p class="why__lead balance" data-reveal="up">The world of work is changing faster than ever.</p>
-          <p class="body" data-reveal="up">As AI automates routine work, a degree and technical skills alone <b class="em">no longer guarantee a career.</b></p>
           <blockquote class="why__quote-big balance" data-reveal="up">
             <img class="why__qmark" src="assets/Motifs/quotemarks.svg" alt="" aria-hidden="true" width="36" height="27" loading="lazy">
             Where a woman is born is her starting point, not a ceiling of possibilities.
           </blockquote>
+          <p class="why__lead balance" data-reveal="up">The world of work is changing faster than ever.</p>
+          <p class="body" data-reveal="up">As AI automates routine work, a degree and technical skills alone <b class="em">no longer guarantee a career.</b></p>
           <p class="body" data-reveal="up">Women are nearly half of India’s population, yet many from low-income families graduate without the skills employers now hire for. Nimaya exists to close that gap, at scale and at no cost to them.</p>
         </div>
       </div>

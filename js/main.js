@@ -278,15 +278,55 @@
      Headline rises, photo opens, the script word writes, cards pop, paths draw.
      The stagger lives in CSS; this starts it once the fonts are in. */
   function initHero() {
-    const hero = document.querySelector(".hero");
-    if (!hero) return;
-    const go = () => {
+    const [first, ...rest] = document.querySelectorAll(".hero");
+    if (!first) return;
+    const go = (hero) => {
       hero.classList.add("is-in");
-      hero.querySelector(".hero__title").classList.add("is-risen");
+      hero.querySelector(".hero__title")?.classList.add("is-risen");
       hero.querySelectorAll("[data-unmask], [data-reveal]").forEach((el) => el.classList.add("is-in"));
     };
-    if (reduceMotion) return go();
-    Promise.all([document.fonts.ready, pageVisible]).then(() => setTimeout(go, 60));
+    if (reduceMotion) return [first, ...rest].forEach(go);
+    // The first hero plays on load; one further down (Home: the map under the landing) plays when it scrolls in
+    Promise.all([document.fonts.ready, pageVisible]).then(() => {
+      setTimeout(() => go(first), 60);
+      onceInView(rest, go, { threshold: 0.2 });
+    });
+  }
+
+  /* ---------- Cross-fading photos (data-fade="seconds") ----------
+     Stacked images take turns; only runs while the figure is on screen. */
+  function initFade(el) {
+    const imgs = [...el.querySelectorAll("img")];
+    if (imgs.length < 2 || reduceMotion) return;
+    const every = (Number(el.dataset.fade) || 4) * 1000;
+    let i = 0, timer = 0;
+    const step = () => {
+      imgs[i].classList.remove("is-on");
+      i = (i + 1) % imgs.length;
+      imgs[i].classList.add("is-on");
+    };
+    new IntersectionObserver(([entry]) => {
+      clearInterval(timer);
+      if (entry.isIntersecting) timer = setInterval(step, every);
+    }).observe(el);
+  }
+
+  /* ---------- Landing look (TEMP while choosing): ?look=light, or the corner button ---------- */
+  function initLanding(el) {
+    const btn = el.querySelector("[data-look-toggle]");
+    const set = (look) => {
+      el.dataset.look = look;
+      document.body.classList.toggle("has-dark-landing", look === "dark");
+      if (btn) btn.querySelector("b").textContent = look === "dark" ? "Dark" : "Light";
+    };
+    set(new URLSearchParams(location.search).get("look") === "light" ? "light" : el.dataset.look || "dark");
+    btn?.addEventListener("click", () => {
+      const look = el.dataset.look === "dark" ? "light" : "dark";
+      set(look);
+      const url = new URL(location.href);
+      url.searchParams.set("look", look);
+      history.replaceState(null, "", url);
+    });
   }
 
   /* ---------- Pinned chapters ----------
@@ -1556,7 +1596,9 @@
     initMotifs();
     initReveal();
     initUnmask();
+    document.querySelectorAll("[data-landing]").forEach(initLanding);
     initHero();
+    document.querySelectorAll("[data-fade]").forEach(initFade);
     initCounters();
     initNav();
     initMenu();

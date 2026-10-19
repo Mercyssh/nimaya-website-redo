@@ -3308,3 +3308,119 @@ main > section:has(+ .ai)::after { display: none; }
   .js .atlas__state, .js .atlas__route, .js .atlas__pin, .js .atlas__minor { opacity: 1; scale: 1; transition: none; }
   .atlas__pop { transition: none; }
 }
+
+/* ============ Landing (Home): the name, one line, three photos ============ */
+/* data-look="dark": full-bleed photos under an ink shade, white type, the bar turns transparent over it.
+   data-look="light": the same photos as tall cards on the wash, ink type. */
+.landing {
+  position: relative;
+  isolation: isolate;
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-end;
+  height: 100svh;
+  min-height: 640px;
+  margin-top: calc(-1 * var(--nav-h));
+  padding-block: 0;
+  overflow: clip;
+  background: var(--ink);
+}
+.landing__panels {
+  position: absolute;
+  inset: 0;
+  z-index: -2;
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 3px;
+}
+.landing__panel { margin: 0; overflow: hidden; background: var(--ink); }
+.landing__panel img { width: 100%; height: 100%; object-fit: cover; }
+.landing__shade {
+  position: absolute;
+  inset: 0;
+  z-index: -1;
+  background:
+    radial-gradient(120% 70% at 50% 100%, rgba(18, 12, 64, 0.92) 0%, rgba(18, 12, 64, 0.55) 55%, rgba(18, 12, 64, 0) 100%),
+    linear-gradient(180deg, rgba(18, 12, 64, 0.55) 0%, rgba(18, 12, 64, 0.2) 35%, rgba(18, 12, 64, 0.5) 100%);
+}
+.landing__content { padding-bottom: clamp(72px, 13vh, 132px); text-align: center; }
+.landing .hero__title { color: #fff; font-size: clamp(30px, 3.4vw, 54px); line-height: 1; }
+.landing__brand { display: flex; justify-content: center; }
+.landing__logo { width: clamp(200px, min(30vw, 36svh * 1.11), 400px); height: auto; filter: drop-shadow(0 6px 24px rgba(8, 4, 40, 0.35)); }
+.landing__logo--color,
+.landing[data-look="light"] .landing__logo--white { display: none; }
+.landing[data-look="light"] .landing__logo--color { display: block; filter: none; }
+.landing .hero__title .line + .line { margin-top: 0.34em; }
+.landing .landing__line .script { font-size: 1.7em; color: #fff; }
+.landing .script__earmarks { filter: brightness(0) invert(1); }
+.landing__cta { justify-content: center; margin-top: clamp(28px, 4.5vh, 44px); }
+.landing__btn { background: #fff; color: var(--ink); box-shadow: 0 10px 30px rgba(8, 4, 40, 0.3); }
+.landing__btn--ghost { gap: 10px; background: transparent; color: #fff; border: 1.5px solid rgba(255, 255, 255, 0.55); box-shadow: none; }
+.landing__btn--ghost:hover { border-color: #fff; }
+/* Scroll cue: a short line with a dot running down it */
+.landing__cue { position: absolute; left: 50%; bottom: 22px; width: 2px; height: 40px; translate: -50% 0; background: rgba(255, 255, 255, 0.25); border-radius: 2px; overflow: hidden; }
+.landing__cue span { position: absolute; left: 0; top: 0; width: 100%; height: 14px; border-radius: 2px; background: #fff; animation: landing-cue 2.2s var(--ease) infinite; }
+@keyframes landing-cue { 0% { translate: 0 -100%; } 100% { translate: 0 300%; } }
+/* TEMP look switch while choosing */
+.landing__look { position: absolute; right: 16px; bottom: 16px; z-index: 2; padding: 8px 14px; border-radius: 99px; font-size: 13px; color: #fff; background: rgba(255, 255, 255, 0.14); border: 1px solid rgba(255, 255, 255, 0.35); -webkit-backdrop-filter: blur(8px); backdrop-filter: blur(8px); }
+
+/* Entrance: the panels open upward one after another and settle from a zoom, then the name rises */
+.js .landing__panel { clip-path: inset(100% 0 0 0); transition: clip-path 1.5s var(--ease) calc(var(--i) * 0.16s); }
+.js .landing.is-in .landing__panel { clip-path: inset(0); }
+.js .landing__panel img { scale: 1.16; transition: scale 3s var(--ease) calc(var(--i) * 0.16s); }
+.js .landing.is-in .landing__panel img { scale: 1.02; }
+.js .landing__shade { opacity: 0; transition: opacity 1.6s var(--ease) 0.3s; }
+.js .landing.is-in .landing__shade { opacity: 1; }
+.js .landing .is-risen .rise { animation-delay: calc(var(--d, 0s) + 0.55s); }
+.js .landing .is-risen .rise__in { transition-delay: calc(var(--d, 0s) + 0.55s); }
+.landing .script { --write-delay: 1.35s; }
+
+/* Transparent bar over the dark landing until the page scrolls past it */
+.has-dark-landing .nav:not(.is-scrolled):not(.is-open) { background: transparent; border-bottom-color: transparent; -webkit-backdrop-filter: none; backdrop-filter: none; }
+.has-dark-landing .nav:not(.is-scrolled):not(.is-open) .nav__logo img { filter: brightness(0) invert(1); }
+.has-dark-landing .nav:not(.is-scrolled):not(.is-open) .nav__links > a,
+.has-dark-landing .nav:not(.is-scrolled):not(.is-open) .nav__drop-btn { color: #fff; }
+.has-dark-landing .nav:not(.is-scrolled):not(.is-open) .nav__links a.is-active { color: var(--yellow); }
+.has-dark-landing .nav:not(.is-scrolled):not(.is-open) .nav__toggle span { background: #fff; }
+.has-dark-landing .nav:not(.is-scrolled) .nav__progress { opacity: 0; }
+
+/* Light look */
+.landing[data-look="light"] { justify-content: flex-start; height: auto; min-height: calc(100svh - var(--nav-h)); margin-top: 0; padding-block: clamp(28px, 5vh, 56px) 72px; background: var(--wash); }
+.landing[data-look="light"] .landing__content { order: -1; padding-bottom: 0; }
+.landing[data-look="light"] .hero__title { color: var(--ink); }
+.landing[data-look="light"] .landing__line .script { color: var(--violet); }
+.landing[data-look="light"] .script__earmarks { filter: none; }
+.landing[data-look="light"] .landing__btn { background: var(--purple); color: #fff; box-shadow: var(--shadow-tag); }
+.landing[data-look="light"] .landing__btn--ghost { background: transparent; color: var(--purple); border-color: var(--purple); box-shadow: none; }
+.landing[data-look="light"] .landing__panels { position: relative; inset: auto; z-index: 0; flex: 1; width: min(1280px, 100% - 2 * var(--gutter)); min-height: 320px; max-height: 520px; margin: clamp(32px, 5vh, 56px) auto 0; gap: 20px; }
+.landing[data-look="light"] .landing__panel { border-radius: 22px; box-shadow: var(--shadow-card); }
+.landing[data-look="light"] .landing__panel:nth-child(2) { translate: 0 -28px; }
+.landing[data-look="light"] .landing__shade,
+.landing[data-look="light"] .landing__cue { display: none; }
+.landing[data-look="light"] .landing__look { color: var(--purple); background: rgba(255, 255, 255, 0.7); border-color: var(--line); }
+
+/* Phones: one photo at a time, cross-fading */
+@media (max-width: 700px) {
+  .landing { min-height: 560px; }
+  .landing__panels { grid-template-columns: minmax(0, 1fr); }
+  .landing__panel { grid-area: 1 / 1; animation: landing-cycle 15s linear calc(var(--i) * 5s - 15s) infinite; }
+  .landing[data-look="light"] .landing__panels { height: 56svh; max-height: none; min-height: 0; flex: none; }
+  .landing[data-look="light"] .landing__panel:nth-child(2) { translate: none; }
+  .landing__logo { width: min(62vw, 260px); }
+  .landing .hero__title { font-size: 26px; }
+  .landing__look { right: 10px; bottom: 10px; }
+}
+@keyframes landing-cycle {
+  0%, 33.3% { opacity: 1; }
+  40%, 93.3% { opacity: 0; }
+  100% { opacity: 1; }
+}
+@media (prefers-reduced-motion: reduce) {
+  .landing__panel { animation: none; }
+  .landing__cue span { animation: none; }
+}
+
+/* ============ Our Why: photos take turns ============ */
+.why__photo[data-fade] img { position: absolute; inset: 0; opacity: 0; transition: opacity 1.2s var(--ease), clip-path var(--t-3) var(--ease) var(--d, 0s), scale var(--t-3) var(--ease) var(--d, 0s); }
+.why__photo[data-fade] img.is-on { opacity: 1; }
+.why .why__quote-big { margin-top: 0; }
