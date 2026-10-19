@@ -52,9 +52,8 @@
 
     <!-- Landing: the name, one line, and our Naaris. A div rather than a section so the
          alternating section backgrounds below keep their order.
-         data-look: "dark" (full-bleed, cinematic) or "light" (editorial). TEMP: ?look=light to compare.
          TODO: the third photo becomes an industry visit (PepsiCo / office) once a high-res one arrives. -->
-    <div class="hero landing" data-landing data-look="dark">
+    <div class="hero landing" data-landing>
       <div class="landing__panels">
         <figure class="landing__panel" style="--i: 0"><img src="assets/img/photos/hero-audience.webp" alt="Naaris raising their hands in a packed hall in Guwahati" width="1000" height="1600"></figure>
         <figure class="landing__panel" style="--i: 1"><img src="assets/img/photos/hero-voice.webp" alt="A Naari standing up to ask a question" width="1000" height="1600"></figure>
@@ -65,7 +64,6 @@
         <h1 class="hero__title landing__title">
           <span class="line landing__brand">
             <img class="landing__logo landing__logo--white" src="assets/img/logo-vertical-white.svg" alt="Nimaya" width="2750" height="2471">
-            <img class="landing__logo landing__logo--color" src="assets/img/logo-vertical.svg" alt="" width="2750" height="2471">
           </span>
           <span class="line landing__line">Making every Naari <span class="script script--long"><span class="script__swish" aria-hidden="true"></span>Future Read<span class="script__end">y<img class="script__earmarks" src="assets/Motifs/earmarks.svg" alt="" width="17" height="18"></span></span></span>
         </h1>
@@ -75,7 +73,6 @@
         </div>
       </div>
       <a class="landing__cue" href="#across-india" aria-label="Scroll to where we work"><span></span></a>
-      <button class="landing__look" type="button" data-look-toggle>Look: <b>Dark</b></button>
     </div>
 
     <!-- Naaris across India: the map, our numbers -->
@@ -88,6 +85,12 @@
             <span class="line"><span class="script"><span class="script__swish" aria-hidden="true"></span>Indi<span class="script__end">a<img class="script__earmarks" src="assets/Motifs/earmarks.svg" alt="" width="17" height="18"></span></span></span>
           </h2>
           <p class="hero__sub" data-reveal="up" data-delay="0.45">Nimaya is a non-profit giving young women from low-income backgrounds, our Naaris, free GenAI training and placement support for careers alongside AI.</p>
+          <ul class="hero__stats" data-reveal="up" data-delay="0.55">
+            <li><span class="hero__num" data-count="10000" data-suffix="+">10,000+</span><span class="hero__stat-label">Naaris trained</span></li>
+            <li><span class="hero__num" data-count="6">6</span><span class="hero__stat-label">States</span></li>
+            <li><span class="hero__num" data-count="10">10</span><span class="hero__stat-label">Cities</span></li>
+            <li><span class="hero__num" data-count="9" data-suffix="+">9+</span><span class="hero__stat-label">Partners across NGOs, colleges, CSR &amp; government</span></li>
+          </ul>
         </div>
 
         <!-- Naaris across India: photos hang off their city's pin; hovering a pin or photo opens its numbers.
@@ -123,15 +126,6 @@
         </div>
       </div>
 
-      <!-- Quick numbers -->
-      <div class="wrap">
-        <ul class="hero__stats" data-reveal="up" data-delay="0.3">
-          <li><span class="hero__num" data-count="10000" data-suffix="+">10,000+</span><span class="hero__stat-label">Naaris trained</span></li>
-          <li><span class="hero__num" data-count="6">6</span><span class="hero__stat-label">States</span></li>
-          <li><span class="hero__num" data-count="10">10</span><span class="hero__stat-label">Cities</span></li>
-          <li><span class="hero__num" data-count="9" data-suffix="+">9+</span><span class="hero__stat-label">Partners across NGOs, colleges, CSR &amp; government</span></li>
-        </ul>
-      </div>
     </section>
 
     <!-- Our Partners -->
@@ -188,7 +182,6 @@
         <h2 class="display news__title">Nimaya in the <span class="script"><span class="script__swish" aria-hidden="true"></span>New<span class="script__end">s<img class="script__earmarks" src="assets/Motifs/earmarks.svg" alt="" width="17" height="18"></span></span></h2>
         <div class="news__grid">
           <div class="news__item" data-reveal="left" data-delay="0.2">
-            <p class="news__kind">Watch</p>
             <button class="news__cover" type="button" data-youtube="D2q-qB-J1Dk" aria-label="Play: EKL x Nimaya Documentary">
               <span class="watch__frame" data-unmask><img src="assets/img/video-ekl.png" alt="" width="803" height="516"></span>
             </button>
@@ -196,7 +189,6 @@
             <p class="news__desc body">The documentary captures Nimaya’s GenAI Ready Naari program, powered by Escorts Kubota Limited, enabling young women from underserved backgrounds to step into the future of work.</p>
           </div>
           <div class="news__item" data-reveal="right" data-delay="0.2">
-            <p class="news__kind">Read</p>
             <a class="news__cover news__cover--article" href="https://hr.economictimes.indiatimes.com/news/industry/empowering-women-for-the-ai-age-insights-from-navya-nanda-samyak-chakraborty/124150454" target="_blank" rel="noopener">
               <span class="news__outlet">ETHRWorld</span>
               <span class="news__people" aria-hidden="true">
@@ -320,45 +312,43 @@
     </section>
 
     <!-- How We Work -->
-    <section class="pin" data-pin="work">
-      <div class="pin__stage">
+    <section>
       <div class="wrap work">
         <i class="motif m-mask m-star2 m-big work__big" aria-hidden="true" data-parallax="50"></i>
         <h2 class="display work__title">How We <span class="script"><span class="script__swish" aria-hidden="true"></span>Wor<span class="script__end script__end--tall">k<img class="script__earmarks" src="assets/Motifs/earmarks.svg" alt="" width="17" height="18"></span></span></h2>
         <ol class="work__list">
-          <svg class="motif m-trail work__trail" viewBox="0 0 500 40" preserveAspectRatio="none" aria-hidden="true"><path d="M0 20 Q 50 -4 100 20 T 200 20 T 300 20 T 400 20 T 500 20" vector-effect="non-scaling-stroke"/></svg>
+          <svg class="motif m-trail work__trail" data-draw viewBox="0 0 500 40" preserveAspectRatio="none" aria-hidden="true"><path d="M0 20 Q 50 -4 100 20 T 200 20 T 300 20 T 400 20 T 500 20" vector-effect="non-scaling-stroke"/></svg>
           <li class="work__step" data-reveal="up" data-delay="0.1">
             <span class="badge badge--purple">1</span>
             <div class="work__text"><h3>Outreach</h3><p>We partner with NGOs, colleges and government bodies</p></div>
-            <div class="work__img" data-unmask><img src="assets/img/photos/guwahati-ncc-welcome.webp" alt="" width="900" height="1200"></div>
+            <div class="work__img" data-unmask style="--d: 0.30s"><img src="assets/img/photos/guwahati-ncc-welcome.webp" alt="" width="900" height="1200"></div>
           </li>
           <li class="work__step" data-reveal="up" data-delay="0.2">
             <span class="badge badge--yellow">2</span>
             <div class="work__text"><h3>Engagement</h3><p>Orientation sessions with each partner’s community</p></div>
-            <div class="work__img" data-unmask><img src="assets/img/photos/assam-orientation.webp" alt="" width="900" height="1200"></div>
+            <div class="work__img" data-unmask style="--d: 0.45s"><img src="assets/img/photos/assam-orientation.webp" alt="" width="900" height="1200"></div>
           </li>
           <li class="work__step" data-reveal="up" data-delay="0.3">
             <span class="badge badge--teal">3</span>
             <div class="work__text"><h3>Candidate Selection</h3><p>One-on-one interviews to select committed candidates</p></div>
-            <div class="work__img" data-unmask><img src="assets/img/work-3.png" alt="" width="566" height="618"></div>
+            <div class="work__img" data-unmask style="--d: 0.60s"><img src="assets/img/work-3.png" alt="" width="566" height="618"></div>
           </li>
           <li class="work__step" data-reveal="up" data-delay="0.4">
             <span class="badge badge--coral">4</span>
             <div class="work__text"><h3>Program Delivery</h3><p>Hybrid training, in person and online</p></div>
-            <div class="work__img" data-unmask><img src="assets/img/photos/assam-naari-speaking.webp" alt="" width="900" height="1200"></div>
+            <div class="work__img" data-unmask style="--d: 0.75s"><img src="assets/img/photos/assam-naari-speaking.webp" alt="" width="900" height="1200"></div>
           </li>
           <li class="work__step" data-reveal="up" data-delay="0.5">
             <span class="badge badge--purple">5</span>
             <div class="work__text"><h3>Placement Support</h3><p>Portfolios, interview preparation and employer introductions</p></div>
-            <div class="work__img" data-unmask><img src="assets/img/photos/placement.webp" alt="" width="782" height="599"></div>
+            <div class="work__img" data-unmask style="--d: 0.90s"><img src="assets/img/photos/placement.webp" alt="" width="782" height="599"></div>
           </li>
           <li class="work__step" data-reveal="up" data-delay="0.6">
             <span class="badge badge--yellow">6</span>
             <div class="work__text"><h3>Alumni Engagement</h3><p>Continued learning on our AI platform and alumni network</p></div>
-            <div class="work__img work__img--portrait" data-unmask><img src="assets/img/people/story-amisha.webp" alt="" width="351" height="760"></div>
+            <div class="work__img work__img--portrait" data-unmask style="--d: 1.05s"><img src="assets/img/people/story-amisha.webp" alt="" width="351" height="760"></div>
           </li>
         </ol>
-      </div>
       </div>
     </section>
 

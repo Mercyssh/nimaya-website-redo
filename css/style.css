@@ -1024,7 +1024,13 @@ main { padding-top: var(--nav-h); }
 .nav__links .nav__menu a.is-active { background: var(--lav); color: var(--purple); }
 .nav__menu b { font-weight: 700; color: var(--ink); }
 .nav__menu span { color: rgba(65, 34, 135, 0.7); }
-.nav__short { display: none; font-style: normal; }
+/* Each program keeps its colour from the home Programs cards: GenAI purple, Fellowship coral */
+.nav__menu a[href*="genai-ready-naari"] { --prog: var(--purple); --prog-tint: var(--lav); }
+.nav__menu a[href*="future-naari-fellowship"] { --prog: var(--coral); --prog-tint: #fff1ec; }
+.nav__menu b { color: var(--prog, var(--ink)); }
+.nav__links .nav__menu a:hover,
+.nav__links .nav__menu a.is-active { background: var(--prog-tint, var(--lav)); }
+.nav__short { display: none; font-style: normal; color: var(--prog, inherit); }
 
 /* ============ Page heroes (inner pages) ============ */
 .hero--page { padding-block: 40px 88px; }
@@ -2113,15 +2119,6 @@ html.is-locked { overflow: hidden; }
 /* Milestones ride an arc (main.js sets --arc and each card's translate/rotate) */
 .pin.is-pinned .slider__viewport { padding-bottom: calc(24px + var(--arc, 0px)); }
 .pin.is-pinned .stat { transform-origin: 50% 120px; }
-.pin.is-pinned .work__trail { clip-path: inset(-50% calc(100% - var(--trail, 0) * 100%) -50% -50%); }
-.pin.is-pinned .work__text { opacity: 0.28; transition: opacity var(--t-1) var(--ease); }
-.pin.is-pinned .work__step .badge { scale: 0.82; filter: grayscale(1) opacity(0.45); transition: scale var(--t-1) var(--ease), filter var(--t-1) var(--ease); }
-.pin.is-pinned .work__step.is-on .work__text { opacity: 1; }
-.pin.is-pinned .work__step.is-on .badge { scale: 1; filter: none; }
-/* Each step's photo rises into its frame as the step lights up */
-.js .pin.is-pinned .work__img { opacity: 0.45; transition: opacity var(--t-1) var(--ease); }
-.js .pin.is-pinned .work__step.is-on .work__img { opacity: 1; }
-.js .pin.is-pinned .work__img[data-unmask]:not(.is-in) img { clip-path: inset(100% 0 0 0 round 16px); scale: 1.18; }
 
 /* Cards lean toward the cursor (main.js sets --rx/--ry on fine pointers) */
 [data-tilt] {
@@ -2420,6 +2417,11 @@ html.is-locked { overflow: hidden; }
 .hero__stats li + li { border-left: 1px solid var(--line); }
 .hero__num { font-family: var(--serif); font-weight: 700; font-size: var(--fs-2); line-height: 1; letter-spacing: var(--serif-tracking); color: var(--ink); font-variant-numeric: tabular-nums; }
 .hero__stat-label { font-size: var(--fs-5); font-weight: 600; line-height: 1.4; color: var(--purple); }
+/* Home: the numbers sit under the intro line as a plain 2 x 2, not a card */
+.hero__info .hero__stats,
+.hero__info .hero__stats li { background: none; border: 0; border-radius: 0; box-shadow: none; }
+.hero__info .hero__stats { margin-top: 36px; max-width: 520px; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 24px 40px; }
+.hero__info .hero__stats li { padding: 14px 0 0; border-top: 1px solid var(--line); }
 .hero--home + section { padding-block: 56px; }
 
 /* ============ How AI runs Nimaya ============ */
@@ -3324,8 +3326,7 @@ main > section:has(+ .ai)::after { display: none; }
 }
 
 /* ============ Landing (Home): the name, one line, three photos ============ */
-/* data-look="dark": full-bleed photos under an ink shade, white type, the bar turns transparent over it.
-   data-look="light": the same photos as tall cards on the wash, ink type. */
+/* Full-bleed photos under an ink shade, white type; the bar turns transparent over it. */
 .landing {
   position: relative;
   isolation: isolate;
@@ -3361,9 +3362,6 @@ main > section:has(+ .ai)::after { display: none; }
 .landing .hero__title { color: #fff; font-size: clamp(30px, 3.4vw, 54px); line-height: 1; }
 .landing__brand { display: flex; justify-content: center; }
 .landing__logo { width: clamp(200px, min(30vw, 36svh * 1.11), 400px); height: auto; filter: drop-shadow(0 6px 24px rgba(8, 4, 40, 0.35)); }
-.landing__logo--color,
-.landing[data-look="light"] .landing__logo--white { display: none; }
-.landing[data-look="light"] .landing__logo--color { display: block; filter: none; }
 .landing .hero__title .line + .line { margin-top: 0.34em; }
 .landing .landing__line .script { font-size: 1.7em; color: #fff; }
 .landing .script__earmarks { filter: brightness(0) invert(1); }
@@ -3376,7 +3374,6 @@ main > section:has(+ .ai)::after { display: none; }
 .landing__cue span { position: absolute; left: 0; top: 0; width: 100%; height: 14px; border-radius: 2px; background: #fff; animation: landing-cue 2.2s var(--ease) infinite; }
 @keyframes landing-cue { 0% { translate: 0 -100%; } 100% { translate: 0 300%; } }
 /* TEMP look switch while choosing */
-.landing__look { position: absolute; right: 16px; bottom: 16px; z-index: 2; padding: 8px 14px; border-radius: 99px; font-size: 13px; color: #fff; background: rgba(255, 255, 255, 0.14); border: 1px solid rgba(255, 255, 255, 0.35); -webkit-backdrop-filter: blur(8px); backdrop-filter: blur(8px); }
 
 /* Entrance: the panels open upward one after another and settle from a zoom, then the name rises */
 .js .landing__panel { clip-path: inset(100% 0 0 0); transition: clip-path 1.5s var(--ease) calc(var(--i) * 0.16s); }
@@ -3398,30 +3395,14 @@ main > section:has(+ .ai)::after { display: none; }
 .has-dark-landing .nav:not(.is-scrolled):not(.is-open) .nav__toggle span { background: #fff; }
 
 /* Light look */
-.landing[data-look="light"] { justify-content: flex-start; height: auto; min-height: calc(100svh - var(--nav-h)); margin-top: 0; padding-block: clamp(28px, 5vh, 56px) 72px; background: var(--wash); }
-.landing[data-look="light"] .landing__content { order: -1; padding-bottom: 0; }
-.landing[data-look="light"] .hero__title { color: var(--ink); }
-.landing[data-look="light"] .landing__line .script { color: var(--violet); }
-.landing[data-look="light"] .script__earmarks { filter: none; }
-.landing[data-look="light"] .landing__btn { background: var(--purple); color: #fff; box-shadow: var(--shadow-tag); }
-.landing[data-look="light"] .landing__btn--ghost { background: transparent; color: var(--purple); border-color: var(--purple); box-shadow: none; }
-.landing[data-look="light"] .landing__panels { position: relative; inset: auto; z-index: 0; flex: 1; width: min(1280px, 100% - 2 * var(--gutter)); min-height: 320px; max-height: 520px; margin: clamp(32px, 5vh, 56px) auto 0; gap: 20px; }
-.landing[data-look="light"] .landing__panel { border-radius: 22px; box-shadow: var(--shadow-card); }
-.landing[data-look="light"] .landing__panel:nth-child(2) { translate: 0 -28px; }
-.landing[data-look="light"] .landing__shade,
-.landing[data-look="light"] .landing__cue { display: none; }
-.landing[data-look="light"] .landing__look { color: var(--purple); background: rgba(255, 255, 255, 0.7); border-color: var(--line); }
 
 /* Phones: one photo at a time, cross-fading */
 @media (max-width: 700px) {
   .landing { min-height: 560px; }
   .landing__panels { grid-template-columns: minmax(0, 1fr); }
   .landing__panel { grid-area: 1 / 1; animation: landing-cycle 15s linear calc(var(--i) * 5s - 15s) infinite; }
-  .landing[data-look="light"] .landing__panels { height: 56svh; max-height: none; min-height: 0; flex: none; }
-  .landing[data-look="light"] .landing__panel:nth-child(2) { translate: none; }
   .landing__logo { width: min(62vw, 260px); }
   .landing .hero__title { font-size: 26px; }
-  .landing__look { right: 10px; bottom: 10px; }
 }
 @keyframes landing-cycle {
   0%, 33.3% { opacity: 1; }

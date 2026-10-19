@@ -268,7 +268,7 @@
 
   function initUnmask() {
     const els = [...document.querySelectorAll("[data-unmask]")].filter(
-      (el) => !el.closest(".hero") && !el.closest(".pin.is-pinned .work__step")
+      (el) => !el.closest(".hero")
     );
     if (reduceMotion) return els.forEach((el) => el.classList.add("is-in"));
     onceInView(els, (el) => el.classList.add("is-in"), { threshold: 0.25 });
@@ -311,28 +311,14 @@
     }).observe(el);
   }
 
-  /* ---------- Landing look (TEMP while choosing): ?look=light, or the corner button ---------- */
-  function initLanding(el) {
-    const btn = el.querySelector("[data-look-toggle]");
-    const set = (look) => {
-      el.dataset.look = look;
-      document.body.classList.toggle("has-dark-landing", look === "dark");
-      if (btn) btn.querySelector("b").textContent = look === "dark" ? "Dark" : "Light";
-    };
-    set(new URLSearchParams(location.search).get("look") === "light" ? "light" : el.dataset.look || "dark");
-    btn?.addEventListener("click", () => {
-      const look = el.dataset.look === "dark" ? "light" : "dark";
-      set(look);
-      const url = new URL(location.href);
-      url.searchParams.set("look", look);
-      history.replaceState(null, "", url);
-    });
+  /* ---------- Landing: the nav turns transparent over its dark photos ---------- */
+  function initLanding() {
+    document.body.classList.add("has-dark-landing");
   }
 
   /* ---------- Pinned chapters ----------
      The section grows taller and its stage sticks; scroll progress through the
-     section drives the content. Milestones: the row slides sideways.
-     How We Work (desktop): steps light up one by one along the trail. */
+     section drives the content. Milestones: the row slides sideways. */
   function initPins() {
     if (reduceMotion) return;
     const progressOf = (sec) => {
@@ -403,34 +389,6 @@
       });
     }
 
-    const work = document.querySelector('[data-pin="work"]');
-    if (work) {
-      const steps = [...work.querySelectorAll(".work__step")];
-      const desktop = window.matchMedia("(min-width: 1101px)");
-      const setOn = (step, on) => {
-        step.classList.toggle("is-on", on);
-        step.querySelector("[data-unmask]").classList.toggle("is-in", on);
-      };
-      const apply = () => {
-        const pinned = desktop.matches;
-        work.classList.toggle("is-pinned", pinned);
-        work.style.height = pinned ? `${window.innerHeight * 1.7}px` : "";
-        if (!pinned) steps.forEach((s) => setOn(s, true));
-        runScroll();
-      };
-      desktop.addEventListener("change", apply);
-      window.addEventListener("resize", () => {
-        if (desktop.matches) work.style.height = `${window.innerHeight * 1.7}px`;
-      });
-      work.classList.toggle("is-pinned", desktop.matches);
-      onScroll(() => {
-        if (!work.classList.contains("is-pinned")) return;
-        const s = clamp(progressOf(work) / 0.82) * (steps.length - 1);
-        steps.forEach((step, i) => setOn(step, i <= s + 0.02));
-        work.style.setProperty("--trail", (s / (steps.length - 1)).toFixed(4));
-      });
-      apply();
-    }
   }
 
   /* ---------- Counters ("10,000+" counts up the first time it is seen) ---------- */
