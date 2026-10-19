@@ -24,7 +24,7 @@
   <!-- Splash: animated logo on white, fades out once it has drawn -->
   <div class="splash" aria-hidden="true"><div class="splash__logo"></div></div>
   <script src="js/vendor/lottie_svg.min.js"></script>
-  <script src="assets/lottie/splash.js"></script>
+  <script src="js/splash-gate.js" data-base=""></script>
 
   <!-- Navigation -->
   <header class="nav">
@@ -55,9 +55,9 @@
          TODO: the third photo becomes an industry visit (PepsiCo / office) once a high-res one arrives. -->
     <div class="hero landing" data-landing>
       <div class="landing__panels">
-        <figure class="landing__panel" style="--i: 0"><img src="assets/img/photos/hero-audience.webp" alt="Naaris raising their hands in a packed hall in Guwahati" width="1000" height="1600"></figure>
-        <figure class="landing__panel" style="--i: 1"><img src="assets/img/photos/hero-voice.webp" alt="A Naari standing up to ask a question" width="1000" height="1600"></figure>
-        <figure class="landing__panel" style="--i: 2"><img src="assets/img/photos/hero-stage.webp" alt="A Naari speaking on a panel" width="1000" height="1600"></figure>
+        <figure class="landing__panel" style="--i: 0"><img src="assets/img/photos/hero-classroom.webp" alt="A Naari speaking up in a packed classroom in Assam" width="1000" height="1600"></figure>
+        <figure class="landing__panel" style="--i: 1"><img src="assets/img/photos/hero-laptop.webp" alt="A Naari working on a laptop during a GenAI session" width="1000" height="1600"></figure>
+        <figure class="landing__panel" style="--i: 2"><img src="assets/img/photos/hero-audience.webp" alt="Naaris raising their hands in a packed hall in Guwahati" width="1000" height="1600"></figure>
       </div>
       <div class="landing__shade" aria-hidden="true"></div>
       <div class="wrap landing__content">
@@ -395,7 +395,7 @@
     </div>
     <div class="wrap footer__main">
       <div class="footer__brand">
-        <a class="footer__logo" href=""><img src="assets/img/logo.svg" alt="Nimaya" width="207" height="64"></a>
+        <a class="footer__logo" href="./"><img src="assets/img/logo.svg" alt="Nimaya" width="207" height="64"></a>
         <p class="footer__tag">A non-profit preparing young Indian women for careers alongside AI.</p>
         <div class="footer__social">
         <a href="https://www.linkedin.com/company/nimaya" target="_blank" rel="noopener" aria-label="LinkedIn"><svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M4.98 3.5a2.5 2.5 0 1 1 0 5 2.5 2.5 0 0 1 0-5zM3 9.75h4v11.5H3zM9.5 9.75h3.8v1.6h.06c.53-1 1.83-2.05 3.77-2.05 4.03 0 4.77 2.65 4.77 6.1v5.85h-4v-5.2c0-1.24-.02-2.84-1.73-2.84-1.73 0-2 1.35-2 2.75v5.29h-4z"/></svg></a>
@@ -432,7 +432,6 @@
     </div>
   </footer>
 
-  <script src="assets/lottie/hero.js" defer></script>
   <script src="assets/lottie/curriculum.js" defer></script>
   <script src="js/india-map-data.js" defer></script>
   <script src="js/reach-data.js" defer></script>
