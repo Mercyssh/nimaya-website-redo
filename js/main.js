@@ -871,7 +871,7 @@
 
     /* Idle tour (data-motion): while the map is on screen, open each place on the
        route in turn. Hovering a place (its pin, card or photo) pauses it, keeping that
-       place open if the tour had it; it picks up again 4s after. A tap ends it. */
+       place open if the tour had it; it picks up again 3s after. A tap ends it. */
     function tourActive() { return !tourOff && !narrow.matches; }
     function stopTour() {
       clearTimeout(tourTimer);
@@ -901,7 +901,7 @@
     function resumeTour() {
       if (!tourActive()) return;
       onPlace = false;
-      tourLater(4000);
+      tourLater(3000);
     }
     if (motion) {
       box.addEventListener("pointerdown", (e) => {

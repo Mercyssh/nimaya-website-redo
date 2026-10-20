@@ -748,7 +748,8 @@ main { padding-top: var(--nav-h); }
 .program__name { font-size: var(--fs-3); font-weight: 500; line-height: 1.3; overflow-wrap: anywhere; }
 .program .card__body { --pad: 28px; flex: 1; display: flex; flex-direction: column; align-items: flex-start; gap: 22px; padding: 0 var(--pad) 32px; }
 /* Photo runs edge to edge, straight under the banner */
-.program__img { width: calc(100% + 2 * var(--pad)); margin-inline: calc(-1 * var(--pad)); aspect-ratio: 700 / 254; overflow: hidden; }
+/* 16:9 so the people in the photos aren't cut off at the head or hands (was a 2.75:1 strip) */
+.program__img { width: calc(100% + 2 * var(--pad)); margin-inline: calc(-1 * var(--pad)); aspect-ratio: 16 / 9; overflow: hidden; }
 .program__img img { width: 100%; height: 100%; object-fit: cover; }
 .program .btn { margin-top: auto; }
 
@@ -2553,6 +2554,8 @@ main > section:has(+ .ai)::after { display: none; }
 .why__media { display: block; }
 .why__photo { width: 100%; aspect-ratio: 1 / 1.05; }
 .why__photo img { object-position: 50% 40%; }
+/* The quote sits between two dashed rules; its mark (flipped into a closing mark)
+   follows the first line inline, so it takes no height of its own */
 .why__quote-big {
   margin: 32px 0 28px;
   padding: 28px 0;
@@ -2564,7 +2567,7 @@ main > section:has(+ .ai)::after { display: none; }
   letter-spacing: var(--serif-tracking);
   color: var(--coral);
 }
-.why__qmark { width: 52px; height: auto; margin-bottom: 14px; }
+.why__qmark { display: inline-block; width: 0.9em; height: auto; margin-left: 0.25em; vertical-align: 0.35em; scale: -1 -1; }
 
 /* ============ Milestones (static) ============ */
 .milestones__grid { margin-top: 48px; display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 28px; }
