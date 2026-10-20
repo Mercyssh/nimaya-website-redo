@@ -2696,6 +2696,8 @@ main > section:has(+ .ai)::after { display: none; }
 .footer__brand .footer__social { margin-top: 24px; }
 .footer__social a { color: rgba(255, 255, 255, 0.8); }
 .footer__cols { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 32px; }
+/* With the CTA band above, contact links aren't repeated: two columns */
+.footer:not(.footer--plain) .footer__cols { grid-template-columns: repeat(2, minmax(0, 1fr)); }
 .footer__col { display: flex; flex-direction: column; align-items: flex-start; gap: 12px; }
 .footer__head { margin-bottom: 4px; font-size: 12px; font-weight: 700; letter-spacing: 0.14em; text-transform: uppercase; color: rgba(255, 255, 255, 0.5); }
 .footer__col a { font-size: var(--fs-5); font-weight: 600; line-height: 1.4; color: #fff; transition: color var(--t-1) var(--ease); }
@@ -2782,7 +2784,7 @@ main > section:has(+ .ai)::after { display: none; }
   :root { --section-pad: 64px; }
   .footer__cta { padding-top: 64px; padding-bottom: 48px; }
   .footer__cols { grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 28px 20px; }
-  .footer__cols .footer__col:last-child { grid-column: 1 / -1; }
+  .footer--plain .footer__cols .footer__col:last-child { grid-column: 1 / -1; }
   .footer__cta-btns, .footer__cta-btns .btn { width: 100%; }
   /* Diagram labels are in SVG units; scale them up so they stay readable on a phone */
   .ai-net__agent text { font-size: 24px; }
@@ -3392,6 +3394,8 @@ main > section:has(+ .ai)::after { display: none; }
   inset: 0;
   z-index: -1;
   background:
+    /* Dark band under the transparent bar, so its white logo reads on bright photos */
+    linear-gradient(180deg, rgba(18, 12, 64, 0.6) 0%, rgba(18, 12, 64, 0) calc(var(--nav-h) + 80px)),
     radial-gradient(120% 70% at 50% 100%, rgba(18, 12, 64, 0.92) 0%, rgba(18, 12, 64, 0.55) 55%, rgba(18, 12, 64, 0) 100%),
     linear-gradient(180deg, rgba(18, 12, 64, 0.55) 0%, rgba(18, 12, 64, 0.2) 35%, rgba(18, 12, 64, 0.5) 100%);
 }
@@ -3477,6 +3481,7 @@ main > section:has(+ .ai)::after { display: none; }
   .reach-map__panel { display: grid; }
   .reach-map__panel::before,
   .reach-map__panel .reach-card { grid-area: 1 / 1; }
+  .reach-map__panel .reach-card { align-self: start; }
   .reach-map__panel .reach-card:not(.is-open) { display: block; }
 }
 
@@ -3529,4 +3534,42 @@ main > section:has(+ .ai)::after { display: none; }
   }
   .work__text { min-height: 0; margin-top: 4px; }
   .work__img { margin-top: 0; border-radius: 14px; }
+}
+
+/* ============ Home: visual pass fixes ============ */
+/* Milestones: every tile keeps its 4:3 shape, so titles line up across a row */
+.milestones__grid .stat__media { overflow: hidden; }
+/* Short last lines instead of one stray word */
+.ai__steps p { text-wrap: pretty; }
+
+/* Map, phones: with no city open, the hint sits in the middle of the reserved space */
+@media (max-width: 700px) {
+  .reach-map__panel:not(:has(.is-open))::before { display: grid; place-items: center; }
+}
+
+/* Tablet: the news pair sits side by side, the AI steps in two columns, a bigger quote */
+@media (min-width: 701px) and (max-width: 900px) {
+  .news__grid { grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 32px; }
+}
+/* Half-width article card: smaller portraits so they clear the outlet name and button */
+@media (min-width: 701px) and (max-width: 1100px) {
+  .news__cover--article { padding: 20px; }
+  .news__outlet { font-size: 36px; }
+  .news__people { right: 20px; bottom: 20px; }
+  .news__people img { width: 84px; height: 84px; }
+  .news__people img + img { margin-left: -20px; }
+}
+@media (min-width: 601px) and (max-width: 1100px) {
+  .ai__steps { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+}
+@media (max-width: 900px) {
+  .why__quote-big { font-size: clamp(30px, 5.4vw, 44px); }
+  .programs__cards { margin-top: 40px; }
+}
+
+@media (max-width: 600px) {
+  /* AI: the diagram's empty outer ring already gives room above the steps */
+  .ai__viz { margin-top: 24px; }
+  .ai__steps { margin-top: 4px; }
+  .hero--home .hero__sub { text-wrap: pretty; }
 }
