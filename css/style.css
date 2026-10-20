@@ -3459,6 +3459,18 @@ main > section:has(+ .ai)::after { display: none; }
 .why__photo[data-fade] img { position: absolute; inset: 0; opacity: 0; transition: opacity 1.2s var(--ease), clip-path var(--t-3) var(--ease) var(--d, 0s), scale var(--t-3) var(--ease) var(--d, 0s); }
 .why__photo[data-fade] img.is-on { opacity: 1; }
 .why .why__quote-big { margin-top: 0; }
+/* The quote is one block on three set lines, its mark beside it at the top.
+   The type scales with the column so the longest line ("not a ceiling of
+   possibilities.", about 11.6em) never wraps: column minus mark and gap. */
+.why__info { container-type: inline-size; }
+.why .why__quote-big {
+  display: flex;
+  align-items: flex-start;
+  gap: 16px;
+  font-size: clamp(18px, (100cqi - 60px) / 11.6, 44px);
+}
+.why__quote-text { margin: 0; }
+.why .why__qmark { flex: none; width: clamp(28px, 0.9em, 40px); margin: 0.12em 0 0; vertical-align: 0; }
 
 /* ============ Home: phone pass ============ */
 /* Our Why: breathing room between the body paragraphs */
@@ -3563,7 +3575,6 @@ main > section:has(+ .ai)::after { display: none; }
   .ai__steps { grid-template-columns: repeat(2, minmax(0, 1fr)); }
 }
 @media (max-width: 900px) {
-  .why__quote-big { font-size: clamp(30px, 5.4vw, 44px); }
   .programs__cards { margin-top: 40px; }
 }
 
