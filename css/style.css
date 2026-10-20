@@ -3455,3 +3455,78 @@ main > section:has(+ .ai)::after { display: none; }
 .why__photo[data-fade] img { position: absolute; inset: 0; opacity: 0; transition: opacity 1.2s var(--ease), clip-path var(--t-3) var(--ease) var(--d, 0s), scale var(--t-3) var(--ease) var(--d, 0s); }
 .why__photo[data-fade] img.is-on { opacity: 1; }
 .why .why__quote-big { margin-top: 0; }
+
+/* ============ Home: phone pass ============ */
+/* Our Why: breathing room between the body paragraphs */
+.why__info .body + .body { margin-top: 12px; }
+
+/* How AI runs Nimaya, stacked: the network sits right under the intro, steps follow */
+@media (max-width: 1100px) {
+  .ai__wrap { row-gap: 0; }
+  .ai__info { display: contents; }
+  .ai__eyebrow { order: 1; }
+  .ai__info .display { order: 2; }
+  .ai__lead { order: 3; }
+  .ai__viz { order: 4; width: 100%; margin-top: 32px; }
+  .ai__steps { order: 5; }
+}
+
+/* Map, phones: the panel under the map holds every card in one cell, so the tour
+   swaps cards without the page below jumping */
+@media (max-width: 700px) {
+  .reach-map__panel { display: grid; }
+  .reach-map__panel::before,
+  .reach-map__panel .reach-card { grid-area: 1 / 1; }
+  .reach-map__panel .reach-card:not(.is-open) { display: block; }
+}
+
+@media (max-width: 600px) {
+  /* Partners: logos scaled to the screen */
+  .ticker { height: 72px; }
+  .ticker__list { gap: 40px; }
+  .ticker__list img, .ticker__list img[height="72"] { height: 44px; }
+  .ticker__list li::after { right: -20px; height: 40px; margin-top: -20px; }
+
+  /* AI steps: a tight list instead of four tall cards */
+  .ai__steps { margin-top: 28px; gap: 0; }
+  .ai__steps li { padding: 14px 0; gap: 14px; border: 0; border-top: 1px solid var(--ai-line); border-radius: 0; background: none; }
+  .ai__steps li:last-child { border-bottom: 1px solid var(--ai-line); }
+  .ai__steps p { margin-top: 2px; }
+
+  /* Milestones: one wide tile at a time, the next peeking in, swiped sideways */
+  .milestones__grid {
+    display: flex;
+    gap: 16px;
+    margin-inline: calc(-1 * var(--gutter));
+    padding: 4px var(--gutter) 12px;
+    overflow-x: auto;
+    scroll-snap-type: x mandatory;
+    scroll-padding-inline: var(--gutter);
+    scrollbar-width: none;
+  }
+  .milestones__grid::-webkit-scrollbar { display: none; }
+  .milestones__grid .stat { flex: 0 0 80%; scroll-snap-align: start; }
+  .milestones__grid .stat__media { padding: 14px; border-radius: 18px; }
+  .milestones__grid .stat__desc { font-size: var(--fs-5); }
+
+  /* Program facts: compact rows that keep their one-line descriptions */
+  .program__facts { gap: 8px; }
+  .program__facts li { display: grid; grid-template-columns: 36px minmax(0, 1fr); column-gap: 12px; row-gap: 1px; align-items: center; padding: 10px 14px; }
+  .program__facts .program__icon { grid-row: span 2; width: 36px; height: 36px; }
+  .program__facts .program__icon svg { width: 19px; height: 19px; }
+  .program__facts li > span:last-child { display: block; margin-left: 0; text-align: left; }
+
+  /* How We Work: a vertical timeline, the dotted trail running badge to badge */
+  .work__list { grid-template-columns: minmax(0, 1fr); gap: 28px; }
+  .work__step { display: grid; grid-template-columns: 56px minmax(0, 1fr) 96px; column-gap: 16px; align-items: start; }
+  .work__step:not(:last-child)::before {
+    content: "";
+    position: absolute;
+    left: 27px;
+    top: 56px;
+    bottom: -28px;
+    border-left: 2px dotted var(--lilac);
+  }
+  .work__text { min-height: 0; margin-top: 4px; }
+  .work__img { margin-top: 0; border-radius: 14px; }
+}

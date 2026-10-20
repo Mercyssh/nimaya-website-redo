@@ -161,7 +161,8 @@
   function initTicker(root) {
     const list = root.querySelector(".ticker__list");
     const items = [...list.children];
-    const gap = Number(root.dataset.gap) || 0;
+    // The CSS gap wins (it tightens on phones); data-gap is the fallback
+    const gap = parseFloat(getComputedStyle(list).columnGap) || Number(root.dataset.gap) || 0;
     const speed = Number(root.dataset.speed) || 100;
     const setWidth = items.reduce((w, li) => w + li.getBoundingClientRect().width + gap, 0);
     const parent = root.clientWidth;
@@ -867,7 +868,8 @@
     /* Idle tour (data-motion): while the map is on screen, open each place on the
        route in turn. Hovering a place (its pin, card or photo) pauses it, keeping that
        place open if the tour had it; it picks up again 3s after. A tap ends it. */
-    function tourActive() { return !tourOff && !narrow.matches; }
+    // Phones tour too: each place's card shows in the panel under the map, its photo on the map
+    function tourActive() { return !tourOff; }
     function stopTour() {
       clearTimeout(tourTimer);
       const was = touring;
@@ -899,8 +901,10 @@
       tourLater(3000);
     }
     if (motion) {
-      box.addEventListener("pointerdown", (e) => {
-        if (e.pointerType === "mouse" || tourOff) return;
+      // A tap (not a scroll across the map) hands the map over to the visitor
+      box.addEventListener("click", (e) => {
+        const touch = e.pointerType ? e.pointerType !== "mouse" : !finePointer;
+        if (!touch || tourOff) return;
         tourOff = true;
         stopTour();
       });
