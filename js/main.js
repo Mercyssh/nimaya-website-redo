@@ -311,11 +311,6 @@
     }).observe(el);
   }
 
-  /* ---------- Landing: the nav turns transparent over its dark photos ---------- */
-  function initLanding() {
-    document.body.classList.add("has-dark-landing");
-  }
-
   /* ---------- Pinned chapters ----------
      The section grows taller and its stage sticks; scroll progress through the
      section drives the content. Milestones: the row slides sideways. */
@@ -1567,7 +1562,6 @@
     initMotifs();
     initReveal();
     initUnmask();
-    document.querySelectorAll("[data-landing]").forEach(initLanding);
     initHero();
     document.querySelectorAll("[data-fade]").forEach(initFade);
     initCounters();

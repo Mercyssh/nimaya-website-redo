@@ -20,7 +20,7 @@
   <script>document.documentElement.classList.add("js")</script>
   <link rel="stylesheet" href="css/style.css">
 </head>
-<body>
+<body class="has-dark-landing">
   <!-- Splash: animated logo on white, fades out once it has drawn -->
   <div class="splash" aria-hidden="true"><div class="splash__logo"></div></div>
   <script src="js/vendor/lottie_svg.min.js"></script>
@@ -145,11 +145,6 @@
             <li><img src="assets/img/partner-dsf.png" alt="DSF" width="215" height="73"></li>
           </ul>
         </div>
-        <div class="accredit-line" data-reveal="up" data-delay="0.2">
-          <span class="caption">Accreditation</span>
-          <p>Our programs award <b>NSQF-aligned credit</b>, governed by <b>NCVET</b>, with Jindal Steel as the awarding body.</p>
-          <img src="assets/Logos/jindal-steel.png" alt="Jindal Steel" width="781" height="369">
-        </div>
       </div>
     </section>
 
@@ -267,9 +262,26 @@
     <section class="programs" id="programs">
       <div class="wrap">
         <i class="motif m-mask m-shape programs__shape" aria-hidden="true" data-parallax="20"></i>
-        <div class="programs__head">
-          <h2 class="display">Our <span class="script"><span class="script__swish" aria-hidden="true"></span>Program<span class="script__end">s<img class="script__earmarks" src="assets/Motifs/earmarks.svg" alt="" width="17" height="18"></span></span></h2>
-          <p class="body" data-reveal="up">Two <b class="em">fully funded</b> programs, built to work at different depths: a 40-hour program that brings GenAI and workplace skills to thousands of women, and a 12-month fellowship that develops future leaders.</p>
+        <div class="programs__top">
+          <div class="programs__head">
+            <h2 class="display">Our <span class="script"><span class="script__swish" aria-hidden="true"></span>Program<span class="script__end">s<img class="script__earmarks" src="assets/Motifs/earmarks.svg" alt="" width="17" height="18"></span></span></h2>
+            <p class="body" data-reveal="up">Two <b class="em">fully funded</b> programs, built to work at different depths: a 40-hour program that brings GenAI and workplace skills to thousands of women, and a 12-month fellowship that develops future leaders.</p>
+          </div>
+          <!-- Accreditation: applies to both programs, so it sits beside the intro, above the cards -->
+          <aside class="programs__accredit" aria-label="Accreditation" data-reveal="up" data-delay="0.15">
+            <div class="programs__accredit-head">
+              <span class="programs__seal" aria-hidden="true"><svg viewBox="0 0 24 24"><circle cx="12" cy="9.5" r="6.5"/><path d="M9.2 9.6l2 2 3.6-3.8M8.4 15l-1.6 6 5.2-2.6 5.2 2.6-1.6-6"/></svg></span>
+              <div>
+                <p class="caption">Accreditation</p>
+                <p class="programs__accredit-title">NSQF-aligned credit</p>
+              </div>
+            </div>
+            <p class="programs__accredit-text">Both programs award national credit, governed by <b>NCVET</b>.</p>
+            <div class="programs__accredit-foot">
+              <span class="caption">Awarding body</span>
+              <img src="assets/Logos/jindal-steel.png" alt="Jindal Steel" width="781" height="369">
+            </div>
+          </aside>
         </div>
 
         <div class="programs__cards">

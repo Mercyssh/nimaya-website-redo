@@ -2067,6 +2067,9 @@ html.is-locked { overflow: hidden; }
 /* Titles: each line rises from behind its own baseline. The clip lifts once the
    rise has finished so swishes and earmarks can overhang again. */
 .rise, .rise__in { display: block; }
+/* Hero lines stay hidden until main.js wraps them, so nothing shows at rest before the entrance */
+.js .hero__title .line { visibility: hidden; }
+.js .hero__title .line > .rise { visibility: visible; }
 .js .rise { clip-path: inset(-50% -50% -0.14em -50%); }
 .js .rise__in { translate: 0 125%; }
 .js .is-risen .rise { animation: rise-unclip var(--t-2) linear var(--d, 0s) forwards; }
@@ -2870,6 +2873,37 @@ main > section:has(+ .ai)::after { display: none; }
 .accredit-line b { color: var(--ink); }
 .accredit-line img { height: 34px; width: auto; }
 .accredit-line .caption { font-weight: 700; letter-spacing: 0.14em; text-transform: uppercase; font-size: 12px; color: var(--grey); }
+
+/* Accreditation, Home: a credential panel beside the Our Programs intro, above the cards */
+.programs__top {
+  position: relative;
+  z-index: 1;
+  display: grid;
+  grid-template-columns: minmax(0, 640px) minmax(0, 380px);
+  justify-content: space-between;
+  align-items: end;
+  gap: 32px 48px;
+}
+.programs__accredit { display: grid; gap: 16px; }
+.programs__accredit-head { display: flex; align-items: center; gap: 14px; }
+.programs__seal { width: 52px; height: 52px; flex: none; display: flex; align-items: center; justify-content: center; border-radius: 50%; background: var(--purple); color: var(--yellow); }
+.programs__seal svg { width: 28px; height: 28px; fill: none; stroke: currentColor; stroke-width: 1.7; stroke-linecap: round; stroke-linejoin: round; }
+.programs__accredit .caption { font-weight: 700; letter-spacing: 0.14em; text-transform: uppercase; font-size: 12px; color: var(--grey); }
+.programs__accredit-title { font-size: var(--fs-3); font-weight: 700; line-height: 1.2; color: var(--ink); }
+.programs__accredit-text { font-size: var(--fs-5); line-height: 1.5; color: var(--purple); text-wrap: balance; }
+.programs__accredit-text b { color: var(--ink); }
+.programs__accredit-foot { display: flex; align-items: center; justify-content: space-between; gap: 16px; padding-top: 14px; border-top: 1px solid var(--line); }
+.programs__accredit-foot img { height: 40px; width: auto; }
+/* Desktop: right-aligned against the edge of the section, seal on the outside */
+@media (min-width: 901px) {
+  .programs__accredit { text-align: right; justify-items: end; }
+  .programs__accredit-head { flex-direction: row-reverse; }
+  .programs__accredit-foot { justify-content: flex-end; width: 100%; }
+}
+@media (max-width: 900px) {
+  .programs__top { grid-template-columns: minmax(0, 1fr); }
+  .programs__accredit { max-width: 480px; }
+}
 
 /* ============ Atlas: India at night, one popup at a time ============ */
 /* Deep ink panel so the map stands apart from the light page; every city is a warm light */
