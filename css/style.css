@@ -942,6 +942,10 @@ main { padding-top: var(--nav-h); }
 .switch .tabs__btn { position: relative; padding: 14px 28px; border: 0; background: none; font-size: var(--fs-4); }
 .switch .tabs__btn[aria-selected="true"] { background: none; box-shadow: none; }
 .switch__bar { display: flex; justify-content: center; }
+/* Proof of change: intro, switch and figures sit close together */
+.proof .head .body { margin-top: 14px; }
+.proof .head + .tabs { margin-top: 28px; }
+.proof .tabs__panel { margin-top: 36px; }
 
 /* Numbered module list */
 .modules { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 0 40px; counter-reset: m; }
@@ -1500,7 +1504,12 @@ a.press__card:hover,
 
 /* Stat row (Impact panels) */
 .stats { position: relative; z-index: 1; display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 18px; }
-.panel-block + .panel-block { margin-top: 56px; }
+.stats + .panel-block,
+.panel-block + .panel-block { margin-top: 48px; }
+.panel-split .sub-title + .logos { margin-top: 20px; }
+.panel-split .logos--plain { gap: 20px 36px; }
+.panel-split .logos--plain img { height: 34px; max-width: 150px; }
+.panel-split .logos--plain img[src*="openai"] { height: 26px; }   /* a heavy wordmark: kept smaller so it reads the same size */
 .panel-block > .sub-title { margin-bottom: 20px; }
 .panel-split { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); gap: 32px; }
 
@@ -1650,7 +1659,10 @@ a.press__card:hover,
 /* Impact */
 .model .icard__icon { margin-top: 6px; }
 .ba__axis i { font-style: normal; }
-.stats .reach__stat { box-shadow: var(--shadow-tile); }
+/* Plain figures split by hairlines, no cards */
+.stats { gap: 0; }
+.stats .reach__stat { padding: 4px 24px; background: none; border: 0; border-radius: 0; box-shadow: none; }
+.stats .reach__stat + .reach__stat { border-left: 1px solid var(--line); }
 
 /* ============ Media overlay ============ */
 .overlay {
@@ -1727,7 +1739,8 @@ html.is-locked { overflow: hidden; }
   .people--sm { --cols: 4; }
   .quotes, .press { --cols: 2; }
   .cities { grid-template-columns: repeat(3, minmax(0, 1fr)); }
-  .stats { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+  .stats { grid-template-columns: repeat(2, minmax(0, 1fr)); row-gap: 24px; }
+  .stats .reach__stat:nth-child(odd) { border-left: 0; }
   .story { grid-template-columns: 150px minmax(0, 1fr); }
   .story__photo { height: 260px; }
   .reach__wrap { gap: 32px; }
@@ -1766,8 +1779,7 @@ html.is-locked { overflow: hidden; }
   .seg-card { padding: 22px; }
 
 .grid, .quotes, .press { --cols: 1; grid-template-columns: minmax(0, 1fr); }
-  .stats { gap: 12px; }
-  .stats .reach__stat { padding: 16px; }
+  .stats .reach__stat { padding: 4px 16px; }
   .stats .reach__num { font-size: var(--fs-2); }
   .logos { gap: 12px; }
   .logos__item { height: 64px; padding: 0 18px; }
