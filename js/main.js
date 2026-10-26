@@ -959,8 +959,11 @@
   function initPreviews() {
     if (!finePointer || reduceMotion) return;
     document.querySelectorAll(".voices__thumb[data-video]").forEach((btn) => {
-      let video = null;
+      let video = null, over = false;
+      // Fade the preview in only once a real frame is painted, so the card never flashes empty
+      const show = () => { if (over) btn.classList.add("is-previewing"); };
       btn.addEventListener("pointerenter", () => {
+        over = true;
         if (!video) {
           video = document.createElement("video");
           video.className = "voices__preview";
@@ -971,9 +974,13 @@
           video.setAttribute("aria-hidden", "true");
           btn.querySelector("img").after(video);
         }
-        video.play().then(() => btn.classList.add("is-previewing")).catch(() => {});
+        video.play().then(() => {
+          if (video.requestVideoFrameCallback) video.requestVideoFrameCallback(show);
+          else show();
+        }).catch(() => {});
       });
       btn.addEventListener("pointerleave", () => {
+        over = false;
         btn.classList.remove("is-previewing");
         if (video) video.pause();
       });

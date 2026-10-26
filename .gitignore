@@ -2,3 +2,6 @@ References/
 
 # Licensed font source files (web subsets live in assets/fonts)
 design-source/
+
+# Assets moved out during cleanup, kept for review
+_quarantine/

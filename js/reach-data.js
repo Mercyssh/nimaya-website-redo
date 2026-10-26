@@ -93,8 +93,8 @@ window.NIMAYA_REACH = [
   {
     id: "ahmedabad",
     label: "top",
-    photo: "img/photos/placement.webp", // TODO: swap for a photo taken in this city
-    photoAlt: "Naaris with their trainers",
+    photo: "img/photos/pepsico-visit.webp", // TODO: swap for a photo taken in this city
+    photoAlt: "Naaris on a live project visit at PepsiCo",
     name: "Ahmedabad",
     state: "Gujarat",
     points: [[72.5714, 23.0225]],
