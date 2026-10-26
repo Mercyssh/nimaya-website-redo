@@ -835,6 +835,8 @@ main { padding-top: var(--nav-h); }
 .head--center { margin-inline: auto; text-align: center; }
 .head .body { margin-top: var(--title-gap); }
 .head + * { margin-top: calc(var(--title-gap) * 1.5); }
+/* Line break kept only on wide screens */
+@media (max-width: 900px) { .br-wide { display: none; } }
 /* Title and intro with a column of key facts beside them */
 .head-row { position: relative; z-index: 1; display: flex; align-items: flex-start; justify-content: space-between; gap: 32px 56px; }
 .head-row + * { margin-top: calc(var(--title-gap) * 1.5); }
@@ -992,12 +994,9 @@ main { padding-top: var(--nav-h); }
   bottom: 0;
   width: 100%;
   height: 100%;
-  object-fit: contain;
-  object-position: 50% 100%;
-  transition: scale var(--t-2) var(--ease);
-  transform-origin: 50% 100%;
+  object-fit: cover;          /* every cut-out fills its frame, so all heads sit at the same height */
+  object-position: 50% 0;
 }
-.person:hover .person__photo img { scale: 1.04; }
 .person__name { margin-top: 16px; font-size: var(--fs-4); font-weight: 700; line-height: 1.3; color: var(--ink); }
 .person__role { margin-top: 4px; font-size: var(--fs-5); line-height: 1.45; color: var(--text-soft); }
 /* Small portraits (mentors, masterclass experts) */
@@ -1010,16 +1009,15 @@ main { padding-top: var(--nav-h); }
 .quotes { position: relative; z-index: 1; display: grid; grid-template-columns: repeat(var(--cols, 3), minmax(0, 1fr)); gap: 28px; }
 .quote { display: flex; flex-direction: column; padding: 24px; }
 .quote__who { display: flex; align-items: center; gap: 14px; }
+/* Cut-out with no frame, fading out in an arc: the top edge is the arc's centre, the bottom its rim */
 .quote__photo {
   flex: none;
-  width: 64px;
-  height: 64px;
-  border-radius: 50%;
-  overflow: hidden;
-  border: 1px solid var(--line);
-  background: var(--lav);
+  width: 72px;
+  height: 72px;
+  -webkit-mask-image: radial-gradient(100% 100% at 50% 0%, #000 60%, transparent 100%);
+  mask-image: radial-gradient(100% 100% at 50% 0%, #000 60%, transparent 100%);
 }
-.quote__photo img { width: 100%; height: 100%; object-fit: cover; object-position: 50% 12%; }
+.quote__photo img { width: 100%; height: 100%; object-fit: cover; object-position: 50% 0; }
 .quote__name { font-size: var(--fs-4); font-weight: 700; line-height: 1.25; color: var(--ink); }
 .quote__place { margin-top: 2px; font-size: var(--fs-5); color: var(--coral); font-weight: 600; }
 /* Small capitals labels */
@@ -1129,7 +1127,7 @@ main { padding-top: var(--nav-h); }
 /* Short pillars: text beside a row of logos or a small picture */
 .pillar--compact { grid-template-columns: minmax(0, 1.5fr) minmax(0, 1fr); padding: 28px 32px; }
 .pillar--compact .pillar__media { aspect-ratio: auto; }
-.pillar--compact .pillar__media img { height: 190px; }
+.pillar--compact .pillar__media img { height: 300px; }
 .pillar__logos { display: flex; align-items: center; justify-content: center; gap: 24px 48px; }
 .pillar__logos img { height: 44px; width: auto; max-width: 42%; object-fit: contain; }
 
@@ -1244,8 +1242,7 @@ a.press__card:hover,
 /* Italic coral notes */
 .reach__live,
 .reach-map__hint,
-.reach-card__note,
-.cities__next {
+.reach-card__note {
   font-size: var(--fs-5);
   font-style: italic;
   font-weight: 600;
@@ -1616,7 +1613,7 @@ a.press__card:hover,
 .designed { margin-top: 26px; }
 .designed .card__body { padding: 28px 24px 24px; }
 .designed .people--sm { gap: 20px 12px; }
-.designed .people--sm .person__photo { width: 110px; }
+.designed .people--sm .person__photo { width: 100%; }
 .pillar__media { aspect-ratio: 4 / 3; }
 .pillar__media--plain { border: 0; background: none; }
 .pillar__media--plain img { object-fit: contain; }
@@ -1639,7 +1636,7 @@ a.press__card:hover,
 .values { width: 100%; max-width: 520px; margin-top: 26px; z-index: 1; }
 
 .values__lead { font-size: var(--fs-3); line-height: 1.25; color: var(--ink); margin-bottom: 20px; }
-.advisors { --cols: 4; }
+.advisors { --cols: 6; }
 .team { --cols: 6; }
 .press li { display: flex; }
 .press__card { width: 100%; }
@@ -1739,7 +1736,6 @@ html.is-locked { overflow: hidden; }
 
 @media (max-width: 900px) {
   .grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
-  .advisors { --cols: 3; }
   .nav__drop, .nav__menu { display: contents; }
   .nav__menu { visibility: visible; opacity: 1; translate: none; }
   .nav__drop-btn, .nav__menu::before, .nav__menu b, .nav__menu span { display: none; }
@@ -2140,7 +2136,7 @@ html.is-locked { overflow: hidden; }
 .hero__info .hero__stats li { background: none; border: 0; border-radius: 0; box-shadow: none; }
 .hero__info .hero__stats { margin-top: 36px; max-width: 520px; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 24px 40px; }
 .hero__info .hero__stats li { padding: 14px 0 0; border-top: 1px solid var(--line); }
-.hero--home + section { padding-block: 56px; }
+#across-india + section { padding-block: 56px; }
 
 /* ============ How AI runs Nimaya ============ */
 .ai {
@@ -2269,9 +2265,9 @@ main > section:has(+ .ai)::after { display: none; }
   align-items: flex-start;
   gap: 16px;
   font-family: var(--serif);
-  font-size: var(--fs-2);
+  font-size: var(--fs-3);
   font-weight: 700;
-  line-height: 1.12;
+  line-height: 1.2;
   letter-spacing: var(--serif-tracking);
   color: var(--coral);
 }
@@ -2370,7 +2366,6 @@ main > section:has(+ .ai)::after { display: none; }
 /* GenAI page: two real stories, then a line about what's coming (no empty slots) */
 .cities--few { display: flex; flex-wrap: wrap; justify-content: center; }
 .cities--few .city { width: 220px; }
-.cities__next { position: relative; z-index: 1; max-width: 560px; margin: 32px auto 0; text-align: center; line-height: 1.5; }
 
 /* ============ Footer: closing call to action + sitemap ============ */
 .footer {

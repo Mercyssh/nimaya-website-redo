@@ -195,53 +195,65 @@
       </div>
     </section>
 
-    <!-- Regional reach -->
-    <section class="reach">
-      <div class="wrap reach__wrap">
-        <div class="reach__info">
-          <h2 class="display">Where We <span class="script"><span class="script__swish" aria-hidden="true"></span>Wor<span class="script__end script__end--tall">k<img class="script__earmarks" src="../assets/Motifs/earmarks.svg" alt="" width="17" height="18"></span></span></h2>
-          <p class="body" data-reveal="up">Every pin is a partnership: a local NGO, college, company or government body that brought Nimaya to <b class="em">the young women in their community</b>.</p>
-          <ul class="reach__stats">
-            <li class="reach__stat reach__stat--lead" data-reveal="up" data-delay="0.1">
-              <img class="reach__icon" src="../assets/graphics/stats-people.svg" alt="" width="22" height="22">
-              <span class="reach__num" data-count="10000" data-suffix="+">10,000+</span>
-              <span class="reach__label">Naaris trained <span class="reach__live">and counting</span></span>
-            </li>
-            <li class="reach__stat" data-reveal="up" data-delay="0.2">
-              <img class="reach__icon" src="../assets/graphics/stats-location.svg" alt="" width="22" height="22">
-              <span class="reach__num" data-count="6">6</span>
-              <span class="reach__label">States</span>
-              <span class="reach__sub">Maharashtra, Uttar Pradesh, Haryana, Rajasthan, Gujarat &amp; Assam</span>
-            </li>
-            <li class="reach__stat" data-reveal="up" data-delay="0.3">
-              <img class="reach__icon" src="../assets/graphics/stats-location.svg" alt="" width="22" height="22">
-              <span class="reach__num" data-count="10">10</span>
-              <span class="reach__label">Cities</span>
-              <span class="reach__sub">with Nagpur &amp; Srinagar coming soon</span>
-            </li>
-            <li class="reach__stat" data-reveal="up" data-delay="0.4">
-              <img class="reach__icon" src="../assets/graphics/stats-handshake.svg" alt="" width="22" height="22">
-              <span class="reach__num" data-count="9" data-suffix="+">9+</span>
-              <span class="reach__label">Partners</span>
-              <span class="reach__sub">NGOs, colleges, CSR &amp; government</span>
-            </li>
-            <li class="reach__stat reach__stat--note" data-reveal="up" data-delay="0.5">
-              <span class="reach__label">Tap a pin on the map</span>
-              <span class="reach__sub">to see who we’ve trained there and the partners who made it happen.</span>
-            </li>
+    <!-- Where we work: the same map as Home's, with this page's words -->
+    <section class="hero hero--home" id="where-we-work">
+      <div class="glow hero__glow" aria-hidden="true" data-parallax="40"></div>
+      <div class="wrap hero__wrap">
+        <div class="hero__info">
+          <h2 class="hero__title">
+            <span class="line">Where We</span>
+            <span class="line"><span class="script"><span class="script__swish" aria-hidden="true"></span>Wor<span class="script__end script__end--tall">k<img class="script__earmarks" src="../assets/Motifs/earmarks.svg" alt="" width="17" height="18"></span></span></span>
+          </h2>
+          <p class="hero__sub" data-reveal="up" data-delay="0.45">Every pin is a partnership: a local NGO, college, company or government body that brought Nimaya to the young women in their community.</p>
+          <ul class="hero__stats" data-reveal="up" data-delay="0.55">
+            <li><span class="hero__num" data-count="10000" data-suffix="+">10,000+</span><span class="hero__stat-label">Naaris trained</span></li>
+            <li><span class="hero__num" data-count="6">6</span><span class="hero__stat-label">States, from Maharashtra to Assam</span></li>
+            <li><span class="hero__num" data-count="10">10</span><span class="hero__stat-label">Cities, with Nagpur &amp; Srinagar coming soon</span></li>
+            <li><span class="hero__num" data-count="9" data-suffix="+">9+</span><span class="hero__stat-label">Partners across NGOs, colleges, CSR &amp; government</span></li>
           </ul>
         </div>
-        <div class="reach-map" data-reach-map data-assets="../assets/">
-          <div class="glow reach-map__glow" aria-hidden="true" data-parallax="30"></div>
-          <div class="reach-map__box"></div>
+
+        <!-- Naaris across India: photos hang off their city's pin; hovering a pin or photo opens its numbers.
+             Every photo was taken in its own city. -->
+        <div class="reach-map reach-map--hero" data-reach-map data-assets="../assets/" data-omit="Andaman &amp; Nicobar" data-hover data-quiet data-holo data-motion>
+          <div class="reach-map__box">
+            <figure class="reach-photo" data-place="haryana" data-default style="--x: -18%; --y: 13%; --k: 0">
+              <img src="../assets/img/photos/map-haryana.webp" alt="Naaris in Bahadurgarh working through a task together" width="1000" height="750">
+              <figcaption>Haryana</figcaption>
+            </figure>
+            <figure class="reach-photo reach-photo--tall" data-place="lucknow" style="--x: 62%; --y: -3%; --k: 1">
+              <img src="../assets/img/photos/map-lucknow.webp" alt="A Naari in Lucknow presenting the model her team built" width="750" height="1000">
+              <figcaption>Lucknow</figcaption>
+            </figure>
+            <figure class="reach-photo" data-place="guwahati" data-default style="--x: 63%; --y: 49%; --k: 2">
+              <img src="../assets/img/photos/guwahati-naaris-phones.webp" alt="Naaris in Assam filming a session on their phones" width="1200" height="900">
+              <figcaption>Guwahati</figcaption>
+            </figure>
+            <figure class="reach-photo" data-place="mumbai" style="--x: -8%; --y: 67%; --k: 3">
+              <img src="../assets/img/photos/map-mumbai.webp" alt="Naaris in Mumbai working on their phones at office desks" width="1000" height="750">
+              <figcaption>Mumbai</figcaption>
+            </figure>
+            <figure class="reach-photo" data-place="jaipur" style="--x: -16%; --y: 38%; --k: 4">
+              <img src="../assets/img/photos/map-jaipur.webp" alt="Two Naaris smiling at their desk in a Jaipur computer lab" width="1000" height="750">
+              <figcaption>Jaipur</figcaption>
+            </figure>
+            <figure class="reach-photo" data-place="varanasi" style="--x: 68%; --y: 20%; --k: 5">
+              <img src="../assets/img/photos/map-varanasi.webp" alt="Naaris in Chandauli playing a circle game outdoors" width="1000" height="750">
+              <figcaption>Varanasi</figcaption>
+            </figure>
+          </div>
           <div class="reach-map__panel" aria-live="polite"></div>
-          <ul class="reach-map__legend">
-            <li><i></i>Active</li>
-            <li><i class="is-soon"></i>Coming soon</li>
-          </ul>
-          <p class="reach-map__credit">Map: <a href="https://github.com/datameet/maps" target="_blank" rel="noopener">DataMeet</a>, CC BY 4.0</p>
+          <div class="reach-map__foot">
+            <p class="reach-map__hint">Hover a pin to see who we’ve trained there and the partners who made it happen</p>
+            <ul class="reach-map__legend">
+              <li><i></i>Active</li>
+              <li><i class="is-soon"></i>Coming soon</li>
+            </ul>
+          </div>
+          <p class="hero__credit">Map: <a href="https://github.com/datameet/maps" target="_blank" rel="noopener">DataMeet</a>, CC BY 4.0</p>
         </div>
       </div>
+
     </section>
 
     <!-- Stories of change -->
