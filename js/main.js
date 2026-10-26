@@ -1077,6 +1077,7 @@
     }
     function onKey(e) { if (e.key === "Escape") close(); }
     backdrop.addEventListener("click", close);
+    frame.querySelectorAll("[data-close]").forEach((b) => b.addEventListener("click", close));
     document.addEventListener("keydown", onKey);
   }
 
@@ -1092,6 +1093,18 @@
         iframe.title = btn.getAttribute("aria-label") || "Video";
         frame.append(iframe);
         openOverlay(frame);
+      });
+    });
+
+    // Job descriptions: each "View job description" button opens its <template> in a sheet
+    document.querySelectorAll("[data-jd]").forEach((btn) => {
+      btn.addEventListener("click", (e) => {
+        const frame = document.createElement("div");
+        frame.className = "overlay__frame overlay__frame--sheet";
+        frame.append(document.getElementById(btn.dataset.jd).content.cloneNode(true));
+        openOverlay(frame);
+        // Opened from the keyboard (no pointer clicks): move focus into the sheet
+        if (e.detail === 0) frame.querySelector("[data-close]")?.focus({ preventScroll: true });
       });
     });
 
