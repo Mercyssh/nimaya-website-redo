@@ -1537,6 +1537,9 @@ a.press__card:hover,
 .callouts { position: relative; z-index: 1; display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 24px; }
 .callouts .callout { grid-template-columns: minmax(0, 1fr); align-content: start; justify-items: start; gap: 24px; margin: 0; }
 .callouts .callout__img { width: 120px; height: 120px; }
+/* A banner runs edge to edge across the top of its callout */
+.callout__banner { display: block; width: calc(100% + 72px); max-width: none; height: auto; margin: -32px -36px 0; }
+@media (max-width: 600px) { .callout__banner { width: calc(100% + 48px); margin: -24px -24px 0; } }
 .callout:not(.callout--light) .em { color: var(--yellow); }
 @media (max-width: 900px) { .callouts { grid-template-columns: minmax(0, 1fr); } }
 /* Logos straight on the page, no tiles */
