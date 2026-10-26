@@ -50,9 +50,10 @@
   <main>
 
     <!-- Landing: a dark photo hero, Home's look at a shorter height -->
-    <div class="hero landing page-hero" style="--focus: 50% 50%">
-      <figure class="page-hero__photo"><img src="../../assets/img/photos/genai-hero.webp" alt="Naaris in Mumbai huddled over their phones and notes, working through a GenAI task" width="2000" height="1125" fetchpriority="high"></figure>
+    <div class="hero landing page-hero page-hero--ai" style="--focus: 50% 40%">
+      <figure class="page-hero__photo"><img src="../../assets/img/photos/naaris-laptop.webp" alt="Three Naaris working through a GenAI task together on a laptop" width="1351" height="757" fetchpriority="high"></figure>
       <div class="landing__shade" aria-hidden="true"></div>
+      <div class="page-hero__tech" aria-hidden="true"></div>
       <div class="wrap page-hero__content">
           <h1 class="hero__title">
             <span class="line">The GenAI Ready</span>
@@ -75,12 +76,29 @@
           <h2 class="display">How Naaris <span class="script"><span class="script__swish" aria-hidden="true"></span>Lear<span class="script__end">n<img class="script__earmarks" src="../../assets/Motifs/earmarks.svg" alt="" width="17" height="18"></span></span></h2>
           <p class="body" data-reveal="up">The program is built on practice, not memorisation. From the first session, Naaris <b class="em">experiment, build and apply what they learn</b> to real problems.</p>
         </div>
-        <div class="strip" aria-label="Naaris learning in three cities">
-          <figure class="strip__item" data-unmask><img src="../../assets/img/photos/genai-learn-jaipur.webp" alt="Naaris in a Jaipur computer lab following a session" width="1200" height="900" loading="lazy"><figcaption>Jaipur</figcaption></figure>
-          <figure class="strip__item" data-unmask><img src="../../assets/img/photos/genai-learn-bahadurgarh.webp" alt="Naaris in Bahadurgarh working through a task together" width="1200" height="900" loading="lazy"><figcaption>Bahadurgarh</figcaption></figure>
-          <figure class="strip__item" data-unmask><img src="../../assets/img/photos/genai-learn-mumbai.webp" alt="Naaris in Mumbai trying a prompt together on their phones" width="1200" height="900" loading="lazy"><figcaption>Mumbai</figcaption></figure>
+        <div class="carousel" data-carousel data-reveal="up">
+          <ul class="carousel__track" aria-label="Naaris learning across cities">
+            <li class="carousel__item"><img src="../../assets/img/photos/learn-jaipur-lab.webp" alt="A trainer leading a session in a Jaipur computer lab" width="1200" height="900" loading="lazy"><span class="carousel__place">Jaipur</span></li>
+            <li class="carousel__item"><img src="../../assets/img/photos/genai-learn-bahadurgarh.webp" alt="Naaris in Bahadurgarh working through a task together" width="1200" height="900" loading="lazy"><span class="carousel__place">Bahadurgarh</span></li>
+            <li class="carousel__item"><img src="../../assets/img/photos/learn-mumbai-pair.webp" alt="Two Naaris in Mumbai working it out together on a phone" width="1200" height="900" loading="lazy"><span class="carousel__place">Mumbai</span></li>
+            <li class="carousel__item"><img src="../../assets/img/photos/learn-lucknow-model.webp" alt="Naaris in Lucknow presenting the model they built" width="1200" height="900" loading="lazy"><span class="carousel__place">Lucknow</span></li>
+            <li class="carousel__item"><img src="../../assets/img/photos/guwahati-naaris-phones.webp" alt="Naaris in Guwahati filming a session on their phones" width="1200" height="900" loading="lazy"><span class="carousel__place">Guwahati</span></li>
+            <li class="carousel__item"><img src="../../assets/img/photos/learn-gurgaon-session.webp" alt="A Business Communication session at a partner college in Gurugram" width="1200" height="900" loading="lazy"><span class="carousel__place">Gurugram</span></li>
+            <li class="carousel__item"><img src="../../assets/img/photos/learn-chandauli-class.webp" alt="Naaris in a site classroom in Chandauli" width="1200" height="900" loading="lazy"><span class="carousel__place">Chandauli</span></li>
+            <li class="carousel__item"><img src="../../assets/img/photos/genai-learn-jaipur.webp" alt="Naaris in a Jaipur computer lab following a session" width="1200" height="900" loading="lazy"><span class="carousel__place">Jaipur</span></li>
+            <li class="carousel__item"><img src="../../assets/img/photos/learn-bahadurgarh-phone.webp" alt="Two Naaris in Bahadurgarh sharing one phone over their notes" width="1200" height="900" loading="lazy"><span class="carousel__place">Bahadurgarh</span></li>
+            <li class="carousel__item"><img src="../../assets/img/photos/learn-mumbai-circle.webp" alt="Naaris in Mumbai talking a task through in a circle" width="1200" height="900" loading="lazy"><span class="carousel__place">Mumbai</span></li>
+            <li class="carousel__item"><img src="../../assets/img/photos/learn-lucknow-writing.webp" alt="Naaris in Lucknow writing up their project together" width="1200" height="900" loading="lazy"><span class="carousel__place">Lucknow</span></li>
+            <li class="carousel__item"><img src="../../assets/img/photos/genai-learn-mumbai.webp" alt="Naaris in Mumbai trying a prompt together on their phones" width="1200" height="900" loading="lazy"><span class="carousel__place">Mumbai</span></li>
+            <li class="carousel__item"><img src="../../assets/img/photos/learn-jaipur-desks.webp" alt="Naaris at their desks in a Jaipur lab" width="1200" height="900" loading="lazy"><span class="carousel__place">Jaipur</span></li>
+            <li class="carousel__item"><img src="../../assets/img/photos/learn-bahadurgarh-notes.webp" alt="A Naari in Bahadurgarh working on her phone and notebook" width="1200" height="900" loading="lazy"><span class="carousel__place">Bahadurgarh</span></li>
+          </ul>
+          <div class="carousel__nav">
+            <button class="carousel__btn" type="button" data-dir="-1" aria-label="Previous photos"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M15 5l-7 7 7 7"/></svg></button>
+            <button class="carousel__btn" type="button" data-dir="1" aria-label="Next photos"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M9 5l7 7-7 7"/></svg></button>
+          </div>
         </div>
-        <ul class="grid">
+        <ul class="grid grid--learn">
           <li class="icard" data-reveal="up" data-delay="0.1"><img class="icard__icon" src="../../assets/graphics/learningmethod-1.svg" alt="" width="60" height="60"><h3>Interactive sessions</h3><p>Ten live, two-hour sessions led by trainers who make every concept practical.</p></li>
           <li class="icard" data-reveal="up" data-delay="0.2"><img class="icard__icon" src="../../assets/graphics/learningmethod-2.svg" alt="" width="60" height="60"><h3>Hands-on with GenAI</h3><p>Naaris prompt, create, research and automate with the AI tools workplaces use today.</p></li>
           <li class="icard" data-reveal="up" data-delay="0.3"><img class="icard__icon" src="../../assets/graphics/learningmethod-4.svg" alt="" width="60" height="60"><h3>Live projects</h3><p>Real briefs from leading companies and MNCs, not classroom exercises.</p></li>
@@ -100,15 +118,14 @@
         </div>
         <div class="tabs" data-tabs data-reveal="up">
           <div class="tabs__list" role="tablist" aria-label="Curriculum segments">
-            <button class="tabs__btn" type="button" role="tab" id="seg-tab-a" aria-controls="seg-a" aria-selected="true">A · Future-Ready GenAI Skills</button>
-            <button class="tabs__btn" type="button" role="tab" id="seg-tab-b" aria-controls="seg-b" aria-selected="false">B · Smart Workplace Skills</button>
-            <button class="tabs__btn" type="button" role="tab" id="seg-tab-c" aria-controls="seg-c" aria-selected="false">C · Career Readiness</button>
+            <button class="tabs__btn tone-purple" type="button" role="tab" id="seg-tab-a" aria-controls="seg-a" aria-selected="true">Future-Ready GenAI Skills</button>
+            <button class="tabs__btn tone-yellow" type="button" role="tab" id="seg-tab-b" aria-controls="seg-b" aria-selected="false">Smart Workplace Skills</button>
+            <button class="tabs__btn tone-teal" type="button" role="tab" id="seg-tab-c" aria-controls="seg-c" aria-selected="false">Career Readiness</button>
           </div>
           <div class="tabs__panel card seg-card" role="tabpanel" id="seg-a" aria-labelledby="seg-tab-a">
             <div class="seg">
               <div class="seg__intro">
-                <span class="badge badge--purple">A</span>
-                <h3 class="sub-title">Future-Ready GenAI Skills</h3>
+                <h3 class="sub-title seg__title tone-purple">Future-Ready GenAI Skills</h3>
                 <p class="body muted">Using AI to communicate, research, decide and design, and building bots and automated workflows.</p>
                 <ul class="tools" aria-label="Tools you will use">
                   <li><img src="../../assets/Logos/gpt-icon.png" alt="ChatGPT" width="131" height="131"></li>
@@ -134,8 +151,7 @@
           <div class="tabs__panel card seg-card" role="tabpanel" id="seg-b" aria-labelledby="seg-tab-b" hidden>
             <div class="seg">
               <div class="seg__intro">
-                <span class="badge badge--yellow">B</span>
-                <h3 class="sub-title">Smart Workplace Skills</h3>
+                <h3 class="sub-title seg__title tone-yellow">Smart Workplace Skills</h3>
                 <p class="body muted">The human skills AI can’t replace: emotional intelligence, storytelling, problem solving and getting things done.</p>
                 <figure class="seg__photo"><img src="../../assets/img/photos/genai-track-b.webp" alt="A Business Communication session at a partner college in Gurugram" width="1200" height="900" loading="lazy"></figure>
               </div>
@@ -154,8 +170,7 @@
           <div class="tabs__panel card seg-card" role="tabpanel" id="seg-c" aria-labelledby="seg-tab-c" hidden>
             <div class="seg">
               <div class="seg__intro">
-                <span class="badge badge--teal">C</span>
-                <h3 class="sub-title">Career Readiness</h3>
+                <h3 class="sub-title seg__title tone-teal">Career Readiness</h3>
                 <p class="body muted">Job-ready from day one: a personal brand, a plan for the first 90 days at work and the habit of continuous learning.</p>
                 <figure class="seg__photo"><img src="../../assets/img/photos/genai-track-c.webp" alt="A Lucknow team with the poster for the project they built" width="1200" height="900" loading="lazy"></figure>
               </div>
@@ -184,13 +199,31 @@
           <li class="fact"><b>2 hours a session</b><span>Flexible timings</span></li>
           <li class="fact"><b>Hybrid</b><span>Online + in person</span></li>
         </ul>
-        <ol class="weeks">
-          <li class="week" data-reveal="up" data-delay="0.1"><p class="week__no">Week 1</p><p class="week__theme">GenAI skills</p><ul><li>AI &amp; Me</li><li>Prompting AI Like a Boss</li><li>Co-Creating Communication with AI</li><li>Peeling the Onion</li></ul></li>
-          <li class="week" data-reveal="up" data-delay="0.2"><p class="week__no">Week 2</p><p class="week__theme">GenAI skills</p><ul><li>Better Decisions with AI</li><li>Scroll-Stopper Content</li><li>Build Your Bot</li><li>Building Your Auto-Pilot</li></ul></li>
-          <li class="week" data-reveal="up" data-delay="0.3"><p class="week__no">Week 3</p><p class="week__theme">Workplace skills</p><ul><li>New World, New Rules</li><li>Navigating Masks at Work</li><li>Storytelling</li><li>Smart Thinking Habits</li></ul></li>
-          <li class="week" data-reveal="up" data-delay="0.4"><p class="week__no">Week 4</p><p class="week__theme">Workplace skills</p><ul><li>Mastering Jugaad</li><li>Working Like an Entrepreneur</li><li>Productivity Hacks</li><li>Press Send with Confidence</li></ul></li>
-          <li class="week" data-reveal="up" data-delay="0.5"><p class="week__no">Week 5</p><p class="week__theme">Career readiness</p><ul><li>Build Your Personal Brand</li><li>Your First 90 Days</li><li>Your Upskilling Curriculum</li><li>Winning as a Woman at Work</li></ul></li>
-        </ol>
+        <div class="timetable" data-reveal="up">
+          <table>
+            <thead><tr><th scope="col">Week</th><th scope="col">Day</th><th scope="col">Session 1</th><th scope="col">Session 2</th></tr></thead>
+            <tbody class="tone-purple">
+              <tr><th class="timetable__week" scope="rowgroup" rowspan="2"><span>Week 1</span><b class="timetable__track">Future-Ready GenAI Skills</b></th><th class="timetable__day" scope="row">Day 1</th><td><b>AI &amp; Me</b><span>Smarter Together</span></td><td><b>Say It Right, To Get It Right</b><span>Prompting AI Like a Boss</span></td></tr>
+              <tr><th class="timetable__day" scope="row">Day 2</th><td><b>Make Them Say Yes</b><span>Co-Creating Winning Communication with AI</span></td><td><b>Peeling the Onion</b><span>Discovering Layers of Information with AI</span></td></tr>
+            </tbody>
+            <tbody class="tone-purple">
+              <tr><th class="timetable__week" scope="rowgroup" rowspan="2"><span>Week 2</span><b class="timetable__track">Future-Ready GenAI Skills</b></th><th class="timetable__day" scope="row">Day 3</th><td><b>Go This Way or That Way</b><span>How to Make Better Decisions with AI</span></td><td><b>Scroll-Stopper</b><span>Creating Designs &amp; Content that Move People with AI</span></td></tr>
+              <tr><th class="timetable__day" scope="row">Day 4</th><td><b>Build Your Bot</b><span>Training AI to Answer on Your Behalf</span></td><td><b>Building Your Auto-Pilot</b><span>Making Agentic AIs and Automating Workflows</span></td></tr>
+            </tbody>
+            <tbody class="tone-yellow">
+              <tr><th class="timetable__week" scope="rowgroup" rowspan="2"><span>Week 3</span><b class="timetable__track">Smart Workplace Skills</b></th><th class="timetable__day" scope="row">Day 5</th><td><b>New World, New Rules</b><span>What It Takes to Succeed in the Future of Work</span></td><td><b>Navigating Masks at Work</b><span>Leveraging Emotional Intelligence to Get Work Done</span></td></tr>
+              <tr><th class="timetable__day" scope="row">Day 6</th><td><b>Storytelling</b><span>Make Every Word Work for You</span></td><td><b>Smart Thinking Habits</b><span>Staying 1 Step Ahead of Problems</span></td></tr>
+            </tbody>
+            <tbody class="tone-yellow">
+              <tr><th class="timetable__week" scope="rowgroup" rowspan="2"><span>Week 4</span><b class="timetable__track">Smart Workplace Skills</b></th><th class="timetable__day" scope="row">Day 7</th><td><b>Mastering Jugaad</b><span>Solving Problems Like AI Never Can</span></td><td><b>Working Like an Entrepreneur</b><span>Breaking the Ceiling of What’s Possible</span></td></tr>
+              <tr><th class="timetable__day" scope="row">Day 8</th><td><b>Productivity Hacks and Habits</b><span>Get It All Done Without Burning Out</span></td><td><b>Press Send with Confidence</b><span>The Mechanics of Messages That Get Results</span></td></tr>
+            </tbody>
+            <tbody class="tone-teal">
+              <tr><th class="timetable__week" scope="rowgroup" rowspan="2"><span>Week 5</span><b class="timetable__track">Career Readiness</b></th><th class="timetable__day" scope="row">Day 9</th><td><b>Build Your Personal Brand</b><span>On LinkedIn and Offline Networks</span></td><td><b>Your First 90 Days</b><span>Surviving &amp; Shining in a New Job</span></td></tr>
+              <tr><th class="timetable__day" scope="row">Day 10</th><td><b>Building Your Own Upskilling Curriculum</b><span>Keep growing after the program</span></td><td><b>Winning as a Woman in the World of Work</b><span>Navigating careers with confidence</span></td></tr>
+            </tbody>
+          </table>
+        </div>
       </div>
     </section>
 
@@ -200,21 +233,21 @@
         <div class="head">
           <h2 class="display">Beyond the <span class="script script--wide"><span class="script__swish" aria-hidden="true"></span>Classroo<span class="script__end">m<img class="script__earmarks" src="../../assets/Motifs/earmarks.svg" alt="" width="17" height="18"></span></span></h2>
         </div>
+        <div class="callouts">
         <div class="callout" data-reveal="up">
           <img class="callout__img" src="../../assets/img/photos/indiaai-2.webp" alt="IndiaAI National AI Literacy Program" width="720" height="700" loading="lazy">
           <div>
             <p class="callout__title">Now part of the <em>IndiaAI</em> National AI Literacy Program</p>
-            <p class="body">GenAI Ready Naari is part of the Government of India’s IndiaAI initiative. Every Naari who completes the program earns a recognised certificate carrying the IndiaAI logo.</p>
+            <p class="body">GenAI Ready Naari is part of the Government of India’s IndiaAI initiative and its <b class="em">National AI Literacy Program</b>. Every Naari who completes the program earns a recognised certificate carrying the IndiaAI logo.</p>
           </div>
-          <span class="callout__tag">#NationalAILiteracyProgram</span>
         </div>
-        <div class="callout callout--light" data-reveal="up">
+        <div class="callout callout--light" data-reveal="up" data-delay="0.15">
           <img class="callout__img callout__img--photo" src="../../assets/img/photos/genai-credit.webp" alt="A Naari in Mumbai holding her GenAI Ready Naari certificate" width="900" height="900" loading="lazy">
           <div>
             <p class="callout__title">Earn an <em>NSQF-aligned academic credit</em></p>
-            <p class="body">The program carries a 30-hour credit under the National Skills Qualifications Framework, governed by NCVET and awarded by Jindal Steel. Learners who complete the 30 hours and pass the assessment have the credit added automatically to their Academic Bank of Credits (ABC) via their APAAR ID, under the NEP.</p>
+            <p class="body">The program carries a <b class="em">30-hour credit</b> under the National Skills Qualifications Framework, governed by NCVET and awarded by Jindal Steel. Learners who complete the 30 hours and pass the assessment have the credit added automatically to their Academic Bank of Credits (ABC) via their APAAR ID, under the NEP.</p>
           </div>
-          <span class="callout__tag">30-hour credit</span>
+        </div>
         </div>
         <div class="split split--support">
           <div class="split__text">
@@ -222,7 +255,7 @@
             <p class="body" data-reveal="up">From video introductions to portfolios built on real projects, Naaris are prepared for real hiring environments and learn to present themselves with confidence.</p>
             <h3 class="sub-title" data-reveal="up">Live projects with leading companies</h3>
             <p class="body" data-reveal="up">Naaris work on real briefs from companies and MNCs, so they graduate with experience as well as knowledge.</p>
-            <ul class="logos" data-reveal="up">
+            <ul class="logos logos--plain" data-reveal="up">
               <li class="logos__item"><img src="../../assets/img/logos/pepsico.webp" alt="PepsiCo" width="514" height="120" loading="lazy"></li>
               <li class="logos__item"><img src="../../assets/img/logos/jio.webp" alt="Jio Communications" width="391" height="120" loading="lazy"></li>
             </ul>
@@ -233,8 +266,7 @@
         </div>
         <div class="mentors">
           <h3 class="sub-title" data-reveal="up">Guest mentors</h3>
-          <p class="body muted" data-reveal="up">Leaders from the corporate world share what it takes to build a successful career.</p>
-          <ul class="people people--sm">
+          <ul class="people people--mentors">
             <li class="person" data-reveal="up" data-delay="0.1"><div class="person__photo"><img src="../../assets/img/people/fm-geeta.webp" alt="" loading="lazy"></div><p class="person__name">Geeta Goel</p><p class="person__role">Head of Growth Initiatives, Michael &amp; Susan Dell Foundation</p></li>
             <li class="person" data-reveal="up" data-delay="0.2"><div class="person__photo"><img src="../../assets/img/people/gm-harshita.webp" alt="" loading="lazy"></div><p class="person__name">Harshita Duggal</p><p class="person__role">Consultant at EY</p></li>
             <li class="person" data-reveal="up" data-delay="0.3"><div class="person__photo"><img src="../../assets/img/people/gm-prutha.webp" alt="" loading="lazy"></div><p class="person__name">Prutha Dubhashi</p><p class="person__role">AI Labs @ BrowserStack</p></li>
@@ -250,15 +282,19 @@
           <h2 class="display">Who Is This <span class="script"><span class="script__swish" aria-hidden="true"></span>Fo<span class="script__end">r<img class="script__earmarks" src="../../assets/Motifs/earmarks.svg" alt="" width="17" height="18"></span></span></h2>
           <p class="body" data-reveal="up">Young women preparing for entry-level roles in HR, finance, IT, sales, operations or data, where <b class="em">GenAI and workplace skills are now essential</b>. We select women who:</p>
         </div>
-        <figure class="band" data-unmask><img src="../../assets/img/photos/genai-who.webp" alt="College students in a Jaipur cohort listening to a session" width="2000" height="800" loading="lazy"></figure>
-        <ul class="grid">
-          <li class="icard" data-reveal="up" data-delay="0.1"><img class="icard__icon" src="../../assets/graphics/Have2.svg" alt="" width="40" height="40"><h3>Look beyond degrees</h3><p>Believe that degrees and technical skills alone aren’t enough.</p></li>
-          <li class="icard" data-reveal="up" data-delay="0.2"><img class="icard__icon" src="../../assets/graphics/Have4.svg" alt="" width="40" height="40"><h3>Are ambitious</h3><p>Want to deliver great work and make an impact.</p></li>
-          <li class="icard" data-reveal="up" data-delay="0.3"><img class="icard__icon" src="../../assets/graphics/Need4.svg" alt="" width="40" height="40"><h3>Are resilient</h3><p>Come from difficult social or financial circumstances, yet are determined to succeed.</p></li>
-          <li class="icard" data-reveal="up" data-delay="0.1"><img class="icard__icon" src="../../assets/graphics/Have3.svg" alt="" width="40" height="40"><h3>Are committed</h3><p>Can attend 100% of the online and offline sessions.</p></li>
-          <li class="icard" data-reveal="up" data-delay="0.2"><img class="icard__icon" src="../../assets/graphics/Need1.svg" alt="" width="40" height="40"><h3>Are getting ready for work</h3><p>Are in their second or final year of college, or recent graduates.</p></li>
-          <li class="icard" data-reveal="up" data-delay="0.3"><img class="icard__icon" src="../../assets/graphics/how-learn-icon-01.svg" alt="" width="60" height="60"><h3>Speak English comfortably</h3><p>Can communicate in English and have access to a smartphone.</p></li>
-        </ul>
+        <div class="who">
+          <ul class="who__list">
+            <li class="who__trait" data-reveal="up" data-delay="0.1"><img class="who__icon" src="../../assets/graphics/Have2.svg" alt="" width="40" height="40"><h3>Look beyond degrees</h3><p>Believe that degrees and technical skills alone aren’t enough.</p></li>
+            <li class="who__trait" data-reveal="up" data-delay="0.2"><img class="who__icon" src="../../assets/graphics/Have4.svg" alt="" width="40" height="40"><h3>Are ambitious</h3><p>Want to deliver great work and make an impact.</p></li>
+            <li class="who__trait" data-reveal="up" data-delay="0.3"><img class="who__icon" src="../../assets/graphics/Need4.svg" alt="" width="40" height="40"><h3>Are resilient</h3><p>Come from difficult social or financial circumstances, yet are determined to succeed.</p></li>
+          </ul>
+          <figure class="who__figure" data-reveal="up"><img src="../../assets/img/photos/blue-jacket-cutout.webp" alt="A Naari speaking with confidence into a microphone" width="507" height="892" loading="lazy"></figure>
+          <ul class="who__list">
+            <li class="who__trait" data-reveal="up" data-delay="0.1"><img class="who__icon" src="../../assets/graphics/Have3.svg" alt="" width="40" height="40"><h3>Are committed</h3><p>Can attend 100% of the online and offline sessions.</p></li>
+            <li class="who__trait" data-reveal="up" data-delay="0.2"><img class="who__icon" src="../../assets/graphics/Need1.svg" alt="" width="40" height="40"><h3>Are getting ready for work</h3><p>Are in their second or final year of college, or recent graduates.</p></li>
+            <li class="who__trait" data-reveal="up" data-delay="0.3"><img class="who__icon" src="../../assets/graphics/how-learn-icon-01.svg" alt="" width="40" height="40"><h3>Speak English comfortably</h3><p>Can communicate in English and have access to a smartphone.</p></li>
+          </ul>
+        </div>
       </div>
     </section>
 
@@ -269,15 +305,14 @@
           <h2 class="display">What Naaris <span class="script"><span class="script__swish" aria-hidden="true"></span>Gai<span class="script__end">n<img class="script__earmarks" src="../../assets/Motifs/earmarks.svg" alt="" width="17" height="18"></span></span></h2>
           <p class="body" data-reveal="up">Beyond AI skills, every Naari leaves with <b class="em">credentials, experience and a network</b> that set her apart in the job market.</p>
         </div>
-        <ul class="grid" style="--cols: 4">
+        <ul class="grid grid--gain" style="--cols: 4">
           <li class="icard" data-reveal="up" data-delay="0.1"><span class="icard__glyph" aria-hidden="true"><svg viewBox="0 0 24 24"><circle cx="9" cy="8" r="3"/><circle cx="17" cy="9" r="2.5"/><path d="M3.5 19c.6-3.2 2.8-5 5.5-5s4.9 1.8 5.5 5M14.6 14.5c.7-.3 1.5-.5 2.4-.5 2.2 0 3.8 1.4 4.3 4"/></svg></span><h3>A network</h3><p>A community of Nimaya Naaris, guest speakers and mentors.</p></li>
           <li class="icard" data-reveal="up" data-delay="0.2"><span class="icard__glyph" aria-hidden="true"><svg viewBox="0 0 24 24"><rect x="6.5" y="6.5" width="11" height="11" rx="2.5"/><path d="M10 3v3.5M14 3v3.5M10 17.5V21M14 17.5V21M3 10h3.5M3 14h3.5M17.5 10H21M17.5 14H21M10.5 12h3"/></svg></span><h3>Future readiness</h3><p>The ability to work with AI, instead of being replaced by it.</p></li>
           <li class="icard" data-reveal="up" data-delay="0.3"><span class="icard__glyph" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M2.5 9.5L12 5l9.5 4.5L12 14z"/><path d="M6.5 11.5v4.2c1.5 1.4 3.4 2.1 5.5 2.1s4-.7 5.5-2.1v-4.2M21.5 9.5v5"/></svg></span><h3>An academic credit</h3><p>An NSQF-aligned credit added to her Academic Bank of Credits via her APAAR ID.</p></li>
           <li class="icard" data-reveal="up" data-delay="0.4"><span class="icard__glyph" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M3.5 17.5l6-6 4 4 7-7.5"/><path d="M15 8h5.5v5.5"/></svg></span><h3>An edge in placements</h3><p>Stand out from candidates with only degrees and technical skills.</p></li>
-          <li class="icard" data-reveal="up" data-delay="0.1"><span class="icard__glyph" aria-hidden="true"><svg viewBox="0 0 24 24"><circle cx="12" cy="9.5" r="6.5"/><path d="M9.2 9.6l2 2 3.6-3.8M8.4 15l-1.6 6 5.2-2.6 5.2 2.6-1.6-6"/></svg></span><h3>A recognised certificate</h3><p>Carrying the IndiaAI logo, showing employers she has mastered GenAI and workplace skills.</p></li>
+          <li class="icard icard--cert" data-reveal="up" data-delay="0.4"><img class="icard__cert" src="../../assets/img/photos/certificate.webp" alt="Sample GenAI Ready Naari certificate" width="1000" height="634" loading="lazy"><h3>A recognised certificate</h3><p>Carrying the IndiaAI logo, showing employers she has mastered GenAI and workplace skills.</p></li>
           <li class="icard" data-reveal="up" data-delay="0.2"><span class="icard__glyph" aria-hidden="true"><svg viewBox="0 0 24 24"><rect x="3.5" y="5.5" width="17" height="13" rx="2.5"/><path d="M4.5 7l7.5 6 7.5-6"/></svg></span><h3>A personal LoR</h3><p>A personalised letter of recommendation from Nimaya’s founders.</p></li>
           <li class="icard" data-reveal="up" data-delay="0.3"><span class="icard__glyph" aria-hidden="true"><svg viewBox="0 0 24 24"><rect x="3.5" y="7.5" width="17" height="12" rx="2.5"/><path d="M9 7.5V5.5A1.5 1.5 0 0 1 10.5 4h3A1.5 1.5 0 0 1 15 5.5v2M3.5 12.5h17"/></svg></span><h3>Live project experience</h3><p>Real projects with companies, so she graduates with experience.</p></li>
-          <li class="icard icard--image" data-reveal="up" data-delay="0.4"><img src="../../assets/img/photos/certificate.webp" alt="Sample GenAI Ready Naari certificate" width="1000" height="634" loading="lazy"></li>
         </ul>
       </div>
     </section>

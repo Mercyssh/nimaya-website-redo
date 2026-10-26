@@ -33,128 +33,6 @@
     els.forEach((el) => io.observe(el));
   }
 
-  /* ---------- Lottie ---------- */
-  function initLottie(root = document) {
-    if (!window.lottie || !window.NIMAYA_LOTTIE) return;
-    root.querySelectorAll("[data-lottie]").forEach((el) => {
-      if (el.dataset.lottieReady) return;
-      const data = window.NIMAYA_LOTTIE[el.dataset.lottie];
-      if (!data) return;
-      el.dataset.lottieReady = "1";
-      window.lottie.loadAnimation({
-        container: el,
-        renderer: "svg",
-        loop: true,
-        autoplay: !reduceMotion,
-        // lottie mutates the data it is given, so every instance gets its own copy
-        animationData: JSON.parse(JSON.stringify(data)),
-        rendererSettings: { preserveAspectRatio: "xMidYMid slice" },
-      });
-    });
-  }
-
-  /* ---------- Hero hashtag rotator ----------
-     Framer: AnimatePresence mode="wait"; the current text exits to y:30 / opacity 0,
-     then the next enters from y:-30 / opacity 0. No transition is set, so Framer
-     Motion's defaults apply (spring 500/25 for y, 0.3s ease for opacity). */
-  function initRotator(el) {
-    const texts = [...el.children].map((s) => s.textContent);
-    el.innerHTML = "";
-    let index = 0;
-    let busy = false;
-
-    // The texts are absolutely positioned, so the box is sized to the incoming text;
-    // CSS transitions the width once the first size has been set.
-    // Grows before the swap, shrinks after it, so neither text is clipped mid-animation.
-    function measure(text) {
-      const probe = document.createElement("span");
-      probe.textContent = text;
-      probe.style.visibility = "hidden";
-      el.append(probe);
-      const w = Math.ceil(probe.getBoundingClientRect().width);
-      probe.remove();
-      return w;
-    }
-    function fit(text, { grow = true, shrink = true } = {}) {
-      const w = measure(text);
-      const now = parseFloat(el.style.width) || 0;
-      if ((w > now && grow) || (w < now && shrink) || !now) el.style.width = `${w}px`;
-    }
-
-    function mount(text) {
-      const span = document.createElement("span");
-      span.textContent = text;
-      el.append(span);
-      const m = bind(span, { y: -30, opacity: 0 });
-      if (reduceMotion) m.set({ y: 0, opacity: 1 });
-      else m.animate({ y: 0, opacity: 1 });
-      return span;
-    }
-
-    fit(texts[0]);
-    document.fonts.ready.then(() => {
-      fit(texts[index]);
-      requestAnimationFrame(() => el.classList.add("is-fitted"));
-    });
-    let current = mount(texts[0]);
-    if (texts.length < 2 || reduceMotion) return;
-    const interval = Number(el.dataset.interval) || 2000;
-    setInterval(async () => {
-      if (busy) return;
-      busy = true;
-      index = (index + 1) % texts.length;
-      fit(texts[index], { shrink: false });
-      await current.__motion.animate({ y: 30, opacity: 0 });
-      current.remove();
-      fit(texts[index], { grow: false });
-      current = mount(texts[index]);
-      busy = false;
-    }, interval);
-  }
-
-  /* ---------- Milestones slideshow ----------
-     Port of Framer's SlideShow: an unbounded position animated with a physics spring
-     (stiffness 200, damping 40, mass 1) and wrapped across three copies of the cards.
-     Interrupting keeps the current velocity, as in Framer Motion. */
-  function initSlider(root) {
-    const track = root.querySelector(".slider__track");
-    const originals = [...track.children];
-    const n = originals.length;
-    originals.forEach((c) => track.appendChild(c.cloneNode(true)));
-    originals.slice().reverse().forEach((c) => track.insertBefore(c.cloneNode(true), track.firstChild));
-
-    const gap = parseFloat(getComputedStyle(track).columnGap) || 0;
-    const step = () => originals[0].getBoundingClientRect().width + gap;
-    const wrap = (min, max, v) => { const r = max - min; return ((((v - min) % r) + r) % r) + min; };
-
-    let slide = n; // Framer starts at startFrom + item count
-    const pos = new window.Motion.MotionValue(-slide * step(), (v) => {
-      const set = n * step();
-      track.style.transform = `translateX(${wrap(-set, -2 * set, v)}px)`;
-    });
-    pos.set(-slide * step());
-
-    const transition = { type: "spring", stiffness: 200, damping: 40, mass: 1 };
-    const interval = (Number(root.dataset.interval) || 3000);
-    let timer = null;
-    let inView = false;
-
-    function play() {
-      clearTimeout(timer);
-      if (pos.value !== -slide * step()) pos.animateTo(-slide * step(), reduceMotion ? { type: "tween", duration: 0 } : transition);
-      // Like Framer: the next slide is queued from the start of this one, and only while on screen.
-      if (!reduceMotion && inView && !document.hidden) {
-        timer = setTimeout(() => { slide += 1; play(); }, interval);
-      }
-    }
-
-    root.querySelector(".slider__arrow--prev").addEventListener("click", () => { slide -= 1; play(); });
-    root.querySelector(".slider__arrow--next").addEventListener("click", () => { slide += 1; play(); });
-    new IntersectionObserver(([e]) => { inView = e.isIntersecting; play(); }).observe(root);
-    document.addEventListener("visibilitychange", play);
-    window.addEventListener("resize", () => pos.set(-slide * step()));
-  }
-
   /* ---------- Partner logo ticker ----------
      Port of Framer's Ticker: a linear Web Animation over a whole number of sets,
      at 100px/s, slowed to 0.5x while hovered, paused offscreen. */
@@ -310,81 +188,6 @@
       clearInterval(timer);
       if (entry.isIntersecting) timer = setInterval(step, every);
     }).observe(el);
-  }
-
-  /* ---------- Pinned chapters ----------
-     The section grows taller and its stage sticks; scroll progress through the
-     section drives the content. Milestones: the row slides sideways. */
-  function initPins() {
-    if (reduceMotion) return;
-    const progressOf = (sec) => {
-      const r = sec.getBoundingClientRect();
-      return clamp(-r.top / Math.max(1, r.height - window.innerHeight));
-    };
-
-    const ms = document.querySelector('[data-pin="milestones"]');
-    if (ms) {
-      const track = ms.querySelector(".slider__track");
-      const viewport = ms.querySelector(".slider__viewport");
-      const cards = [...track.querySelectorAll(".stat")];
-      const trail = ms.querySelector(".milestones__trail");
-      const dots = [...ms.querySelectorAll(".journey__dots li")];
-      const now = ms.querySelector(".journey__now");
-      const num = ms.querySelector(".milestones__num");
-      let shown = -1;
-      const pad = (n) => String(n).padStart(2, "0");
-      let dist = 0, start = 0, half = 1, arc = 0, centers = [];
-      ms.classList.add("is-pinned");
-      const measure = () => {
-        track.style.transform = "";
-        // The row travels from the first card centred to the last card centred
-        half = viewport.clientWidth / 2;
-        centers = cards.map((c) => c.offsetLeft + c.offsetWidth / 2);
-        start = half - centers[0];
-        dist = Math.max(0, centers[centers.length - 1] - centers[0]);
-        ms.style.height = `${window.innerHeight + dist * 1.3}px`;
-        // Cards ride a parabola: highest at the centre, dipping `arc` px at the viewport edges
-        arc = Math.min(56, half * 0.1);
-        ms.style.setProperty("--arc", `${arc.toFixed(0)}px`);
-        // The trail is a quadratic curve, i.e. the same parabola (viewBox is 40 units tall)
-        const trailH = trail ? trail.getBoundingClientRect().height : 0;
-        if (trailH) {
-          const k = (arc * 40) / trailH;
-          trail.querySelector("path").setAttribute("d", `M0 ${(20 + k).toFixed(1)} Q 300 ${(20 - k).toFixed(1)} 600 ${(20 + k).toFixed(1)}`);
-        }
-      };
-      measure();
-      window.addEventListener("resize", measure);
-      window.addEventListener("load", measure);
-      onScroll(() => {
-        const p = clamp((progressOf(ms) - 0.06) / 0.88);
-        const x = start - p * dist;
-        track.style.transform = `translateX(${x.toFixed(1)}px)`;
-        cards.forEach((card, i) => {
-          const d = (centers[i] + x - half) / half; // -1 at the left edge, 1 at the right
-          card.style.translate = `0 ${(arc * d * d).toFixed(1)}px`;
-          card.style.rotate = `${(Math.atan((2 * arc * d) / half) * 180 / Math.PI).toFixed(2)}deg`;
-          // Titles turn coral once their card reaches the centre, and stay lit after it passes
-          card.classList.toggle("is-lit", d <= 0.03);
-        });
-        // Progress dots, counter and the big index follow the last lit card
-        const lit = Math.max(1, cards.filter((c) => c.classList.contains("is-lit")).length);
-        if (lit !== shown) {
-          shown = lit;
-          dots.forEach((dot, i) => {
-            dot.classList.toggle("is-lit", i < lit);
-            dot.classList.toggle("is-now", i === lit - 1);
-          });
-          if (now) now.textContent = pad(lit);
-          if (num) {
-            num.classList.add("is-swapping");
-            clearTimeout(num.__t);
-            num.__t = setTimeout(() => { num.textContent = pad(lit); num.classList.remove("is-swapping"); }, 200);
-          }
-        }
-      });
-    }
-
   }
 
   /* ---------- Counters ("10,000+" counts up the first time it is seen) ---------- */
@@ -968,222 +771,6 @@
     else pageVisible.then(() => onceInView([root], start, { threshold: 0.3 }));
   }
 
-  /* ---------- Atlas (home) ----------
-     India at night: every city where Naaris train is a light, labelled on the map.
-     Clicking a city (or anything marked data-atlas-city="id") opens one popup anchored
-     to it; only one is ever open. Hover only brightens. Esc, the close button or a
-     click elsewhere closes it. */
-  function initAtlas(root) {
-    const geo = window.NIMAYA_INDIA;
-    const places = window.NIMAYA_REACH;
-    if (!geo || !places) return;
-    const NS = "http://www.w3.org/2000/svg";
-    const assets = root.dataset.assets || "assets/";
-    const base = assets.replace(/assets\/$/, "");
-    const box = root.querySelector(".atlas__box");
-
-    const svg = document.createElementNS(NS, "svg");
-    svg.setAttribute("class", "atlas__svg");
-    svg.setAttribute("viewBox", `0 0 ${geo.width} ${geo.height}`);
-    svg.setAttribute("aria-hidden", "true");
-    const live = new Set(places.filter((p) => p.status !== "soon").map((p) => p.state));
-    const statePath = {};
-    Object.entries(geo.states).forEach(([name, d], i) => {
-      const path = document.createElementNS(NS, "path");
-      path.setAttribute("d", d);
-      path.setAttribute("class", `atlas__state${live.has(name) ? " is-active" : ""}`);
-      path.style.setProperty("--i", i);
-      statePath[name] = path;
-      svg.append(path);
-    });
-    // A faint route joining the cities, north to south and out east: one network
-    const byId = Object.fromEntries(places.map((p) => [p.id, p]));
-    const route = ["kashmir", "haryana", "jaipur", "ahmedabad", "mumbai", "nagpur", "lucknow", "varanasi", "guwahati"]
-      .filter((id) => byId[id]).map((id) => geo.project(...byId[id].points[0]));
-    route.slice(1).forEach(([x2, y2], k) => {
-      const [x1, y1] = route[k];
-      const mx = (x1 + x2) / 2, my = (y1 + y2) / 2;
-      const len = Math.hypot(x2 - x1, y2 - y1);
-      const bow = Math.min(60, len * 0.22);
-      const arc = document.createElementNS(NS, "path");
-      arc.setAttribute("d", `M${x1},${y1} Q${mx + ((y1 - y2) / len) * bow},${my + ((x2 - x1) / len) * bow} ${x2},${y2}`);
-      arc.setAttribute("class", "atlas__route");
-      arc.style.setProperty("--k", k);
-      svg.append(arc);
-    });
-    const layer = document.createElement("div");
-    layer.className = "atlas__pins";
-    box.append(svg, layer);
-
-    const pop = document.createElement("div");
-    pop.className = "atlas__pop";
-    pop.setAttribute("role", "dialog");
-    pop.setAttribute("aria-live", "polite");
-    pop.hidden = true;
-    root.append(pop);
-
-    const pct = ([lon, lat]) => {
-      const [x, y] = geo.project(lon, lat);
-      return [(x / geo.width) * 100, (y / geo.height) * 100];
-    };
-    const triggers = (id) => document.querySelectorAll(`[data-atlas-city="${id}"]`);
-    const items = places.map((place, i) => {
-      place.points.slice(1).forEach((pt) => {
-        const [x, y] = pct(pt);
-        const dot = document.createElement("span");
-        dot.className = "atlas__minor";
-        dot.style.cssText = `left:${x}%;top:${y}%`;
-        dot.dataset.place = place.id;
-        layer.append(dot);
-      });
-      const [x, y] = pct(place.points[0]);
-      const pin = document.createElement("button");
-      pin.type = "button";
-      pin.className = `atlas__pin atlas__pin--${place.label || "right"}${place.status === "soon" ? " is-soon" : ""}`;
-      pin.style.cssText = `left:${x}%;top:${y}%;--k:${i}`;
-      pin.setAttribute("aria-label", `${place.name}, ${place.subtitle || place.state}${place.status === "soon" ? ", coming soon" : ""}`);
-      pin.setAttribute("aria-expanded", "false");
-      pin.innerHTML = `<span class="atlas__dot"></span><span class="atlas__label" aria-hidden="true">${place.name}</span>`;
-      pin.addEventListener("click", () => (current === i ? close() : open(i)));
-      layer.append(pin);
-      if (place.photo) { const img = new Image(); img.src = assets + place.photo; }
-      return { place, pin };
-    });
-
-    // Optional city index (a list of buttons) somewhere else on the page
-    const index = root.dataset.index && document.querySelector(root.dataset.index);
-    if (index) {
-      index.innerHTML = places.map((p) => {
-        const top = p.lines.find((l) => l.num && l.num !== "Soon");
-        return `<li><button class="atlas-index__row${p.status === "soon" ? " is-soon" : ""}" type="button" data-atlas-city="${p.id}">
-          <span class="atlas-index__name">${p.name}${p.state === p.name ? "" : `<small>${p.state}</small>`}</span>
-          <span class="atlas-index__num">${p.status === "soon" ? "Soon" : top ? top.num : "New"}</span></button></li>`;
-      }).join("");
-    }
-
-    // Anything else on the page can open a city: photos, index rows
-    places.forEach((p, i) => triggers(p.id).forEach((el) => {
-      el.addEventListener("click", () => open(i, el));
-      el.addEventListener("pointerenter", () => items[i].pin.classList.add("is-hint"));
-      el.addEventListener("pointerleave", () => items[i].pin.classList.remove("is-hint"));
-    }));
-
-    const html = (p) => p.status === "soon" ? `
-      <button class="atlas__x" type="button" aria-label="Close"><svg viewBox="0 0 16 16" aria-hidden="true"><path d="M4 4l8 8M12 4l-8 8"/></svg></button>
-      <div class="atlas__pop-body">
-        <span class="atlas__badge">Coming soon</span>
-        <h3 class="atlas__place">${p.name}</h3>
-        <p class="atlas__region">${p.state}</p>
-        <p class="atlas__soon">GenAI Ready Naari opens here next.</p>
-        <a class="atlas__soon-link" href="${base}contact-us/">Help us launch here <span aria-hidden="true">→</span></a>
-      </div>` : `
-      <button class="atlas__x" type="button" aria-label="Close"><svg viewBox="0 0 16 16" aria-hidden="true"><path d="M4 4l8 8M12 4l-8 8"/></svg></button>
-      ${p.photo ? `<figure class="atlas__photo"><img src="${assets}${p.photo}" alt="${p.photoAlt || ""}"></figure>` : ""}
-      <div class="atlas__pop-body">
-        <p class="atlas__region">${p.subtitle || p.state}</p>
-        <h3 class="atlas__place">${p.name}</h3>
-        <ul class="atlas__lines">${p.lines.map((l) => `<li>${l.num ? `<b>${l.num}</b>` : ""}<span>${l.text}</span></li>`).join("")}</ul>
-        ${p.partners ? `<div class="atlas__logos"><span>With</span>${p.partners.map((src) => `<img src="${assets}img/${src}" alt="">`).join("")}</div>` : ""}
-      </div>`;
-
-    // Above the city when there is room, then below, then beside it; kept inside the panel
-    function position() {
-      root.classList.toggle("is-narrow", root.offsetWidth < 520);
-      if (current < 0) return;
-      const r = root.getBoundingClientRect();
-      const p = items[current].pin.getBoundingClientRect();
-      const px = p.left + p.width / 2 - r.left;
-      const py = p.top + p.height / 2 - r.top;
-      // It may bleed a little past the panel's top and bottom, never past its sides
-      const w = pop.offsetWidth, h = pop.offsetHeight, gap = 16, edge = 10, bleed = 36;
-      const room = { above: py - gap + bleed, below: r.height - py - gap + bleed, right: r.width - px - gap - edge, left: px - gap - edge };
-      const fits = { above: room.above >= h, below: room.below >= h, right: room.right >= w, left: room.left >= w };
-      const side = ["above", "below", "right", "left"].find((k) => fits[k]) || (room.above > room.below ? "above" : "below");
-      let left, top;
-      if (side === "above" || side === "below") {
-        left = clamp(px - w / 2, edge, Math.max(edge, r.width - w - edge));
-        top = side === "above" ? py - gap - h : py + gap;
-        // Nothing fits cleanly (small screens): keep it inside the panel anyway
-        if (!fits[side]) top = clamp(top, -bleed, Math.max(-bleed, r.height - h + bleed));
-        pop.style.setProperty("--ax", `${clamp(px - left, 22, w - 22)}px`);
-      } else {
-        top = clamp(py - h / 2, -bleed, Math.max(-bleed, r.height - h + bleed));
-        left = side === "right" ? px + gap : px - gap - w;
-        pop.style.setProperty("--ay", `${clamp(py - top, 22, h - 22)}px`);
-      }
-      pop.style.left = `${left}px`;
-      pop.style.top = `${top}px`;
-      pop.dataset.side = side;
-    }
-
-    let current = -1;
-    let swap = 0;
-    let opener = null;
-    function mark(i) {
-      items.forEach((it, k) => {
-        const on = k === i;
-        it.pin.classList.toggle("is-current", on);
-        it.pin.setAttribute("aria-expanded", String(on));
-        triggers(it.place.id).forEach((el) => el.classList.toggle("is-current", on));
-      });
-      layer.querySelectorAll(".atlas__minor").forEach((d) => d.classList.toggle("is-current", i >= 0 && d.dataset.place === items[i].place.id));
-      Object.values(statePath).forEach((s) => s.classList.remove("is-selected"));
-      if (i >= 0) statePath[items[i].place.state]?.classList.add("is-selected");
-    }
-    function render(i) {
-      const { place: p } = items[i];
-      pop.innerHTML = html(p);
-      pop.classList.toggle("is-soon", p.status === "soon");
-      pop.setAttribute("aria-label", p.name);
-      pop.hidden = false;
-      position();
-      requestAnimationFrame(() => pop.classList.add("is-open"));
-    }
-    function open(i, from) {
-      opener = from || items[i].pin;
-      // Opened from a photo or list further down the page: bring the map into view
-      if (from) {
-        const r = root.getBoundingClientRect();
-        if (r.top < 0 || r.bottom > window.innerHeight) root.scrollIntoView({ behavior: reduceMotion ? "auto" : "smooth", block: "center" });
-      }
-      if (i === current) return;
-      const was = current;
-      current = i;
-      mark(i);
-      clearTimeout(swap);
-      if (was < 0 || reduceMotion) return render(i);
-      pop.classList.remove("is-open");
-      swap = setTimeout(() => render(i), 160);
-    }
-    function close(restore) {
-      if (current < 0) return;
-      current = -1;
-      mark(-1);
-      clearTimeout(swap);
-      pop.classList.remove("is-open");
-      swap = setTimeout(() => { pop.hidden = true; }, reduceMotion ? 0 : 200);
-      if (restore) opener?.focus();
-    }
-    pop.addEventListener("click", (e) => { if (e.target.closest(".atlas__x")) close(true); });
-    document.addEventListener("keydown", (e) => { if (e.key === "Escape" && current >= 0) close(true); });
-    document.addEventListener("pointerdown", (e) => {
-      if (current < 0 || pop.contains(e.target) || e.target.closest(".atlas__pin, [data-atlas-city]")) return;
-      close();
-    });
-    window.addEventListener("resize", position);
-    // Photos and logos can land after the popup opens; follow its size as they do
-    new ResizeObserver(() => position()).observe(pop);
-    position();
-
-    const show = () => {
-      root.classList.add("is-in");
-      const first = places.findIndex((p) => p.id === root.dataset.open);
-      if (first >= 0) setTimeout(() => open(first), reduceMotion ? 0 : 1300);
-    };
-    if (reduceMotion) show();
-    else pageVisible.then(() => onceInView([root], show, { threshold: 0.3 }));
-  }
-
   /* ---------- How AI runs Nimaya ----------
      An AI core, four agents around it and a ring of Naaris outside. Signals travel
      Naari -> agent -> core and back; a feed under it types out what is happening.
@@ -1368,21 +955,6 @@
     });
   }
 
-  function initMagnet() {
-    if (!finePointer || reduceMotion) return;
-    document.querySelectorAll(".btn").forEach((btn) => {
-      btn.addEventListener("pointermove", (e) => {
-        const r = btn.getBoundingClientRect();
-        btn.style.setProperty("--mx", `${((e.clientX - r.left - r.width / 2) * 0.22).toFixed(1)}px`);
-        btn.style.setProperty("--my", `${((e.clientY - r.top - r.height / 2) * 0.3).toFixed(1)}px`);
-      });
-      btn.addEventListener("pointerleave", () => {
-        btn.style.removeProperty("--mx");
-        btn.style.removeProperty("--my");
-      });
-    });
-  }
-
   // Testimonial cards play a muted preview of their story on hover.
   function initPreviews() {
     if (!finePointer || reduceMotion) return;
@@ -1553,16 +1125,35 @@
     });
   }
 
+  /* ---------- Photo carousel ----------
+     Arrows step a page of photos at a time and wrap at the ends; it also moves on
+     by itself while on screen, pausing while the pointer or focus is inside. */
+  function initCarousel(root) {
+    const track = root.querySelector(".carousel__track");
+    const step = (dir) => {
+      const max = track.scrollWidth - track.clientWidth;
+      const page = track.clientWidth + parseFloat(getComputedStyle(track).columnGap || 0);
+      let to = track.scrollLeft + dir * page;
+      if (dir > 0 && track.scrollLeft >= max - 4) to = 0;
+      else if (dir < 0 && track.scrollLeft <= 4) to = max;
+      track.scrollTo({ left: to, behavior: reduceMotion ? "auto" : "smooth" });
+    };
+    root.querySelectorAll(".carousel__btn").forEach((btn) => btn.addEventListener("click", () => step(+btn.dataset.dir)));
+    if (reduceMotion) return;
+    let seen = false, held = false;
+    const hold = (on) => () => { held = on; };
+    root.addEventListener("pointerenter", hold(true));
+    root.addEventListener("pointerleave", hold(false));
+    root.addEventListener("focusin", hold(true));
+    root.addEventListener("focusout", hold(false));
+    track.addEventListener("touchstart", hold(true), { passive: true });
+    new IntersectionObserver(([e]) => { seen = e.isIntersecting; }).observe(root);
+    setInterval(() => { if (seen && !held && !document.hidden) step(1); }, 4500);
+  }
+
   /* ---------- Boot ---------- */
   function boot() {
     initOverlays();
-    initPins();
-    // A pinned milestone row is driven by scroll; the auto slideshow is the fallback
-    document.querySelectorAll("[data-slider]").forEach((el) => {
-      if (!el.closest(".is-pinned")) initSlider(el);
-    });
-    initLottie(); // after the slider clones its cards, so clones get their own animation
-    document.querySelectorAll("[data-rotator]").forEach(initRotator);
     document.querySelectorAll("[data-ticker]").forEach(initTicker);
     initRise(); // before initDraw: script words move into the rise wrappers
     initDraw();
@@ -1576,14 +1167,13 @@
     initMenu();
     initDropdown();
     document.querySelectorAll("[data-tabs]").forEach(initTabs);
+    document.querySelectorAll("[data-carousel]").forEach(initCarousel);
     document.querySelectorAll("[data-bars]").forEach(initBars);
     document.querySelectorAll("[data-reach-map]").forEach(initReachMap);
     document.querySelectorAll("[data-ai-net]").forEach(initAiNet);
-    document.querySelectorAll("[data-atlas]").forEach(initAtlas);
     initSmoothScroll();
     initCursor();
     initTilt();
-    initMagnet();
     initPreviews();
     initAnchors();
   }
