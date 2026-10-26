@@ -50,14 +50,13 @@
   <main>
 
     <!-- Landing: a dark photo hero, Home's look at a shorter height -->
-    <div class="hero landing page-hero page-hero--ai" style="--focus: 50% 40%">
-      <figure class="page-hero__photo"><img src="../../assets/img/photos/naaris-laptop.webp" alt="Three Naaris working through a GenAI task together on a laptop" width="1351" height="757" fetchpriority="high"></figure>
+    <div class="hero landing page-hero" style="--focus: 50% 40%">
+      <figure class="page-hero__photo page-hero__photo--flip"><img src="../../assets/img/photos/naaris-laptop.webp" alt="Three Naaris working through a GenAI task together on a laptop" width="1351" height="757" fetchpriority="high"></figure>
       <div class="landing__shade" aria-hidden="true"></div>
-      <div class="page-hero__tech" aria-hidden="true"></div>
       <div class="wrap page-hero__content">
           <h1 class="hero__title">
             <span class="line">The GenAI Ready</span>
-            <span class="line"><span class="hero__naari">Naari</span> <span class="script script--wide"><span class="script__swish" aria-hidden="true"></span>Progra<span class="script__end">m<img class="script__earmarks" src="../../assets/Motifs/earmarks.svg" alt="" width="17" height="18"></span></span></span>
+            <span class="line"><span class="hero__naari">Naari</span> <span class="script script--wide"><span class="script__swish" aria-hidden="true"></span>Progra<span class="script__end" style="--em-x: 0.14em; --em-y: -0.04em">m<img class="script__earmarks" src="../../assets/Motifs/earmarks.svg" alt="" width="17" height="18"></span></span></span>
           </h1>
           <p class="page-hero__sub" data-reveal="up" data-delay="0.45">A free, <b class="em">40-hour hybrid program</b> that equips young women with GenAI tools and the workplace skills employers now hire for, delivered with NGO, college and CSR partners.</p>
           <ul class="facts page-hero__facts" data-reveal="up" data-delay="0.6">
@@ -76,7 +75,7 @@
           <h2 class="display">How Naaris <span class="script"><span class="script__swish" aria-hidden="true"></span>Lear<span class="script__end">n<img class="script__earmarks" src="../../assets/Motifs/earmarks.svg" alt="" width="17" height="18"></span></span></h2>
           <p class="body" data-reveal="up">The program is built on practice, not memorisation. From the first session, Naaris <b class="em">experiment, build and apply what they learn</b> to real problems.</p>
         </div>
-        <div class="carousel" data-carousel data-reveal="up">
+        <div class="carousel" data-ticker data-speed="40" data-reveal="up">
           <ul class="carousel__track" aria-label="Naaris learning across cities">
             <li class="carousel__item"><img src="../../assets/img/photos/learn-jaipur-lab.webp" alt="A trainer leading a session in a Jaipur computer lab" width="1200" height="900" loading="lazy"><span class="carousel__place">Jaipur</span></li>
             <li class="carousel__item"><img src="../../assets/img/photos/genai-learn-bahadurgarh.webp" alt="Naaris in Bahadurgarh working through a task together" width="1200" height="900" loading="lazy"><span class="carousel__place">Bahadurgarh</span></li>
@@ -93,10 +92,6 @@
             <li class="carousel__item"><img src="../../assets/img/photos/learn-jaipur-desks.webp" alt="Naaris at their desks in a Jaipur lab" width="1200" height="900" loading="lazy"><span class="carousel__place">Jaipur</span></li>
             <li class="carousel__item"><img src="../../assets/img/photos/learn-bahadurgarh-notes.webp" alt="A Naari in Bahadurgarh working on her phone and notebook" width="1200" height="900" loading="lazy"><span class="carousel__place">Bahadurgarh</span></li>
           </ul>
-          <div class="carousel__nav">
-            <button class="carousel__btn" type="button" data-dir="-1" aria-label="Previous photos"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M15 5l-7 7 7 7"/></svg></button>
-            <button class="carousel__btn" type="button" data-dir="1" aria-label="Next photos"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M9 5l7 7-7 7"/></svg></button>
-          </div>
         </div>
         <ul class="grid grid--learn">
           <li class="icard" data-reveal="up" data-delay="0.1"><img class="icard__icon" src="../../assets/graphics/learningmethod-1.svg" alt="" width="60" height="60"><h3>Interactive sessions</h3><p>Ten live, two-hour sessions led by trainers who make every concept practical.</p></li>
@@ -113,7 +108,7 @@
     <section>
       <div class="wrap">
         <div class="head">
-          <h2 class="display">The <span class="script script--wide"><span class="script__swish" aria-hidden="true"></span>Curriculu<span class="script__end">m<img class="script__earmarks" src="../../assets/Motifs/earmarks.svg" alt="" width="17" height="18"></span></span></h2>
+          <h2 class="display">The <span class="script script--wide"><span class="script__swish" aria-hidden="true"></span>Curriculu<span class="script__end" style="--em-x: 0.14em; --em-y: -0.04em">m<img class="script__earmarks" src="../../assets/Motifs/earmarks.svg" alt="" width="17" height="18"></span></span></h2>
           <p class="body" data-reveal="up">Three tracks and <b class="em">16+ future skills</b>, combining hands-on GenAI practice with the human skills AI can’t replace.</p>
         </div>
         <div class="tabs" data-tabs data-reveal="up">
@@ -189,16 +184,18 @@
     <!-- Schedule -->
     <section>
       <div class="wrap">
-        <div class="head">
-          <h2 class="display">Five Weeks, Ten <span class="script script--wide"><span class="script__swish" aria-hidden="true"></span>Session<span class="script__end">s<img class="script__earmarks" src="../../assets/Motifs/earmarks.svg" alt="" width="17" height="18"></span></span></h2>
-          <p class="body" data-reveal="up">Employers increasingly hire and promote freshers who can use GenAI and modern workplace skills. We researched what that means with hundreds of CEOs and built the program around it.</p>
+        <div class="head-row">
+          <div class="head">
+            <h2 class="display">Five Weeks, Ten <span class="script script--wide"><span class="script__swish" aria-hidden="true"></span>Session<span class="script__end">s<img class="script__earmarks" src="../../assets/Motifs/earmarks.svg" alt="" width="17" height="18"></span></span></h2>
+            <p class="body" data-reveal="up">Employers increasingly hire and promote freshers who can use GenAI and modern workplace skills. We researched what that means with hundreds of CEOs and built the program around it.</p>
+          </div>
+          <ul class="facts facts--stack" data-reveal="up">
+            <li class="fact"><b>June – July 2026</b><span>Sample dates</span></li>
+            <li class="fact"><b>2 days a week</b><span>Five weeks in all</span></li>
+            <li class="fact"><b>2 hours a session</b><span>Flexible timings</span></li>
+            <li class="fact"><b>Hybrid</b><span>Online + in person</span></li>
+          </ul>
         </div>
-        <ul class="facts facts--row" data-reveal="up">
-          <li class="fact"><b>June – July 2026</b><span>Sample dates</span></li>
-          <li class="fact"><b>2 days a week</b><span>Five weeks in all</span></li>
-          <li class="fact"><b>2 hours a session</b><span>Flexible timings</span></li>
-          <li class="fact"><b>Hybrid</b><span>Online + in person</span></li>
-        </ul>
         <div class="timetable" data-reveal="up">
           <table>
             <thead><tr><th scope="col">Week</th><th scope="col">Day</th><th scope="col">Session 1</th><th scope="col">Session 2</th></tr></thead>
@@ -231,7 +228,7 @@
     <section>
       <div class="wrap">
         <div class="head">
-          <h2 class="display">Beyond the <span class="script script--wide"><span class="script__swish" aria-hidden="true"></span>Classroo<span class="script__end">m<img class="script__earmarks" src="../../assets/Motifs/earmarks.svg" alt="" width="17" height="18"></span></span></h2>
+          <h2 class="display">Beyond the <span class="script script--wide"><span class="script__swish" aria-hidden="true"></span>Classroo<span class="script__end" style="--em-x: 0.14em; --em-y: -0.04em">m<img class="script__earmarks" src="../../assets/Motifs/earmarks.svg" alt="" width="17" height="18"></span></span></h2>
         </div>
         <div class="callouts">
         <div class="callout" data-reveal="up">
@@ -284,15 +281,15 @@
         </div>
         <div class="who">
           <ul class="who__list">
-            <li class="who__trait" data-reveal="up" data-delay="0.1"><img class="who__icon" src="../../assets/graphics/Have2.svg" alt="" width="40" height="40"><h3>Look beyond degrees</h3><p>Believe that degrees and technical skills alone aren’t enough.</p></li>
-            <li class="who__trait" data-reveal="up" data-delay="0.2"><img class="who__icon" src="../../assets/graphics/Have4.svg" alt="" width="40" height="40"><h3>Are ambitious</h3><p>Want to deliver great work and make an impact.</p></li>
-            <li class="who__trait" data-reveal="up" data-delay="0.3"><img class="who__icon" src="../../assets/graphics/Need4.svg" alt="" width="40" height="40"><h3>Are resilient</h3><p>Come from difficult social or financial circumstances, yet are determined to succeed.</p></li>
+            <li class="who__trait" data-reveal="up" data-delay="0.1"><span class="who__icon" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M2.5 9.5L12 5l9.5 4.5L12 14z"/><path d="M6.5 11.5v4.2c1.5 1.4 3.4 2.1 5.5 2.1s4-.7 5.5-2.1v-4.2M21.5 9.5v5"/></svg></span><h3>Look beyond degrees</h3><p>Believe that degrees and technical skills alone aren’t enough.</p></li>
+            <li class="who__trait" data-reveal="up" data-delay="0.2"><span class="who__icon" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M3.5 17.5l6-6 4 4 7-7.5"/><path d="M15 8h5.5v5.5"/></svg></span><h3>Are ambitious</h3><p>Want to deliver great work and make an impact.</p></li>
+            <li class="who__trait" data-reveal="up" data-delay="0.3"><span class="who__icon" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M12 21v-9"/><path d="M12 12c0-4 3-6.5 7.5-6.5 0 4.5-3 6.5-7.5 6.5z"/><path d="M12 14.5c0-3.2-2.4-5.2-6-5.2 0 3.6 2.4 5.2 6 5.2z"/></svg></span><h3>Are resilient</h3><p>Come from difficult social or financial circumstances, yet are determined to succeed.</p></li>
           </ul>
           <figure class="who__figure" data-reveal="up"><img src="../../assets/img/photos/blue-jacket-cutout.webp" alt="A Naari speaking with confidence into a microphone" width="507" height="892" loading="lazy"></figure>
           <ul class="who__list">
-            <li class="who__trait" data-reveal="up" data-delay="0.1"><img class="who__icon" src="../../assets/graphics/Have3.svg" alt="" width="40" height="40"><h3>Are committed</h3><p>Can attend 100% of the online and offline sessions.</p></li>
-            <li class="who__trait" data-reveal="up" data-delay="0.2"><img class="who__icon" src="../../assets/graphics/Need1.svg" alt="" width="40" height="40"><h3>Are getting ready for work</h3><p>Are in their second or final year of college, or recent graduates.</p></li>
-            <li class="who__trait" data-reveal="up" data-delay="0.3"><img class="who__icon" src="../../assets/graphics/how-learn-icon-01.svg" alt="" width="40" height="40"><h3>Speak English comfortably</h3><p>Can communicate in English and have access to a smartphone.</p></li>
+            <li class="who__trait" data-reveal="up" data-delay="0.1"><span class="who__icon" aria-hidden="true"><svg viewBox="0 0 24 24"><rect x="3.5" y="5" width="17" height="15" rx="2.5"/><path d="M3.5 10h17M8 3v4M16 3v4M9 15l2 2 4-4"/></svg></span><h3>Are committed</h3><p>Can attend 100% of the online and offline sessions.</p></li>
+            <li class="who__trait" data-reveal="up" data-delay="0.2"><span class="who__icon" aria-hidden="true"><svg viewBox="0 0 24 24"><rect x="3.5" y="7.5" width="17" height="12" rx="2.5"/><path d="M9 7.5V5.5A1.5 1.5 0 0 1 10.5 4h3A1.5 1.5 0 0 1 15 5.5v2M3.5 12.5h17"/></svg></span><h3>Are getting ready for work</h3><p>Are in their second or final year of college, or recent graduates.</p></li>
+            <li class="who__trait" data-reveal="up" data-delay="0.3"><span class="who__icon" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M4 5h16a1 1 0 0 1 1 1v9.5a1 1 0 0 1-1 1h-8L7.5 20v-3.5H4a1 1 0 0 1-1-1V6a1 1 0 0 1 1-1z"/><path d="M8 9.5h8M8 12.5h5"/></svg></span><h3>Speak English comfortably</h3><p>Can communicate in English and have access to a smartphone.</p></li>
           </ul>
         </div>
       </div>
@@ -302,7 +299,7 @@
     <section>
       <div class="wrap">
         <div class="head head--center">
-          <h2 class="display">What Naaris <span class="script"><span class="script__swish" aria-hidden="true"></span>Gai<span class="script__end">n<img class="script__earmarks" src="../../assets/Motifs/earmarks.svg" alt="" width="17" height="18"></span></span></h2>
+          <h2 class="display">What Naaris <span class="script"><span class="script__swish" aria-hidden="true"></span>Gai<span class="script__end" style="--em-x: 0.12em; --em-y: -0.04em">n<img class="script__earmarks" src="../../assets/Motifs/earmarks.svg" alt="" width="17" height="18"></span></span></h2>
           <p class="body" data-reveal="up">Beyond AI skills, every Naari leaves with <b class="em">credentials, experience and a network</b> that set her apart in the job market.</p>
         </div>
         <ul class="grid grid--gain" style="--cols: 4">

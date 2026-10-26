@@ -33,11 +33,11 @@
     els.forEach((el) => io.observe(el));
   }
 
-  /* ---------- Partner logo ticker ----------
+  /* ---------- Ticker (partner logos, photo carousel) ----------
      Port of Framer's Ticker: a linear Web Animation over a whole number of sets,
-     at 100px/s, slowed to 0.5x while hovered, paused offscreen. */
+     at data-speed px/s (100 by default), slowed to 0.5x while hovered, paused offscreen. */
   function initTicker(root) {
-    const list = root.querySelector(".ticker__list");
+    const list = root.querySelector(".ticker__list, .carousel__track");
     const items = [...list.children];
     // The CSS gap wins (it tightens on phones); data-gap is the fallback
     const gap = parseFloat(getComputedStyle(list).columnGap) || Number(root.dataset.gap) || 0;
@@ -1125,32 +1125,6 @@
     });
   }
 
-  /* ---------- Photo carousel ----------
-     Arrows step a page of photos at a time and wrap at the ends; it also moves on
-     by itself while on screen, pausing while the pointer or focus is inside. */
-  function initCarousel(root) {
-    const track = root.querySelector(".carousel__track");
-    const step = (dir) => {
-      const max = track.scrollWidth - track.clientWidth;
-      const page = track.clientWidth + parseFloat(getComputedStyle(track).columnGap || 0);
-      let to = track.scrollLeft + dir * page;
-      if (dir > 0 && track.scrollLeft >= max - 4) to = 0;
-      else if (dir < 0 && track.scrollLeft <= 4) to = max;
-      track.scrollTo({ left: to, behavior: reduceMotion ? "auto" : "smooth" });
-    };
-    root.querySelectorAll(".carousel__btn").forEach((btn) => btn.addEventListener("click", () => step(+btn.dataset.dir)));
-    if (reduceMotion) return;
-    let seen = false, held = false;
-    const hold = (on) => () => { held = on; };
-    root.addEventListener("pointerenter", hold(true));
-    root.addEventListener("pointerleave", hold(false));
-    root.addEventListener("focusin", hold(true));
-    root.addEventListener("focusout", hold(false));
-    track.addEventListener("touchstart", hold(true), { passive: true });
-    new IntersectionObserver(([e]) => { seen = e.isIntersecting; }).observe(root);
-    setInterval(() => { if (seen && !held && !document.hidden) step(1); }, 4500);
-  }
-
   /* ---------- Boot ---------- */
   function boot() {
     initOverlays();
@@ -1167,7 +1141,6 @@
     initMenu();
     initDropdown();
     document.querySelectorAll("[data-tabs]").forEach(initTabs);
-    document.querySelectorAll("[data-carousel]").forEach(initCarousel);
     document.querySelectorAll("[data-bars]").forEach(initBars);
     document.querySelectorAll("[data-reach-map]").forEach(initReachMap);
     document.querySelectorAll("[data-ai-net]").forEach(initAiNet);
