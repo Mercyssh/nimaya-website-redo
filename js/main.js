@@ -297,7 +297,7 @@
   /* ---------- Cross-fading photos (data-fade="seconds") ----------
      Stacked images take turns; only runs while the figure is on screen. */
   function initFade(el) {
-    const imgs = [...el.querySelectorAll("img")];
+    const imgs = [...el.querySelectorAll(el.dataset.fadeItems || "img")];
     if (imgs.length < 2 || reduceMotion) return;
     const every = (Number(el.dataset.fade) || 4) * 1000;
     let i = 0, timer = 0;
@@ -515,6 +515,9 @@
     const geo = window.NIMAYA_INDIA;
     const places = window.NIMAYA_REACH;
     if (!geo || !places) return;
+    // data-omit="A|B": leave those regions off this map (Home drops the islands to free the corner)
+    const omit = (root.dataset.omit || "").split("|").filter(Boolean);
+    const shapesOf = Object.entries(geo.states).filter(([name]) => !omit.includes(name));
     const NS = "http://www.w3.org/2000/svg";
     const assets = root.dataset.assets || "assets/";
     const GAP = 16;     // pin -> card
@@ -554,7 +557,7 @@
       else if (p.status === "new" && !stateOf[p.state]) stateOf[p.state] = "is-new";
     });
     let order = 0;
-    Object.entries(geo.states).forEach(([name, d], i) => {
+    shapesOf.forEach(([name, d], i) => {
       const path = document.createElementNS(NS, "path");
       path.setAttribute("d", d);
       path.setAttribute("class", `reach-map__state ${stateOf[name] || ""}`);
@@ -569,7 +572,7 @@
     if (root.hasAttribute("data-holo")) {
       const id = `reach-holo-${Math.random().toString(36).slice(2, 7)}`;
       const W = geo.width, H = geo.height;
-      const shapes = Object.values(geo.states);
+      const shapes = shapesOf.map(([, d]) => d);
       const paths = (attrs = "") => shapes.map((d) => `<path d="${d}"${attrs}/>`).join("");
       const sweep = reduceMotion ? "" : `<animateTransform attributeName="gradientTransform" type="translate" values="${-W} ${-H}; ${W} ${H}" dur="4s" repeatCount="indefinite"/>`;
       const edges = (cls) => `<g class="reach-map__edge ${cls}" stroke="url(#${id}-sweep)">${paths(' vector-effect="non-scaling-stroke"')}</g>`;

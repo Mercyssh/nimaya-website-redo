@@ -20,7 +20,7 @@
   <script>document.documentElement.classList.add("js")</script>
   <link rel="stylesheet" href="../css/style.css">
 </head>
-<body>
+<body class="has-dark-landing">
   <!-- Splash: animated logo on white, once per visit on whichever page comes first -->
   <div class="splash" aria-hidden="true"><div class="splash__logo"></div></div>
   <script src="../js/splash-gate.js" data-base="../"></script>
@@ -49,36 +49,22 @@
 
   <main>
 
-    <!-- Landing -->
-    <section class="hero hero--page">
-      <div class="glow hero__glow" aria-hidden="true" data-parallax="40"></div>
-      <div class="wrap hero__wrap">
-        <div class="hero__info">
-          <i class="motif m-mask m-star2 hero__star" aria-hidden="true" data-twinkle data-parallax="16"></i>
-          <p class="eyebrow" data-reveal="up">Our model of impact</p>
+    <!-- Landing: a dark photo hero, Home's look at a shorter height -->
+    <div class="hero landing page-hero" style="--focus: 50% 50%">
+      <figure class="page-hero__photo"><img src="../assets/img/photos/impact-hero.webp" alt="A Mumbai cohort holding up their GenAI Ready Naari certificates" width="2000" height="1125" fetchpriority="high"></figure>
+      <div class="landing__shade" aria-hidden="true"></div>
+      <div class="wrap page-hero__content">
           <h1 class="hero__title">
             <span class="line">Enabling</span>
             <span class="line"><span class="hero__naari" data-count="10000" data-suffix="+">10,000+</span> <span class="script"><span class="script__swish" aria-hidden="true"></span>Naari<span class="script__end">s<img class="script__earmarks" src="../assets/Motifs/earmarks.svg" alt="" width="17" height="18"></span></span></span>
           </h1>
-          <p class="hero__sub body" data-reveal="up" data-delay="0.45"><span class="reach__live">and counting</span><br>young women from underserved communities, trained for <b class="em">careers in the AI economy</b>. Here is the evidence for partners and funders who want to back what works.</p>
-        </div>
-        <div class="hero__media">
-          <div class="blob hero__blob" aria-hidden="true" data-parallax="28"></div>
-          <div class="hero__media-box" data-unmask>
-            <img src="../assets/img/photos/guwahati-hands-up.webp" alt="A packed hall of Naaris raising their hands in Guwahati" width="1400" height="1120">
-          </div>
-          <i class="motif m-mask m-path2 hero__path hero__path--side" aria-hidden="true" data-draw="down" data-parallax="14"></i>
-          <span class="motif sticker hero__sticker" aria-hidden="true" data-float>6 states · 10 cities</span>
-          <img class="sparkle hero__sparkle hero__sparkle--a" src="../assets/img/poster/sparkle.svg" alt="" width="13" height="13" data-parallax="-14">
-          <img class="sparkle hero__sparkle hero__sparkle--b" src="../assets/img/poster/sparkle.svg" alt="" width="13" height="13" data-parallax="18">
-        </div>
+          <p class="page-hero__sub" data-reveal="up" data-delay="0.45"><span class="reach__live">and counting</span><br>young women from underserved communities, trained for <b class="em">careers in the AI economy</b>. Here is the evidence for partners and funders who want to back what works.</p>
       </div>
-    </section>
+    </div>
 
     <!-- Model of impact -->
     <section>
       <div class="wrap">
-        <i class="motif m-mask m-star2 m-big page__big page__big--r" aria-hidden="true" data-parallax="50"></i>
         <div class="head">
           <h2 class="display">How We Create <span class="script"><span class="script__swish" aria-hidden="true"></span>Impac<span class="script__end script__end--tall">t<img class="script__earmarks" src="../assets/Motifs/earmarks.svg" alt="" width="17" height="18"></span></span></h2>
         </div>
@@ -94,7 +80,6 @@
     <!-- Proof, per program -->
     <section>
       <div class="wrap">
-        <i class="motif m-mask m-shape page__shape" aria-hidden="true" data-parallax="20"></i>
         <div class="head head--center">
           <h2 class="display">Proof of <span class="script"><span class="script__swish" aria-hidden="true"></span>Chang<span class="script__end">e<img class="script__earmarks" src="../assets/Motifs/earmarks.svg" alt="" width="17" height="18"></span></span></h2>
           <p class="body" data-reveal="up">Select a program to see its reach, outcomes and the companies our Naaris now work with.</p>
@@ -213,7 +198,6 @@
     <!-- Regional reach -->
     <section class="reach">
       <div class="wrap reach__wrap">
-        <i class="motif m-mask m-star2 m-big reach__big" aria-hidden="true" data-parallax="50"></i>
         <div class="reach__info">
           <h2 class="display">Where We <span class="script"><span class="script__swish" aria-hidden="true"></span>Wor<span class="script__end script__end--tall">k<img class="script__earmarks" src="../assets/Motifs/earmarks.svg" alt="" width="17" height="18"></span></span></h2>
           <p class="body" data-reveal="up">Every pin is a partnership: a local NGO, college, company or government body that brought Nimaya to <b class="em">the young women in their community</b>.</p>
@@ -268,17 +252,17 @@
         </div>
         <div class="stories">
           <article class="card story" data-reveal="up" data-delay="0.1">
-            <div class="story__photo"><div class="blob" aria-hidden="true"></div><img src="../assets/img/people/story-amisha.webp" alt="Amisha Gonsalves" loading="lazy"></div>
+            <div class="story__photo"><img src="../assets/img/people/story-amisha.webp" alt="Amisha Gonsalves" loading="lazy"></div>
             <div class="story__text">
               <p class="story__name">Amisha Gonsalves</p>
               <p class="story__role">From Mumbai, now a Business Analyst @</p>
               <img class="story__logo" src="../assets/img/logos/quantiphi.webp" alt="Quantiphi" width="664" height="120" loading="lazy">
               <p class="story__pay">Earning <span class="pill-hl">₹10,00,000</span> per annum</p>
-              <p class="story__quote">“Nimaya showed me how to think like a creator in the AI world — not a victim of automation.”</p>
+              <p class="story__quote">“Nimaya showed me how to think like a creator in the AI world - not a victim of automation.”</p>
             </div>
           </article>
           <article class="card story" data-reveal="up" data-delay="0.2">
-            <div class="story__photo"><div class="blob" aria-hidden="true"></div><img src="../assets/img/people/story-nayonica.webp" alt="Nayonica Sherlin" loading="lazy"></div>
+            <div class="story__photo"><img src="../assets/img/people/story-nayonica.webp" alt="Nayonica Sherlin" loading="lazy"></div>
             <div class="story__text">
               <p class="story__name">Nayonica Sherlin</p>
               <p class="story__role">From Mumbai, now a Technical Specialist @</p>
@@ -294,7 +278,6 @@
     <!-- Impact media -->
     <section>
       <div class="wrap">
-        <i class="motif m-mask m-star2 m-big page__big" aria-hidden="true" data-parallax="50"></i>
         <div class="head">
           <h2 class="display">Impact in the <span class="script"><span class="script__swish" aria-hidden="true"></span>Medi<span class="script__end">a<img class="script__earmarks" src="../assets/Motifs/earmarks.svg" alt="" width="17" height="18"></span></span></h2>
         </div>
@@ -323,7 +306,6 @@
   <footer class="footer">
     <div class="wrap footer__cta" data-reveal="up">
       <div class="footer__cta-text">
-        <p class="footer__eyebrow">Partner with Nimaya</p>
         <h2 class="footer__title">Back the next <em>10,000</em> Naaris</h2>
         <p class="footer__lead">NGOs, colleges, CSR teams and employers: bring Nimaya to your community, fund a cohort or hire our Naaris.</p>
       </div>

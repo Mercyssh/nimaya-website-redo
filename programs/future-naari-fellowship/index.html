@@ -20,7 +20,7 @@
   <script>document.documentElement.classList.add("js")</script>
   <link rel="stylesheet" href="../../css/style.css">
 </head>
-<body>
+<body class="has-dark-landing">
   <!-- Splash: animated logo on white, once per visit on whichever page comes first -->
   <div class="splash" aria-hidden="true"><div class="splash__logo"></div></div>
   <script src="../../js/splash-gate.js" data-base="../../"></script>
@@ -49,42 +49,28 @@
 
   <main>
 
-    <!-- Landing -->
-    <section class="hero hero--page">
-      <div class="glow hero__glow" aria-hidden="true" data-parallax="40"></div>
-      <div class="wrap hero__wrap">
-        <div class="hero__info">
-          <i class="motif m-mask m-star2 hero__star" aria-hidden="true" data-twinkle data-parallax="16"></i>
-          <p class="eyebrow" data-reveal="up">Program 2 · #FutureReadyNaariFellowship</p>
+    <!-- Landing: a dark photo hero, Home's look at a shorter height -->
+    <div class="hero landing page-hero" style="--focus: 50% 50%">
+      <figure class="page-hero__photo"><img src="../../assets/img/photos/fellowship-hero.webp" alt="A Nimaya session on a corporate office floor in Mumbai" width="2000" height="1125" fetchpriority="high"></figure>
+      <div class="landing__shade" aria-hidden="true"></div>
+      <div class="wrap page-hero__content">
           <h1 class="hero__title">
             <span class="line">The Future Ready</span>
             <span class="line"><span class="hero__naari">Naari</span> <span class="script script--wide"><span class="script__swish" aria-hidden="true"></span>Fellowshi<span class="script__end">p<img class="script__earmarks" src="../../assets/Motifs/earmarks.svg" alt="" width="17" height="18"></span></span></span>
           </h1>
-          <p class="hero__sub body" data-reveal="up" data-delay="0.45">A <b class="em">12-month, placement-linked fellowship</b> that develops ambitious young women into future leaders, through 1:1 mentoring with senior women leaders, masterclasses and industry projects.</p>
-          <ul class="facts" data-reveal="up" data-delay="0.6">
-            <li class="fact"><b>12 months</b><span>Mostly on weekends</span></li>
-            <li class="fact"><b>1:1 mentoring</b><span>With women leaders</span></li>
-            <li class="fact"><b>16+ skills</b><span>GenAI &amp; leadership</span></li>
-            <li class="fact"><b>Guaranteed</b><span>Placement support*</span></li>
+          <p class="page-hero__sub" data-reveal="up" data-delay="0.45">A <b class="em">12-month, placement-linked fellowship</b> that develops ambitious young women into future leaders, through 1:1 mentoring with senior women leaders, masterclasses and industry projects.</p>
+          <ul class="facts page-hero__facts" data-reveal="up" data-delay="0.6">
+            <li class="fact"><span class="fact__icon" aria-hidden="true"><svg viewBox="0 0 24 24"><rect x="3.5" y="5" width="17" height="15" rx="2.5"/><path d="M3.5 10h17M8 3v4M16 3v4"/></svg></span><b>12 months</b><span>Mostly on weekends</span></li>
+            <li class="fact"><span class="fact__icon" aria-hidden="true"><svg viewBox="0 0 24 24"><circle cx="9" cy="8" r="3"/><circle cx="17" cy="9" r="2.5"/><path d="M3.5 19c.6-3.2 2.8-5 5.5-5s4.9 1.8 5.5 5M14.6 14.5c.7-.3 1.5-.5 2.4-.5 2.2 0 3.8 1.4 4.3 4"/></svg></span><b>1:1 mentoring</b><span>With women leaders</span></li>
+            <li class="fact"><span class="fact__icon" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M12 3l2.2 5.6L20 9.3l-4.5 3.9 1.4 5.8L12 16l-4.9 3 1.4-5.8L4 9.3l5.8-.7z"/></svg></span><b>16+ skills</b><span>GenAI &amp; leadership</span></li>
+            <li class="fact"><span class="fact__icon" aria-hidden="true"><svg viewBox="0 0 24 24"><rect x="3.5" y="7.5" width="17" height="12" rx="2.5"/><path d="M9 7.5V5.5A1.5 1.5 0 0 1 10.5 4h3A1.5 1.5 0 0 1 15 5.5v2M3.5 12.5h17"/></svg></span><b>Guaranteed</b><span>Placement support*</span></li>
           </ul>
-        </div>
-        <div class="hero__media">
-          <div class="blob hero__blob" aria-hidden="true" data-parallax="28"></div>
-          <div class="hero__media-box" data-unmask>
-            <img src="../../assets/img/photos/naari-presenting.webp" alt="A Nimaya Naari presenting to her cohort" width="1400" height="788">
-          </div>
-          <i class="motif m-mask m-path3 hero__path hero__path--top" aria-hidden="true" data-draw data-parallax="10"></i>
-          <span class="motif m-bubble hero__bubble" aria-hidden="true" data-float>20 spots</span>
-          <img class="motif motif--card hero__skill hero__skill--b" src="../../assets/graphics/skill-problemsolving.svg" alt="" aria-hidden="true" width="215" height="215" data-float data-parallax="20">
-          <img class="sparkle hero__sparkle hero__sparkle--a" src="../../assets/img/poster/sparkle.svg" alt="" width="13" height="13" data-parallax="-14">
-        </div>
       </div>
-    </section>
+    </div>
 
     <!-- What is the fellowship -->
     <section>
       <div class="wrap split">
-        <i class="motif m-mask m-star2 m-big page__big page__big--r" aria-hidden="true" data-parallax="50"></i>
         <div class="split__text">
           <h2 class="display">What is the <span class="script script--wide"><span class="script__swish" aria-hidden="true"></span>Fellowshi<span class="script__end">p<img class="script__earmarks" src="../../assets/Motifs/earmarks.svg" alt="" width="17" height="18"></span></span></h2>
           <p class="body" data-reveal="up">A 12-month program that gives young women <b class="em">the exposure, skills and network to build high-growth careers</b> in an AI-shaped economy, and to stand out for promotions and meaningful work.</p>
@@ -92,7 +78,7 @@
           <p class="body" data-reveal="up">Through our flagship programs we have already enabled <span class="pill-hl" data-count="10000" data-suffix="+">10,000+</span> Nimaya Naaris across 6 states to build future-ready careers.</p>
         </div>
         <div class="card card--tabbed designed" data-reveal="up">
-          <p class="card__tab">Designed under the mentorship of <img src="../../assets/img/poster/sparkle.svg" alt="" width="13" height="13"></p>
+          <p class="card__tab">Designed under the mentorship of</p>
           <div class="card__body">
             <ul class="people people--sm" style="--cols: 3">
               <li class="person"><div class="person__photo"><img src="../../assets/img/people/fm-geeta.webp" alt="" loading="lazy"></div><p class="person__name">Geeta Goel</p><p class="person__role">Former Managing Director, Michael &amp; Susan Dell Foundation</p></li>
@@ -107,7 +93,6 @@
     <!-- How we open your mind -->
     <section>
       <div class="wrap">
-        <i class="motif m-mask m-shape page__shape" aria-hidden="true" data-parallax="20"></i>
         <div class="head">
           <h2 class="display">How It <span class="script"><span class="script__swish" aria-hidden="true"></span>Work<span class="script__end">s<img class="script__earmarks" src="../../assets/Motifs/earmarks.svg" alt="" width="17" height="18"></span></span></h2>
         </div>
@@ -202,7 +187,6 @@
     <!-- Jumpstart -->
     <section>
       <div class="wrap split split--flip">
-        <i class="motif m-mask m-star2 m-big page__big" aria-hidden="true" data-parallax="50"></i>
         <div class="split__text">
           <h2 class="display">Graduate with a <span class="script script--wide"><span class="script__swish" aria-hidden="true"></span>Jumpstar<span class="script__end script__end--tall">t<img class="script__earmarks" src="../../assets/Motifs/earmarks.svg" alt="" width="17" height="18"></span></span></h2>
           <p class="body" data-reveal="up">Fellows are prepared for <b class="em">meaningful careers in new-age enterprises, startups, corporates and impact organisations</b>, with placement opportunities aligned to each fellow’s skills, interests and aspirations.</p>
@@ -215,8 +199,7 @@
           <p class="note" data-reveal="up">* Placement support applies to fellows who complete 85% attendance and take part proactively in every part of the fellowship.</p>
         </div>
         <div class="split__media" data-reveal="up">
-          <div class="blob" aria-hidden="true" data-parallax="20"></div>
-          <div class="photo photo--crop" data-unmask><img src="../../assets/img/photos/placement.webp" alt="Nimaya Naaris on an industry visit at PepsiCo" width="782" height="598" loading="lazy"></div>
+          <div class="photo" data-unmask><img src="../../assets/img/photos/fellowship-jumpstart.webp" alt="Two Naaris working through a task together at an office desk in Mumbai" width="1400" height="1050" loading="lazy"></div>
         </div>
       </div>
     </section>
@@ -247,16 +230,15 @@
     <!-- Why join -->
     <section>
       <div class="wrap">
-        <i class="motif m-mask m-star2 m-big page__big page__big--r" aria-hidden="true" data-parallax="50"></i>
         <div class="head head--center">
           <h2 class="display">What Fellows <span class="script"><span class="script__swish" aria-hidden="true"></span>Gai<span class="script__end">n<img class="script__earmarks" src="../../assets/Motifs/earmarks.svg" alt="" width="17" height="18"></span></span></h2>
         </div>
         <ul class="grid" style="--cols: 5">
-          <li class="icard" data-reveal="up" data-delay="0.1"><img class="icard__icon icard__icon--3d" src="../../assets/graphics/gain1.png" alt="" width="315" height="380" loading="lazy"><h3>Stand out beyond degrees</h3><p>Real-world exposure and proof of skills that employers actually choose.</p></li>
-          <li class="icard" data-reveal="up" data-delay="0.2"><img class="icard__icon icard__icon--3d" src="../../assets/graphics/gain2.png" alt="" width="287" height="366" loading="lazy"><h3>Confidence in their first job</h3><p>Turn ambition into clear direction, leadership and career momentum.</p></li>
-          <li class="icard" data-reveal="up" data-delay="0.3"><img class="icard__icon icard__icon--3d" src="../../assets/graphics/gain3.png" alt="" width="290" height="264" loading="lazy"><h3>Higher earning potential</h3><p>Skills that open doors to better-paying, future-focused careers.</p></li>
-          <li class="icard" data-reveal="up" data-delay="0.4"><img class="icard__icon icard__icon--3d" src="../../assets/graphics/people talking.png" alt="" width="307" height="309" loading="lazy"><h3>Access opportunities others don’t</h3><p>Mentorship, industry projects and networks built for their growth.</p></li>
-          <li class="icard" data-reveal="up" data-delay="0.5"><img class="icard__icon icard__icon--3d" src="../../assets/graphics/techno brain.png" alt="" width="315" height="316" loading="lazy"><h3>AI-ready, not AI-replaced</h3><p>Fluency with AI tools, so they stay ahead in a changing world.</p></li>
+          <li class="icard" data-reveal="up" data-delay="0.1"><span class="icard__glyph" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M12 3l2.2 5.6L20 9.3l-4.5 3.9 1.4 5.8L12 16l-4.9 3 1.4-5.8L4 9.3l5.8-.7z"/></svg></span><h3>Stand out beyond degrees</h3><p>Real-world exposure and proof of skills that employers actually choose.</p></li>
+          <li class="icard" data-reveal="up" data-delay="0.2"><span class="icard__glyph" aria-hidden="true"><svg viewBox="0 0 24 24"><rect x="3.5" y="7.5" width="17" height="12" rx="2.5"/><path d="M9 7.5V5.5A1.5 1.5 0 0 1 10.5 4h3A1.5 1.5 0 0 1 15 5.5v2M3.5 12.5h17"/></svg></span><h3>Confidence in their first job</h3><p>Turn ambition into clear direction, leadership and career momentum.</p></li>
+          <li class="icard" data-reveal="up" data-delay="0.3"><span class="icard__glyph" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M3.5 17.5l6-6 4 4 7-7.5"/><path d="M15 8h5.5v5.5"/></svg></span><h3>Higher earning potential</h3><p>Skills that open doors to better-paying, future-focused careers.</p></li>
+          <li class="icard" data-reveal="up" data-delay="0.4"><span class="icard__glyph" aria-hidden="true"><svg viewBox="0 0 24 24"><circle cx="9" cy="8" r="3"/><circle cx="17" cy="9" r="2.5"/><path d="M3.5 19c.6-3.2 2.8-5 5.5-5s4.9 1.8 5.5 5M14.6 14.5c.7-.3 1.5-.5 2.4-.5 2.2 0 3.8 1.4 4.3 4"/></svg></span><h3>Access opportunities others don’t</h3><p>Mentorship, industry projects and networks built for their growth.</p></li>
+          <li class="icard" data-reveal="up" data-delay="0.5"><span class="icard__glyph" aria-hidden="true"><svg viewBox="0 0 24 24"><rect x="6.5" y="6.5" width="11" height="11" rx="2.5"/><path d="M10 3v3.5M14 3v3.5M10 17.5V21M14 17.5V21M3 10h3.5M3 14h3.5M17.5 10H21M17.5 14H21M10.5 12h3"/></svg></span><h3>AI-ready, not AI-replaced</h3><p>Fluency with AI tools, so they stay ahead in a changing world.</p></li>
         </ul>
       </div>
     </section>
@@ -268,7 +250,7 @@
           <h2 class="display">Success <span class="script"><span class="script__swish" aria-hidden="true"></span>Storie<span class="script__end">s<img class="script__earmarks" src="../../assets/Motifs/earmarks.svg" alt="" width="17" height="18"></span></span></h2>
         </div>
         <article class="card spotlight" data-reveal="up">
-          <div class="spotlight__media"><div class="blob" aria-hidden="true"></div><img src="../../assets/img/photos/fel-aayushi.webp" alt="Aayushi Pandey" width="1100" height="902" loading="lazy"></div>
+          <div class="spotlight__media"><img src="../../assets/img/photos/fel-aayushi.webp" alt="Aayushi Pandey" width="1100" height="902" loading="lazy"></div>
           <div class="spotlight__text">
             <p class="story__name">Aayushi Pandey</p>
             <p class="story__role">Software Development Engineer Intern @</p>
@@ -312,7 +294,6 @@
   <footer class="footer">
     <div class="wrap footer__cta" data-reveal="up">
       <div class="footer__cta-text">
-        <p class="footer__eyebrow">Partner with Nimaya</p>
         <h2 class="footer__title">Back the next <em>10,000</em> Naaris</h2>
         <p class="footer__lead">NGOs, colleges, CSR teams and employers: bring Nimaya to your community, fund a cohort or hire our Naaris.</p>
       </div>

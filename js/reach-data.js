@@ -16,8 +16,8 @@ window.NIMAYA_REACH = [
   {
     id: "mumbai",
     label: "left",
-    photo: "img/photos/naaris-laptop.webp", // TODO: swap for a photo taken in this city
-    photoAlt: "Naaris working together on a laptop",
+    photo: "img/photos/map-mumbai.webp",
+    photoAlt: "Naaris in Mumbai working on their phones at office desks",
     name: "Mumbai",
     state: "Maharashtra",
     points: [[72.8777, 19.076]],
@@ -33,8 +33,8 @@ window.NIMAYA_REACH = [
   {
     id: "haryana",
     label: "right",
-    photo: "img/program-genai.jpg", // TODO: swap for a photo taken in this city
-    photoAlt: "Naaris learning on computers",
+    photo: "img/photos/map-haryana.webp",
+    photoAlt: "Naaris in Bahadurgarh working through a task together",
     name: "Haryana",
     state: "Haryana",
     subtitle: "Faridabad · Kurukshetra · Bahadurgarh · Gurgaon",
@@ -49,8 +49,8 @@ window.NIMAYA_REACH = [
   {
     id: "lucknow",
     label: "right",
-    photo: "img/photos/naari-phone.webp", // TODO: swap for a photo taken in this city
-    photoAlt: "A Naari working on her phone",
+    photo: "img/photos/map-lucknow.webp",
+    photoAlt: "A Naari in Lucknow presenting the model her team built",
     name: "Lucknow",
     state: "Uttar Pradesh",
     points: [[80.9462, 26.8467]],
@@ -66,8 +66,8 @@ window.NIMAYA_REACH = [
   {
     id: "varanasi",
     label: "right",
-    photo: "img/photos/naaris-working.webp", // TODO: swap for a photo taken in this city
-    photoAlt: "Naaris in a computer class",
+    photo: "img/photos/map-varanasi.webp",
+    photoAlt: "Naaris in Chandauli playing a circle game outdoors",
     name: "Varanasi",
     state: "Uttar Pradesh",
     points: [[82.9739, 25.3176]],
@@ -80,8 +80,8 @@ window.NIMAYA_REACH = [
   {
     id: "jaipur",
     label: "left",
-    photo: "img/photos/naari-presenting.webp", // TODO: swap for a photo taken in this city
-    photoAlt: "Naaris at a workshop",
+    photo: "img/photos/map-jaipur.webp",
+    photoAlt: "Two Naaris smiling at their desk in a Jaipur computer lab",
     name: "Jaipur",
     state: "Rajasthan",
     points: [[75.7873, 26.9124]],

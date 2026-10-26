@@ -20,7 +20,7 @@
   <script>document.documentElement.classList.add("js")</script>
   <link rel="stylesheet" href="../css/style.css">
 </head>
-<body>
+<body class="has-dark-landing">
   <!-- Splash: animated logo on white, once per visit on whichever page comes first -->
   <div class="splash" aria-hidden="true"><div class="splash__logo"></div></div>
   <script src="../js/splash-gate.js" data-base="../"></script>
@@ -49,68 +49,55 @@
 
   <main>
 
-    <!-- Landing -->
-    <section class="hero hero--page">
-      <div class="glow hero__glow" aria-hidden="true" data-parallax="40"></div>
-      <div class="wrap hero__wrap">
-        <div class="hero__info">
-          <i class="motif m-mask m-star2 hero__star" aria-hidden="true" data-twinkle data-parallax="16"></i>
-          <p class="eyebrow" data-reveal="up">Careers</p>
+    <!-- Landing: a dark photo hero, Home's look at a shorter height -->
+    <div class="hero landing page-hero" style="--focus: 50% 35%">
+      <figure class="page-hero__photo"><img src="../assets/img/photos/careers-hero.webp" alt="A Nimaya trainer leading a session in Jaipur" width="2000" height="1125" fetchpriority="high"></figure>
+      <div class="landing__shade" aria-hidden="true"></div>
+      <div class="wrap page-hero__content">
           <h1 class="hero__title">
             <span class="line">Build a career that</span>
             <span class="line"><span class="hero__naari">builds</span> <span class="script"><span class="script__swish" aria-hidden="true"></span>Career<span class="script__end">s<img class="script__earmarks" src="../assets/Motifs/earmarks.svg" alt="" width="17" height="18"></span></span></span>
           </h1>
-          <p class="hero__sub body" data-reveal="up" data-delay="0.45">We’re a small, fast-moving team taking GenAI skills to young women across India. If you want your work to <b class="em">change what’s possible for a Naari</b>, we’d love to hear from you.</p>
-          <a class="btn btn--filled hero__cta" href="#roles" data-reveal="up" data-delay="0.6">See open roles</a>
-        </div>
-        <div class="hero__media">
-          <div class="blob hero__blob" aria-hidden="true" data-parallax="28"></div>
-          <div class="hero__media-box" data-unmask>
-            <img src="../assets/img/photos/guwahati-founders-stage.webp" alt="Samyak and Navya in conversation on stage in Guwahati" width="1400" height="1120">
-          </div>
-          <i class="motif m-mask m-path3 hero__path hero__path--top" aria-hidden="true" data-draw data-parallax="10"></i>
-          <span class="motif sticker hero__sticker" aria-hidden="true" data-float>We’re hiring!</span>
-          <img class="sparkle hero__sparkle hero__sparkle--a" src="../assets/img/poster/sparkle.svg" alt="" width="13" height="13" data-parallax="-14">
-        </div>
+          <p class="page-hero__sub" data-reveal="up" data-delay="0.45">We’re a small, fast-moving team taking GenAI skills to young women across India. If you want your work to <b class="em">change what’s possible for a Naari</b>, we’d love to hear from you.</p>
+          <div class="hero__cta page-hero__cta" data-reveal="up" data-delay="0.6"><a class="btn landing__btn" href="#roles">See open roles</a></div>
       </div>
-    </section>
+    </div>
 
     <!-- Open roles -->
     <section id="roles">
       <div class="wrap">
-        <i class="motif m-mask m-star2 m-big page__big page__big--r" aria-hidden="true" data-parallax="50"></i>
         <div class="head">
           <h2 class="display">Open <span class="script"><span class="script__swish" aria-hidden="true"></span>Role<span class="script__end">s<img class="script__earmarks" src="../assets/Motifs/earmarks.svg" alt="" width="17" height="18"></span></span></h2>
           <p class="body" data-reveal="up">Applications open in a new tab.</p>
         </div>
         <ul class="jobs">
           <li class="card job" data-reveal="up" data-delay="0.1">
-            <div><p class="job__team">Communications</p><h3 class="job__title">Communications Coordinator</h3><p class="job__meta"><img src="../assets/graphics/stats-location.svg" alt="" width="22" height="22">Mumbai (preferred) / Delhi</p></div>
+            <div><h3 class="job__title">Communications Coordinator</h3><p class="job__team">Communications</p><p class="job__meta"><img src="../assets/graphics/stats-location.svg" alt="" width="22" height="22">Mumbai (preferred) / Delhi</p></div>
             <a class="btn btn--filled" href="https://forms.gle/SByGRyPaCnCb6iW97" target="_blank" rel="noopener">Apply</a>
           </li>
           <li class="card job" data-reveal="up" data-delay="0.15">
-            <div><p class="job__team">Programs · GenAI Ready Naari</p><h3 class="job__title">Program Manager, Ahmedabad</h3><p class="job__meta"><img src="../assets/graphics/stats-location.svg" alt="" width="22" height="22">Ahmedabad (mandatory)</p></div>
+            <div><h3 class="job__title">Program Manager, Ahmedabad</h3><p class="job__team">Programs · GenAI Ready Naari</p><p class="job__meta"><img src="../assets/graphics/stats-location.svg" alt="" width="22" height="22">Ahmedabad (mandatory)</p></div>
             <a class="btn btn--filled" href="https://forms.gle/Nz3DcqmwVPbjq9Zy6" target="_blank" rel="noopener">Apply</a>
           </li>
           <li class="card job" data-reveal="up" data-delay="0.2">
-            <div><p class="job__team">Programs · GenAI Ready Naari</p><h3 class="job__title">Field Manager, Ahmedabad</h3><p class="job__meta"><img src="../assets/graphics/stats-location.svg" alt="" width="22" height="22">Ahmedabad (mandatory)</p></div>
+            <div><h3 class="job__title">Field Manager, Ahmedabad</h3><p class="job__team">Programs · GenAI Ready Naari</p><p class="job__meta"><img src="../assets/graphics/stats-location.svg" alt="" width="22" height="22">Ahmedabad (mandatory)</p></div>
             <a class="btn btn--filled" href="https://forms.gle/UCrdL2vpMYBgWEpr6" target="_blank" rel="noopener">Apply</a>
           </li>
           <li class="card job" data-reveal="up" data-delay="0.25">
-            <div><p class="job__team">Training · GenAI Ready Naari</p><h3 class="job__title">GenAI &amp; Workplace Skills Trainer, Guwahati</h3><p class="job__meta"><img src="../assets/graphics/stats-location.svg" alt="" width="22" height="22">Guwahati / Kolkata (mandatory)</p></div>
+            <div><h3 class="job__title">GenAI &amp; Workplace Skills Trainer, Guwahati</h3><p class="job__team">Training · GenAI Ready Naari</p><p class="job__meta"><img src="../assets/graphics/stats-location.svg" alt="" width="22" height="22">Guwahati / Kolkata (mandatory)</p></div>
             <a class="btn btn--filled" href="https://genaitrainer-guwahati.paperform.co" target="_blank" rel="noopener">Apply</a>
           </li>
           <li class="card job" data-reveal="up" data-delay="0.3">
-            <div><p class="job__team">Training · GenAI Ready Naari</p><h3 class="job__title">GenAI &amp; Workplace Skills Trainer, Ahmedabad</h3><p class="job__meta"><img src="../assets/graphics/stats-location.svg" alt="" width="22" height="22">Ahmedabad (mandatory)</p></div>
+            <div><h3 class="job__title">GenAI &amp; Workplace Skills Trainer, Ahmedabad</h3><p class="job__team">Training · GenAI Ready Naari</p><p class="job__meta"><img src="../assets/graphics/stats-location.svg" alt="" width="22" height="22">Ahmedabad (mandatory)</p></div>
             <a class="btn btn--filled" href="https://genaitrainer-ahm.paperform.co" target="_blank" rel="noopener">Apply</a>
           </li>
           <li class="card job" data-reveal="up" data-delay="0.35">
-            <div><p class="job__team">Programs · GenAI Ready Naari</p><h3 class="job__title">Program Manager, Haryana</h3><p class="job__meta"><img src="../assets/graphics/stats-location.svg" alt="" width="22" height="22">Faridabad (mandatory)</p></div>
+            <div><h3 class="job__title">Program Manager, Haryana</h3><p class="job__team">Programs · GenAI Ready Naari</p><p class="job__meta"><img src="../assets/graphics/stats-location.svg" alt="" width="22" height="22">Faridabad (mandatory)</p></div>
             <a class="btn btn--filled" href="https://program-manager-haryana.paperform.co" target="_blank" rel="noopener">Apply</a>
           </li>
         </ul>
         <div class="callout callout--light jobs__more" data-reveal="up">
-          <img class="callout__img" src="../assets/graphics/ideas.png" alt="" width="299" height="298" loading="lazy">
+          <img class="callout__img callout__img--photo" src="../assets/img/photos/careers-trainer.webp" alt="A Nimaya trainer presenting to a cohort in Jaipur" width="900" height="900" loading="lazy">
           <div>
             <p class="callout__title">Don’t see <em>your role</em>?</p>
             <p class="body">We’re always glad to meet trainers, program leads and storytellers who care about the future of work for women. Tell us how you’d like to help.</p>
@@ -126,7 +113,6 @@
   <footer class="footer">
     <div class="wrap footer__cta" data-reveal="up">
       <div class="footer__cta-text">
-        <p class="footer__eyebrow">Partner with Nimaya</p>
         <h2 class="footer__title">Back the next <em>10,000</em> Naaris</h2>
         <p class="footer__lead">NGOs, colleges, CSR teams and employers: bring Nimaya to your community, fund a cohort or hire our Naaris.</p>
       </div>

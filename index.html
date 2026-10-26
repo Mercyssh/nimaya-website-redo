@@ -52,12 +52,12 @@
 
     <!-- Landing: the name, one line, and our Naaris. A div rather than a section so the
          alternating section backgrounds below keep their order.
-         TODO: the third photo becomes an industry visit (PepsiCo / office) once a high-res one arrives. -->
+         Three regions side by side: Assam, a Mumbai office, Haryana. -->
     <div class="hero landing" data-landing>
       <div class="landing__panels">
         <figure class="landing__panel" style="--i: 0"><img src="assets/img/photos/hero-classroom.webp" alt="A Naari speaking up in a packed classroom in Assam" width="1000" height="1600"></figure>
-        <figure class="landing__panel" style="--i: 1"><img src="assets/img/photos/hero-laptop.webp" alt="A Naari working on a laptop during a GenAI session" width="1000" height="1600"></figure>
-        <figure class="landing__panel" style="--i: 2"><img src="assets/img/photos/hero-audience.webp" alt="Naaris raising their hands in a packed hall in Guwahati" width="1000" height="1600"></figure>
+        <figure class="landing__panel" style="--i: 1"><img src="assets/img/photos/hero-mumbai.webp" alt="Naaris filling an office floor at a partner company in Mumbai" width="1000" height="1600"></figure>
+        <figure class="landing__panel" style="--i: 2"><img src="assets/img/photos/hero-haryana.webp" alt="A Naari standing to speak in her classroom in Bahadurgarh, Haryana" width="1000" height="1600"></figure>
       </div>
       <div class="landing__shade" aria-hidden="true"></div>
       <div class="wrap landing__content">
@@ -91,18 +91,34 @@
             <li><span class="hero__num" data-count="10">10</span><span class="hero__stat-label">Cities</span></li>
             <li><span class="hero__num" data-count="9" data-suffix="+">9+</span><span class="hero__stat-label">Partners across NGOs, colleges, CSR &amp; government</span></li>
           </ul>
+          <!-- In the press: a few headlines take turns, not clickable (the full list lives on About).
+               Thumbnails are our own photos until the articles' images are in. -->
+          <aside class="newsbox" data-fade="4.5" data-fade-items=".newsbox__item" aria-label="In the press">
+            <figure class="newsbox__item is-on">
+              <img class="newsbox__thumb" src="assets/img/photos/guwahati-founders-stage.webp" alt="" width="1400" height="1120" loading="lazy">
+              <figcaption><span class="newsbox__outlet">ETHRWorld</span><span class="newsbox__headline">Empowering women for the AI age: insights from Navya Nanda &amp; Samyak Chakrabarty</span></figcaption>
+            </figure>
+            <figure class="newsbox__item">
+              <img class="newsbox__thumb" src="assets/img/photos/guwahati-hands-up.webp" alt="" width="1400" height="1120" loading="lazy">
+              <figcaption><span class="newsbox__outlet">CNBC-TV18</span><span class="newsbox__headline">How Nimaya empowers women for the future of work</span></figcaption>
+            </figure>
+            <figure class="newsbox__item">
+              <img class="newsbox__thumb" src="assets/img/photos/partner-employer.webp" alt="" width="1200" height="750" loading="lazy">
+              <figcaption><span class="newsbox__outlet">The Indian Express</span><span class="newsbox__headline">What women bring to the 21st-century workplace</span></figcaption>
+            </figure>
+          </aside>
         </div>
 
         <!-- Naaris across India: photos hang off their city's pin; hovering a pin or photo opens its numbers.
-             TODO: swap each photo for one taken in that city (Guwahati trip photos from Samyak). -->
-        <div class="reach-map reach-map--hero" data-reach-map data-assets="assets/" data-hover data-quiet data-holo data-motion>
+             Every photo was taken in its own city. -->
+        <div class="reach-map reach-map--hero" data-reach-map data-assets="assets/" data-omit="Andaman &amp; Nicobar" data-hover data-quiet data-holo data-motion>
           <div class="reach-map__box">
             <figure class="reach-photo" data-place="haryana" data-default style="--x: -18%; --y: 13%; --k: 0">
-              <img src="assets/img/program-genai.jpg" alt="Naaris learning on computers" width="1600" height="696">
+              <img src="assets/img/photos/map-haryana.webp" alt="Naaris in Bahadurgarh working through a task together" width="1000" height="750">
               <figcaption>Haryana</figcaption>
             </figure>
             <figure class="reach-photo reach-photo--tall" data-place="lucknow" style="--x: 62%; --y: -3%; --k: 1">
-              <img src="assets/img/photos/naari-phone.webp" alt="A Naari working on her phone" width="960" height="1280">
+              <img src="assets/img/photos/map-lucknow.webp" alt="A Naari in Lucknow presenting the model her team built" width="750" height="1000">
               <figcaption>Lucknow</figcaption>
             </figure>
             <figure class="reach-photo" data-place="guwahati" data-default style="--x: 63%; --y: 49%; --k: 2">
@@ -110,8 +126,16 @@
               <figcaption>Guwahati</figcaption>
             </figure>
             <figure class="reach-photo" data-place="mumbai" style="--x: -8%; --y: 67%; --k: 3">
-              <img src="assets/img/photos/naaris-laptop.webp" alt="Naaris working together on a laptop" width="1351" height="757">
+              <img src="assets/img/photos/map-mumbai.webp" alt="Naaris in Mumbai working on their phones at office desks" width="1000" height="750">
               <figcaption>Mumbai</figcaption>
+            </figure>
+            <figure class="reach-photo" data-place="jaipur" style="--x: -16%; --y: 38%; --k: 4">
+              <img src="assets/img/photos/map-jaipur.webp" alt="Two Naaris smiling at their desk in a Jaipur computer lab" width="1000" height="750">
+              <figcaption>Jaipur</figcaption>
+            </figure>
+            <figure class="reach-photo" data-place="varanasi" style="--x: 68%; --y: 20%; --k: 5">
+              <img src="assets/img/photos/map-varanasi.webp" alt="Naaris in Chandauli playing a circle game outdoors" width="1000" height="750">
+              <figcaption>Varanasi</figcaption>
             </figure>
           </div>
           <div class="reach-map__panel" aria-live="polite"></div>
@@ -153,7 +177,6 @@
     <section class="ai" id="how-ai-runs-nimaya">
       <div class="wrap ai__wrap">
         <div class="ai__info">
-          <p class="ai__eyebrow" data-reveal="up">Behind every classroom</p>
           <h2 class="display">How AI runs <span class="script"><span class="script__swish" aria-hidden="true"></span>Nimay<span class="script__end">a<img class="script__earmarks" src="assets/Motifs/earmarks.svg" alt="" width="17" height="18"></span></span></h2>
           <p class="body ai__lead" data-reveal="up">Our programs run on human relationships: trainers, mentors and peers. Behind them, AI agents handle outreach, feedback and coaching, so we can serve thousands of Naaris without losing the personal attention.</p>
           <ol class="ai__steps">
@@ -170,20 +193,20 @@
       </div>
     </section>
 
-    <!-- In the news: one film, one article -->
+    <!-- In the news: four pieces in one row, the full list on About -->
     <section>
       <div class="wrap news">
         <i class="motif m-mask m-star2 m-big watch__big" aria-hidden="true" data-parallax="60"></i>
         <h2 class="display news__title">Nimaya in the <span class="script"><span class="script__swish" aria-hidden="true"></span>New<span class="script__end">s<img class="script__earmarks" src="assets/Motifs/earmarks.svg" alt="" width="17" height="18"></span></span></h2>
         <div class="news__grid">
-          <div class="news__item" data-reveal="left" data-delay="0.2">
+          <div class="news__item" data-reveal="up" data-delay="0.1">
             <button class="news__cover" type="button" data-youtube="D2q-qB-J1Dk" aria-label="Play: EKL x Nimaya Documentary">
               <span class="watch__frame" data-unmask><img src="assets/img/video-ekl.png" alt="" width="803" height="516"></span>
             </button>
             <p class="news__name balance">EKL x Nimaya Documentary | Building Futureproof GenAI Naaris</p>
             <p class="news__desc body">The documentary captures Nimaya’s GenAI Ready Naari program, powered by Escorts Kubota Limited, enabling young women from underserved backgrounds to step into the future of work.</p>
           </div>
-          <div class="news__item" data-reveal="right" data-delay="0.2">
+          <div class="news__item" data-reveal="up" data-delay="0.2">
             <a class="news__cover news__cover--article" href="https://hr.economictimes.indiatimes.com/news/industry/empowering-women-for-the-ai-age-insights-from-navya-nanda-samyak-chakraborty/124150454" target="_blank" rel="noopener">
               <span class="news__outlet">ETHRWorld</span>
               <span class="news__people" aria-hidden="true">
@@ -194,6 +217,24 @@
             </a>
             <p class="news__name balance">Empowering women for the AI age: insights from Navya Nanda &amp; Samyak Chakrabarty</p>
             <p class="news__desc body">The co-founders on why GenAI could be a game-changer for women’s employability, and how Nimaya is preparing Naaris for it.</p>
+          </div>
+          <div class="news__item" data-reveal="up" data-delay="0.3">
+            <a class="news__cover news__cover--article news__cover--photo" href="https://www.robbreportindia.com/travel/india/nimaya-is-teaching-indias-young-women-to-use-ai-before-the-world-uses-it-against-them" target="_blank" rel="noopener">
+              <img class="news__bg" src="assets/img/photos/about-hero.webp" alt="" width="2000" height="1125" loading="lazy">
+              <span class="news__outlet">Robb Report India</span>
+              <span class="news__read">Read article <span aria-hidden="true">→</span></span>
+            </a>
+            <p class="news__name balance">Nimaya is teaching India’s young women to use AI before the world uses it against them</p>
+            <p class="news__desc body">How Nimaya trains young women in GenAI and workplace skills, not fading trades, across five states.</p>
+          </div>
+          <div class="news__item" data-reveal="up" data-delay="0.4">
+            <a class="news__cover news__cover--article news__cover--photo" href="https://www.freepressjournal.in/education/assam-proposes-genai-ready-naari-programme-to-train-women-in-generative-ai-empower-tribal-communities-boost-career-opportunities" target="_blank" rel="noopener">
+              <img class="news__bg" src="assets/img/photos/guwahati-hands-up.webp" alt="" width="1400" height="1120" loading="lazy">
+              <span class="news__outlet">The Free Press Journal</span>
+              <span class="news__read">Read article <span aria-hidden="true">→</span></span>
+            </a>
+            <p class="news__name balance">Assam proposes GenAI Ready Naari to train women in generative AI</p>
+            <p class="news__desc body">Assam plans to bring the program, implemented by Nimaya with Gates Foundation support, to women including tribal communities.</p>
           </div>
         </div>
         <div class="news__more" data-reveal="up"><a class="btn btn--outline" href="about-us/#press">See all coverage</a></div>
@@ -235,7 +276,7 @@
         <p class="milestones__intro body balance" data-reveal="up">Since 2021, we have built the curriculum, partnerships and technology to train women at scale.</p>
         <ul class="milestones__grid">
           <li class="stat" data-reveal="up" data-delay="0.1">
-            <div class="stat__media"><div class="stat__lottie lottie" data-lottie="curriculum"></div></div>
+            <div class="stat__media stat__media--photo"><img src="assets/img/photos/milestone-curriculum.webp" alt="A trainer leading the How to Win in the New World of Work session in Jaipur" width="1000" height="750" loading="lazy"></div>
             <p class="stat__title balance">Built the country’s first immersive curriculum</p>
             <p class="stat__desc balance">designed for young women from underserved communities, combining GenAI with workplace skills</p>
           </li>
@@ -250,7 +291,7 @@
             <p class="stat__desc balance">GenAI Ready Naari is part of the IndiaAI National AI Literacy Program</p>
           </li>
           <li class="stat" data-reveal="up" data-delay="0.4">
-            <div class="stat__media"><img src="assets/img/milestone-lms.png" alt="" width="942" height="748"></div>
+            <div class="stat__media stat__media--photo"><img src="assets/img/photos/milestone-coach.webp" alt="A Naari in Bahadurgarh learning on her phone between sessions" width="1000" height="750" loading="lazy"></div>
             <p class="stat__title balance">Built an AI-powered LMS for continued learning</p>
             <p class="stat__desc balance">with Smart Didi, an AI coach that keeps every Naari learning between sessions</p>
           </li>
@@ -272,7 +313,6 @@
             <div class="programs__accredit-head">
               <span class="programs__seal" aria-hidden="true"><svg viewBox="0 0 24 24"><circle cx="12" cy="9.5" r="6.5"/><path d="M9.2 9.6l2 2 3.6-3.8M8.4 15l-1.6 6 5.2-2.6 5.2 2.6-1.6-6"/></svg></span>
               <div>
-                <p class="caption">Accreditation</p>
                 <p class="programs__accredit-title">NSQF-aligned credit</p>
               </div>
             </div>
@@ -288,7 +328,6 @@
           <div data-reveal="left" data-delay="0.2">
             <article class="card card--banner program">
               <div class="card__banner">
-                <p class="program__label">Program 1</p>
                 <h3 class="program__name">#GenAIReadyNaari</h3>
               </div>
               <div class="card__body">
@@ -305,7 +344,6 @@
           <div data-reveal="right" data-delay="0.2">
             <article class="card card--banner program program--alt">
               <div class="card__banner">
-                <p class="program__label">Program 2</p>
                 <h3 class="program__name">#FutureReadyNaariFellowship</h3>
               </div>
               <div class="card__body">
@@ -333,7 +371,7 @@
           <li class="work__step" data-reveal="up" data-delay="0.1">
             <span class="badge badge--purple">1</span>
             <div class="work__text"><h3>Outreach</h3><p>We partner with NGOs, colleges and government bodies</p></div>
-            <div class="work__img" data-unmask style="--d: 0.30s"><img src="assets/img/photos/guwahati-ncc-welcome.webp" alt="" width="900" height="1200"></div>
+            <div class="work__img" data-unmask style="--d: 0.30s"><img src="assets/img/photos/work-outreach.webp" alt="" width="900" height="1200"></div>
           </li>
           <li class="work__step" data-reveal="up" data-delay="0.2">
             <span class="badge badge--yellow">2</span>
@@ -353,12 +391,12 @@
           <li class="work__step" data-reveal="up" data-delay="0.5">
             <span class="badge badge--purple">5</span>
             <div class="work__text"><h3>Placement Support</h3><p>Portfolios, interview preparation and employer introductions</p></div>
-            <div class="work__img" data-unmask style="--d: 0.90s"><img src="assets/img/photos/placement.webp" alt="" width="782" height="599"></div>
+            <div class="work__img" data-unmask style="--d: 0.90s"><img src="assets/img/photos/work-placement.webp" alt="" width="900" height="1200"></div>
           </li>
           <li class="work__step" data-reveal="up" data-delay="0.6">
             <span class="badge badge--yellow">6</span>
             <div class="work__text"><h3>Alumni Engagement</h3><p>Continued learning on our AI platform and alumni network</p></div>
-            <div class="work__img work__img--portrait" data-unmask style="--d: 1.05s"><img src="assets/img/people/story-amisha.webp" alt="" width="351" height="760"></div>
+            <div class="work__img" data-unmask style="--d: 1.05s"><img src="assets/img/photos/work-alumni.webp" alt="" width="900" height="1200"></div>
           </li>
         </ol>
       </div>
@@ -396,7 +434,6 @@
   <footer class="footer">
     <div class="wrap footer__cta" data-reveal="up">
       <div class="footer__cta-text">
-        <p class="footer__eyebrow">Partner with Nimaya</p>
         <h2 class="footer__title">Back the next <em>10,000</em> Naaris</h2>
         <p class="footer__lead">NGOs, colleges, CSR teams and employers: bring Nimaya to your community, fund a cohort or hire our Naaris.</p>
       </div>
@@ -439,7 +476,6 @@
     </div>
   </footer>
 
-  <script src="assets/lottie/curriculum.js" defer></script>
   <script src="js/india-map-data.js" defer></script>
   <script src="js/reach-data.js" defer></script>
   <script src="js/motion.js" defer></script>
