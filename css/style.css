@@ -2966,3 +2966,20 @@ main > section:has(+ .ai)::after { display: none; }
 .press__card .press__outlet { margin-top: 18px; }
 .press__card .press__outlet, .press__card .press__title, .press__card .press__more { padding-inline: 22px; }
 .press__date { color: rgba(65, 34, 135, 0.6); font-weight: 500; }
+
+/* ============ Inner pages: phone fixes ============ */
+@media (max-width: 700px) {
+  /* Maps without a tour (Impact) don't need room held for every city card */
+  .reach-map:not([data-motion]) .reach-map__panel .reach-card:not(.is-open) { display: none; }
+  /* Callout photos span the card instead of sitting as a small square */
+  .callout__img--photo { width: 100%; height: auto; aspect-ratio: 16 / 10; }
+  /* Wide photos with a soft edge baked in show at their own shape, no empty box around them */
+  .pillar__media--plain { aspect-ratio: auto; }
+  .pillar__media--plain img,
+  .pillar--compact .pillar__media--plain img { width: 100%; height: auto; }
+}
+@media (max-width: 380px) {
+  /* Smallest phones: the two job buttons stack full width instead of wrapping unevenly */
+  .job__actions { flex-direction: column; }
+  .job__actions .btn { width: 100%; }
+}
