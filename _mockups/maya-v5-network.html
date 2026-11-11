@@ -87,7 +87,7 @@
         <p class="body m5__lead">And our people? They do what only people can: <b>show up for our Naaris!</b></p>
       </div>
 
-      <p class="m5__hint">Around Maya are the <b>jobs she does</b>. The <span class="j">outer loop</span> is a Naari’s journey; each number matches the job Maya does for her at that step. The <span class="m">lit lines</span> carry what every job learns into Maya’s memory. <b id="verb">Hover</b> a job to see more.</p>
+      <p class="m5__hint">Around Maya are the <b>jobs she does</b>. The <span class="j">outer loop</span> is a Naari’s journey; each number matches the job Maya does for her at that step. The <span class="m">lit lines</span> carry what every job learns into Maya, who files it in her memory for new teammates. <b id="verb">Hover</b> a job to see more.</p>
 
       <div class="m5__map" id="map">
         <div class="m5-core"><img src="../assets/img/maya-bot.webp" alt="Maya, a friendly white robot, waving hello" width="600" height="531"><b>Maya</b><small>Nimaya’s agentic AI program manager</small></div>
@@ -116,17 +116,18 @@
   // Jobs round Maya, clockwise. "num" ties a job to the step(s) of the Naari's journey it serves.
   const jobs = [
     { id: "calendar", a: 250, icon: "cal", name: "Making the calendar work", text: "College schedules, trainers, curriculum. Maya makes it all fit.", in: "Takes in <b>college and trainer schedules</b>", out: "Gives <b>a plan that fits</b> to Trainers and Program Managers" },
-    { id: "speaks", a: 290, icon: "phone", num: "1", name: "Naari speaks, we act", text: "Maya calls every Naari and turns her feedback into fixes.", in: "Takes in <b>her feedback</b> from Naaris", out: "Gives <b>fixes to make</b> to the Curriculum Team and Program Managers" },
-    { id: "classroom", a: 330, icon: "eye", name: "An eye on every classroom", text: "Maya reviews every session and flags what could be better.", in: "Takes in <b>session recordings</b> from Trainers", out: "Gives <b>what could be better</b> to Trainers and Program Managers" },
+    { id: "speaks", a: 330, icon: "phone", num: "1", name: "Naari speaks, we act", text: "Maya calls every Naari and turns her feedback into fixes.", in: "Takes in <b>her feedback</b> from Naaris", out: "Gives <b>fixes to make</b> to the Curriculum Team and Program Managers" },
+    { id: "classroom", a: 290, icon: "eye", name: "An eye on every classroom", text: "Maya reviews every session and flags what could be better.", in: "Takes in <b>session recordings</b> from Trainers", out: "Gives <b>what could be better</b> to Trainers and Program Managers" },
     { id: "proof", a: 10, icon: "award", num: "2", name: "Proof of her progress", text: "An assessment, a certificate and a recommendation letter for every Naari.", in: "Takes in <b>her assessment</b> from each Naari", out: "Gives her <b>a report, a certificate and a recommendation letter</b>" },
     { id: "stars", a: 50, icon: "star", num: "3", name: "Spotting our rising stars", text: "Maya finds the Naaris worth betting on, in every cohort.", in: "Takes in <b>her results</b> from every cohort", out: "Gives <b>who to bet on next</b> to Leadership" },
-    { id: "memory", a: 90, icon: "db", mem: true, name: "Builds our organisational memory", text: "Every lesson is remembered. Every new teammate starts smarter.", in: "Takes in <b>a lesson from every job</b>", out: "Gives <b>a head start</b> to New Teammates, and makes <b>Maya sharper</b>" },
-    { id: "alumni", a: 130, icon: "cap", num: "4-6", name: "Manages our alumni", text: "Jobs for our alumni, and a way to give back as mentors to new Naaris.", in: "Takes in <b>where each alumna is now</b> from our Alumni", out: "Gives <b>jobs that fit</b> to Alumni, and <b>mentors</b> to new Naaris" },
-    { id: "paperwork", a: 170, icon: "doc", name: "Paperwork? Handled.", text: "Audit-ready CSR and tax reports, so our teams stay with the Naaris.", in: "Takes in <b>program data</b> from Program Managers", out: "Gives <b>audit-ready reports</b> to Funders and Auditors" },
+    { id: "memory", a: 90, icon: "db", mem: true, name: "Builds our organisational memory", text: "Every lesson is remembered. Every new teammate starts smarter.", in: "Takes in <b>what Maya learns</b> from every job", out: "Gives <b>a head start</b> to New Teammates" },
+    { id: "alumni", a: 170, icon: "cap", num: "4-6", name: "Manages our alumni", text: "Jobs for our alumni, and a way to give back as mentors to new Naaris.", in: "Takes in <b>where each alumna is now</b> from our Alumni", out: "Gives <b>jobs that fit</b> to Alumni, and <b>mentors</b> to new Naaris" },
+    { id: "paperwork", a: 130, icon: "doc", name: "Paperwork? Handled.", text: "Audit-ready CSR and tax reports, so our teams stay with the Naaris.", in: "Takes in <b>program data</b> from Program Managers", out: "Gives <b>audit-ready reports</b> to Funders and Auditors" },
     { id: "toes", a: 210, icon: "bell", name: "Keeping us on our toes", text: "Maya tracks our follow-through, so no Naari is left waiting.", in: "Takes in <b>what Naaris have asked us for</b>", out: "Gives <b>follow-ups that are due</b> to Leadership" },
   ];
   // Her journey round the outer loop: [number, label, angle on the loop, job it belongs to]
-  const stages = [[1, "Learns", 305, "speaks"], [2, "Gets assessed", 10, "proof"], [3, "Gets spotted", 43, "stars"], [4, "Graduates", 110, "alumni"], [5, "Gets a job", 137, "alumni"], [6, "Mentors", 160, "alumni"]];
+  const STEP = 360 / 7;
+  const stages = [[1, "Naari learns", "speaks"], [2, "Gets assessed", "proof"], [3, "Gets spotted", "stars"], [4, "Graduates", "alumni"], [5, "Gets a job", "alumni"], [6, "Mentors", "alumni"]].map(([n, label, job]) => [n, label, 270 + n * STEP, job]);
 
   const W = 1200, H = 840, CX = 600, CY = 400;
   const IN = { rx: 345, ry: 238 }, OUT = { rx: 528, ry: 350 };
@@ -141,7 +142,7 @@
   const mem = jobs.find((j) => j.mem);
 
   // Frame: the jobs joined in a ring (structure only, no flow)
-  const frame = "M" + jobs.map((j) => `${f(j.xy[0])} ${f(j.xy[1])}`).join(" L") + " Z";
+  const frame = "M" + jobs.filter((j) => !j.mem).sort((p, q) => ((p.a + 270) % 360) - ((q.a + 270) % 360)).map((j) => `${f(j.xy[0])} ${f(j.xy[1])}`).join(" L"); // open at memory: no lines from its neighbours
   // Fan: one straight line from every job into memory, with a light streak flowing in
   const streak = (d, len, i, cls = "") => {
     const dur = (len / 60 + 3 + (i % 3) * 0.9).toFixed(2), begin = (-i * 1.37).toFixed(2), rx = Math.min(34, Math.max(14, len * 0.1));
@@ -150,22 +151,22 @@
   };
   let fan = "", streaks = "";
   jobs.filter((j) => !j.mem).forEach((j, i) => {
-    const [x1, y1] = j.xy, [x2, y2] = mem.xy;
-    const len = Math.hypot(x2 - x1, y2 - y1), ux = (x2 - x1) / len, uy = (y2 - y1) / len;
-    // Start clear of the job's own name when the line heads through it
-    const t1 = !j.up && uy > 0.3 ? 74 : 34;
-    const d = `M${f(x1 + ux * t1)} ${f(y1 + uy * t1)} L${f(x2 - ux * 36)} ${f(y2 - uy * 36)}`;
+    const [x1, y1] = j.xy;
+    const len = Math.hypot(CX - x1, CY - y1), ux = (CX - x1) / len, uy = (CY - y1) / len;
+    // The line runs from the job's icon to the edge of Maya (an oval round her and her name)
+    const stop = 1 / Math.hypot(ux / 132, uy / 156);
+    const d = `M${f(x1 + ux * 34)} ${f(y1 + uy * 34)} L${f(CX - ux * stop)} ${f(CY - uy * stop)}`;
     fan += `<path class="m5-fan" d="${d}"/>`;
-    streaks += streak(d, len - t1 - 36, i);
+    streaks += streak(d, len - 34 - stop, i);
   });
-  // Memory out: one short line down to the new teammates
+  // Maya to memory, then memory to the new teammates
+  const mayaD = `M${CX} ${CY + 156} L${CX} ${f(mem.xy[1] - 36)}`;
   const teamXY = [CX, CY + OUT.ry + 46];
-  const outY1 = mem.xy[1] + 78, outY2 = teamXY[1] - 20;
-  const outD = `M${CX} ${f(outY1)} L${CX} ${f(outY2)}`;
+  const outD = `M${CX} ${f(mem.xy[1] + 78)} L${CX} ${f(teamXY[1] - 20)}`;
 
   // Outer loop: her journey, clockwise, arrows between the steps
-  const loop = `M${f(on(OUT, 290)[0])} ${f(on(OUT, 290)[1])} A${OUT.rx} ${OUT.ry} 0 1 1 ${f(on(OUT, 110)[0])} ${f(on(OUT, 110)[1])} A${OUT.rx} ${OUT.ry} 0 1 1 ${f(on(OUT, 290)[0])} ${f(on(OUT, 290)[1])}`;
-  const arrows = [338, 27, 78, 124, 149, 192, 266].map((t) => {
+  const loop = `M${CX} ${CY - OUT.ry} A${OUT.rx} ${OUT.ry} 0 1 1 ${CX} ${CY + OUT.ry} A${OUT.rx} ${OUT.ry} 0 1 1 ${CX} ${CY - OUT.ry}`;
+  const arrows = [0.5, 1.5, 2.5, 4.5, 5.5, 6.5].map((k) => 270 + k * STEP).map((t) => {
     const [x, y] = on(OUT, t);
     const ang = (Math.atan2(OUT.ry * Math.cos(rad(t)), -OUT.rx * Math.sin(rad(t))) * 180) / Math.PI;
     return `<path class="m5-arrow" d="M-5 -6 L4 0 L-5 6" transform="translate(${f(x)} ${f(y)}) rotate(${f(ang)})"/>`;
@@ -183,8 +184,9 @@
     <path class="m5-loop" d="${loop}"/>${arrows}
     <path class="m5-frame" d="${frame}"/>
     ${fan}
+    <path class="m5-out" d="${mayaD}" marker-end="url(#m5-mk)"/>
     <path class="m5-out" d="${outD}" marker-end="url(#m5-mk)"/>
-    ${streaks}${streak(outD, 70, 3)}
+    ${streaks}${streak(mayaD, 60, 1, "m5-streak--mem")}${streak(outD, 60, 4, "m5-streak--mem")}
     <circle class="m5-dot" r="6"><animateMotion path="${loop}" dur="14s" repeatCount="indefinite"/></circle>`;
   map.prepend(svg);
 
@@ -200,11 +202,13 @@
     pct(el, j.xy);
     // Side jobs open their card a little toward Maya, so it never covers the journey step beside them
     const c = Math.cos(rad(j.a));
-    const low = Math.sin(rad(j.a)) > 0.6; // the two lower side jobs sit near Maya's name, so they move less and drop a little
+    // Side jobs nudge their card so it clears Maya and the journey step beside them
     if (Math.abs(c) > 0.5) {
       const card = el.querySelector(".m5-card");
-      card.style.left = `calc(50% ${c > 0 ? "-" : "+"} ${low ? 30 : 62}px)`;
-      if (low) card.style.top = "calc(50% + 16px)";
+      const sn = Math.sin(rad(j.a));
+      if (sn > 0.6) card.style.left = `calc(50% ${c > 0 ? "+" : "-"} 40px)`; // lower sides: a little outward
+      else if (j.up) { card.style.left = `calc(50% ${c > 0 ? "-" : "+"} 72px)`; card.style.top = "calc(50% - 46px)"; } // upper sides: inward and up
+      else card.style.left = `calc(50% ${c > 0 ? "-" : "+"} 50px)`; // middle sides: a little inward
     }
     map.append(el);
     j.el = el;
@@ -222,7 +226,7 @@
   const note = document.createElement("span");
   note.className = "m5-note";
   note.textContent = "...and the next Naari begins";
-  pct(note, on(OUT, 226));
+  pct(note, on(OUT, 270));
   map.append(note);
   const team = document.createElement("span");
   team.className = "m5-team";

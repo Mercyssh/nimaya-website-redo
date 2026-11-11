@@ -176,9 +176,12 @@
       </div>
     </section>
 
-    <!-- Meet Maya: the agentic AI behind Nimaya. The Maya mascot sits at the centre with her jobs around her,
-         and the people she works for on the outer loop. JS places everything and draws the lines;
-         hover or tap a job to see its line of copy and who it serves. Phones get a stack of cards. -->
+    <!-- Meet Maya: the agentic AI behind Nimaya.
+         Maya sits in the middle with the jobs she does around her; each job feeds what it learns into Maya,
+         Maya files it in organisational memory, and memory passes it on to new teammates.
+         The outer loop is a Naari's journey; its numbers match the job Maya does for her at that step.
+         JS places everything and draws the lines; hover or tap a job to see what Maya takes in and gives back.
+         Phones get the same content as a stack of cards. The "takes in / gives" lines are draft wording. -->
     <section class="ai maya" id="meet-maya">
       <div class="wrap">
         <div class="maya__head">
@@ -188,79 +191,137 @@
           <p class="body maya__lead" data-reveal="up">And our people? They do what only people can: <b class="em">show up for our Naaris!</b></p>
         </div>
 
-        <p class="maya__hint">Hover a job to see how Maya helps</p>
+        <p class="maya__hint">Around Maya are the <b>jobs she does</b>. The <span class="maya__hint-loop">outer loop</span> is a Naari’s journey; each number matches the job Maya does for her at that step. The <span class="maya__hint-lines">lit lines</span> carry what every job learns into Maya, who files it in her memory for new teammates. <b class="maya__hint-verb">Hover</b> a job to see more.</p>
+
         <div class="maya__map" data-maya>
           <div class="maya__core">
             <img class="maya__bot" src="assets/img/maya-bot.webp" alt="Maya, a friendly white robot, waving hello" width="600" height="531">
             <span class="maya__core-name">Maya</span>
             <span class="maya__core-sub">Nimaya’s agentic AI program manager</span>
           </div>
-          <ol class="maya__nodes">
-            <li class="maya__node" data-a="-70" data-groups="naaris curriculum pm">
-              <span class="maya__icon"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M7 3h3l1.5 4-2 1.5a11 11 0 0 0 6 6l1.5-2 4 1.5v3a2 2 0 0 1-2 2A17 17 0 0 1 5 5a2 2 0 0 1 2-2z"/></svg></span>
+
+          <p class="maya__journey-title">A Naari’s journey, with Maya beside her</p>
+          <ol class="maya__journey">
+            <li class="maya__stage" data-job="speaks"><i>1</i>Naari learns</li>
+            <li class="maya__stage" data-job="proof"><i>2</i>Gets assessed</li>
+            <li class="maya__stage" data-job="stars"><i>3</i>Gets spotted</li>
+            <li class="maya__stage" data-job="alumni"><i>4</i>Graduates</li>
+            <li class="maya__stage" data-job="alumni"><i>5</i>Gets a job</li>
+            <li class="maya__stage" data-job="alumni"><i>6</i>Mentors</li>
+            <li class="maya__again">...and the next Naari begins</li>
+          </ol>
+
+          <ul class="maya__nodes">
+            <li class="maya__node" data-id="speaks" data-a="330">
+              <span class="maya__icon"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M7 3h3l1.5 4-2 1.5a11 11 0 0 0 6 6l1.5-2 4 1.5v3a2 2 0 0 1-2 2A17 17 0 0 1 5 5a2 2 0 0 1 2-2z"/></svg><span class="maya__num">1</span></span>
               <span class="maya__name">Naari speaks, we act</span>
-              <span class="maya__text">Maya calls every Naari and turns her feedback into fixes.</span>
-              <span class="maya__for">For Naaris, the Curriculum Team and Program Managers</span>
+              <span class="maya__card">
+                <b class="maya__card-name" aria-hidden="true">Naari speaks, we act</b>
+                <span class="maya__text">Maya calls every Naari and turns her feedback into fixes.</span>
+                <span class="maya__flows">
+                  <span class="maya__flow maya__flow--in"><svg viewBox="0 0 18 18" aria-hidden="true"><path d="M15 9H4M8 4.5 3.5 9 8 13.5"/></svg><span>Takes in <b>her feedback</b> from Naaris</span></span>
+                  <span class="maya__flow maya__flow--out"><svg viewBox="0 0 18 18" aria-hidden="true"><path d="M3 9h11M10 4.5 14.5 9 10 13.5"/></svg><span>Gives <b>fixes to make</b> to the Curriculum Team and Program Managers</span></span>
+                </span>
+              </span>
             </li>
-            <li class="maya__node" data-a="250" data-groups="funders">
-              <span class="maya__icon"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M7 3h7l4 4v14H7z"/><path d="M14 3v4h4M9.5 14l2 2 3.5-4"/></svg></span>
-              <span class="maya__name">Paperwork? Handled.</span>
-              <span class="maya__text">Audit-ready CSR and tax reports, so our teams stay with the Naaris.</span>
-              <span class="maya__for">For Funders and Auditors</span>
+            <li class="maya__node" data-id="proof" data-a="10">
+              <span class="maya__icon"><svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="9.5" r="5.5"/><path d="M9 14.5 7.5 21l4.5-2.5 4.5 2.5-1.5-6.5"/></svg><span class="maya__num">2</span></span>
+              <span class="maya__name">Proof of her progress</span>
+              <span class="maya__card">
+                <b class="maya__card-name" aria-hidden="true">Proof of her progress</b>
+                <span class="maya__text">An assessment, a certificate and a recommendation letter for every Naari.</span>
+                <span class="maya__flows">
+                  <span class="maya__flow maya__flow--in"><svg viewBox="0 0 18 18" aria-hidden="true"><path d="M15 9H4M8 4.5 3.5 9 8 13.5"/></svg><span>Takes in <b>her assessment</b> from each Naari</span></span>
+                  <span class="maya__flow maya__flow--out"><svg viewBox="0 0 18 18" aria-hidden="true"><path d="M3 9h11M10 4.5 14.5 9 10 13.5"/></svg><span>Gives her <b>a report, a certificate and a recommendation letter</b></span></span>
+                </span>
+              </span>
             </li>
-            <li class="maya__node" data-a="-30" data-groups="trainers pm">
+            <li class="maya__node" data-id="stars" data-a="50">
+              <span class="maya__icon"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 3l2.2 5.6L20 9.3l-4.5 3.9 1.4 5.8L12 16l-4.9 3 1.4-5.8L4 9.3l5.8-.7z"/></svg><span class="maya__num">3</span></span>
+              <span class="maya__name">Spotting our rising stars</span>
+              <span class="maya__card">
+                <b class="maya__card-name" aria-hidden="true">Spotting our rising stars</b>
+                <span class="maya__text">Maya finds the Naaris worth betting on, in every cohort.</span>
+                <span class="maya__flows">
+                  <span class="maya__flow maya__flow--in"><svg viewBox="0 0 18 18" aria-hidden="true"><path d="M15 9H4M8 4.5 3.5 9 8 13.5"/></svg><span>Takes in <b>her results</b> from every cohort</span></span>
+                  <span class="maya__flow maya__flow--out"><svg viewBox="0 0 18 18" aria-hidden="true"><path d="M3 9h11M10 4.5 14.5 9 10 13.5"/></svg><span>Gives <b>who to bet on next</b> to Leadership</span></span>
+                </span>
+              </span>
+            </li>
+            <li class="maya__node" data-id="alumni" data-a="170">
+              <span class="maya__icon"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M2.5 9.5 12 5l9.5 4.5L12 14z"/><path d="M6.5 11.5V16c1.5 1.5 3.5 2.2 5.5 2.2s4-.7 5.5-2.2v-4.5M21.5 9.5V14"/></svg><span class="maya__num">4-6</span></span>
+              <span class="maya__name">Manages our alumni</span>
+              <span class="maya__card">
+                <b class="maya__card-name" aria-hidden="true">Manages our alumni</b>
+                <span class="maya__text">Jobs for our alumni, and a way to give back as mentors to new Naaris.</span>
+                <span class="maya__flows">
+                  <span class="maya__flow maya__flow--in"><svg viewBox="0 0 18 18" aria-hidden="true"><path d="M15 9H4M8 4.5 3.5 9 8 13.5"/></svg><span>Takes in <b>where each alumna is now</b> from our Alumni</span></span>
+                  <span class="maya__flow maya__flow--out"><svg viewBox="0 0 18 18" aria-hidden="true"><path d="M3 9h11M10 4.5 14.5 9 10 13.5"/></svg><span>Gives <b>jobs that fit</b> to Alumni, and <b>mentors</b> to new Naaris</span></span>
+                </span>
+              </span>
+            </li>
+            <li class="maya__node" data-id="classroom" data-a="290">
               <span class="maya__icon"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M2.5 12S6 5.5 12 5.5 21.5 12 21.5 12 18 18.5 12 18.5 2.5 12 2.5 12z"/><circle cx="12" cy="12" r="3"/></svg></span>
               <span class="maya__name">An eye on every classroom</span>
-              <span class="maya__text">Maya reviews every session and flags what could be better.</span>
-              <span class="maya__for">For Trainers and Program Managers</span>
+              <span class="maya__card">
+                <b class="maya__card-name" aria-hidden="true">An eye on every classroom</b>
+                <span class="maya__text">Maya reviews every session and flags what could be better.</span>
+                <span class="maya__flows">
+                  <span class="maya__flow maya__flow--in"><svg viewBox="0 0 18 18" aria-hidden="true"><path d="M15 9H4M8 4.5 3.5 9 8 13.5"/></svg><span>Takes in <b>session recordings</b> from Trainers</span></span>
+                  <span class="maya__flow maya__flow--out"><svg viewBox="0 0 18 18" aria-hidden="true"><path d="M3 9h11M10 4.5 14.5 9 10 13.5"/></svg><span>Gives <b>what could be better</b> to Trainers and Program Managers</span></span>
+                </span>
+              </span>
             </li>
-            <li class="maya__node" data-a="130" data-groups="naaris leadership">
-              <span class="maya__icon"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 3l2.2 5.6L20 9.3l-4.5 3.9 1.4 5.8L12 16l-4.9 3 1.4-5.8L4 9.3l5.8-.7z"/></svg></span>
-              <span class="maya__name">Spotting our rising stars</span>
-              <span class="maya__text">Maya finds the Naaris worth betting on, in every cohort.</span>
-              <span class="maya__for">For Naaris and Leadership</span>
-            </li>
-            <li class="maya__node" data-a="10" data-groups="trainers pm">
+            <li class="maya__node" data-id="calendar" data-a="250">
               <span class="maya__icon"><svg viewBox="0 0 24 24" aria-hidden="true"><rect x="3.5" y="5" width="17" height="15" rx="2.5"/><path d="M3.5 10h17M8 3v4M16 3v4"/></svg></span>
               <span class="maya__name">Making the calendar work</span>
-              <span class="maya__text">College schedules, trainers, curriculum. Maya makes it all fit.</span>
-              <span class="maya__for">For Trainers and Program Managers</span>
+              <span class="maya__card">
+                <b class="maya__card-name" aria-hidden="true">Making the calendar work</b>
+                <span class="maya__text">College schedules, trainers, curriculum. Maya makes it all fit.</span>
+                <span class="maya__flows">
+                  <span class="maya__flow maya__flow--in"><svg viewBox="0 0 18 18" aria-hidden="true"><path d="M15 9H4M8 4.5 3.5 9 8 13.5"/></svg><span>Takes in <b>college and trainer schedules</b></span></span>
+                  <span class="maya__flow maya__flow--out"><svg viewBox="0 0 18 18" aria-hidden="true"><path d="M3 9h11M10 4.5 14.5 9 10 13.5"/></svg><span>Gives <b>a plan that fits</b> to Trainers and Program Managers</span></span>
+                </span>
+              </span>
             </li>
-            <li class="maya__node" data-a="50" data-groups="naaris">
-              <span class="maya__icon"><svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="9.5" r="5.5"/><path d="M9 14.5 7.5 21l4.5-2.5 4.5 2.5-1.5-6.5"/></svg></span>
-              <span class="maya__name">Proof of her progress</span>
-              <span class="maya__text">An assessment, a certificate and a recommendation letter for every Naari.</span>
-              <span class="maya__for">For Naaris</span>
+            <li class="maya__node" data-id="paperwork" data-a="130">
+              <span class="maya__icon"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M7 3h7l4 4v14H7z"/><path d="M14 3v4h4M9.5 14l2 2 3.5-4"/></svg></span>
+              <span class="maya__name">Paperwork? Handled.</span>
+              <span class="maya__card">
+                <b class="maya__card-name" aria-hidden="true">Paperwork? Handled.</b>
+                <span class="maya__text">Audit-ready CSR and tax reports, so our teams stay with the Naaris.</span>
+                <span class="maya__flows">
+                  <span class="maya__flow maya__flow--in"><svg viewBox="0 0 18 18" aria-hidden="true"><path d="M15 9H4M8 4.5 3.5 9 8 13.5"/></svg><span>Takes in <b>program data</b> from Program Managers</span></span>
+                  <span class="maya__flow maya__flow--out"><svg viewBox="0 0 18 18" aria-hidden="true"><path d="M3 9h11M10 4.5 14.5 9 10 13.5"/></svg><span>Gives <b>audit-ready reports</b> to Funders and Auditors</span></span>
+                </span>
+              </span>
             </li>
-            <li class="maya__node" data-a="210" data-groups="leadership">
+            <li class="maya__node" data-id="toes" data-a="210">
               <span class="maya__icon"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M6 10a6 6 0 0 1 12 0c0 5 2 6 2 6H4s2-1 2-6z"/><path d="M10 19.5a2 2 0 0 0 4 0"/></svg></span>
               <span class="maya__name">Keeping us on our toes</span>
-              <span class="maya__text">Maya tracks our follow-through, so no Naari is left waiting.</span>
-              <span class="maya__for">For Leadership</span>
+              <span class="maya__card">
+                <b class="maya__card-name" aria-hidden="true">Keeping us on our toes</b>
+                <span class="maya__text">Maya tracks our follow-through, so no Naari is left waiting.</span>
+                <span class="maya__flows">
+                  <span class="maya__flow maya__flow--in"><svg viewBox="0 0 18 18" aria-hidden="true"><path d="M15 9H4M8 4.5 3.5 9 8 13.5"/></svg><span>Takes in <b>what Naaris have asked us for</b></span></span>
+                  <span class="maya__flow maya__flow--out"><svg viewBox="0 0 18 18" aria-hidden="true"><path d="M3 9h11M10 4.5 14.5 9 10 13.5"/></svg><span>Gives <b>follow-ups that are due</b> to Leadership</span></span>
+                </span>
+              </span>
             </li>
-            <li class="maya__node" data-a="90" data-groups="newteam">
+            <li class="maya__node maya__node--memory" data-id="memory" data-a="90">
               <span class="maya__icon"><svg viewBox="0 0 24 24" aria-hidden="true"><ellipse cx="12" cy="6" rx="7" ry="2.8"/><path d="M5 6v6c0 1.5 3.1 2.8 7 2.8s7-1.3 7-2.8V6M5 12v6c0 1.5 3.1 2.8 7 2.8s7-1.3 7-2.8v-6"/></svg></span>
               <span class="maya__name">Builds our organisational memory</span>
-              <span class="maya__text">Every lesson is remembered. Every new teammate starts smarter.</span>
-              <span class="maya__for">For New Teammates</span>
+              <span class="maya__card">
+                <b class="maya__card-name" aria-hidden="true">Builds our organisational memory</b>
+                <span class="maya__text">Every lesson is remembered. Every new teammate starts smarter.</span>
+                <span class="maya__flows">
+                  <span class="maya__flow maya__flow--in"><svg viewBox="0 0 18 18" aria-hidden="true"><path d="M15 9H4M8 4.5 3.5 9 8 13.5"/></svg><span>Takes in <b>what Maya learns</b> from every job</span></span>
+                  <span class="maya__flow maya__flow--out"><svg viewBox="0 0 18 18" aria-hidden="true"><path d="M3 9h11M10 4.5 14.5 9 10 13.5"/></svg><span>Gives <b>a head start</b> to New Teammates</span></span>
+                </span>
+              </span>
             </li>
-            <li class="maya__node" data-a="170" data-groups="alumni naaris">
-              <span class="maya__icon"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M2.5 9.5 12 5l9.5 4.5L12 14z"/><path d="M6.5 11.5V16c1.5 1.5 3.5 2.2 5.5 2.2s4-.7 5.5-2.2v-4.5M21.5 9.5V14"/></svg></span>
-              <span class="maya__name">Manages our alumni</span>
-              <span class="maya__text">Jobs for our alumni, and a way to give back as mentors to new Naaris.</span>
-              <span class="maya__for">For Alumni and Naaris</span>
-            </li>
-          </ol>
-          <ul class="maya__groups" aria-label="The people Maya works for">
-            <li data-group="naaris" data-a="-90">Naaris</li>
-            <li data-group="curriculum" data-a="-45">Curriculum Team</li>
-            <li data-group="pm" data-a="0">Program Managers</li>
-            <li data-group="trainers" data-a="45">Trainers</li>
-            <li data-group="newteam" data-a="90">New Teammates</li>
-            <li data-group="leadership" data-a="135">Leadership</li>
-            <li data-group="alumni" data-a="180">Alumni</li>
-            <li data-group="funders" data-a="225">Funders &amp; Auditors</li>
           </ul>
+          <p class="maya__team">New Teammates <em>start smarter</em></p>
         </div>
 
         <p class="maya__close balance" data-reveal="up">Maya joins the dots. Our people join hands with our Naaris.</p>
