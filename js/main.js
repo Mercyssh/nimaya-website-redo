@@ -772,73 +772,110 @@
   }
 
   /* ---------- Meet Maya ----------
-     Maya in the middle, her jobs on an inner ellipse joined to her by dotted lines. The people she
-     works for sit on an outer loop with arrows; one bright dot travels it (a Naari learns, grows,
-     graduates, comes back to mentor).
-     Hover, focus or tap a job to light up who it serves. Below 1000px the CSS turns the same list into stacked cards. */
+     Maya in the middle, her jobs around her joined into one network: each job to its neighbours,
+     a few across the ring and a few straight through Maya. A few soft glows travel along it so it
+     reads as everything talking to everything. The people she works for sit on an outer oval with
+     arrows; one bright dot travels it (a Naari learns, grows, graduates, comes back to mentor).
+     Hover, focus or tap a job to light up its lines and who it serves. Below 1000px the CSS turns the same list into stacked cards. */
   function initMaya(root) {
     const W = 1200, H = 800, CX = 600, CY = 390;
     const IN = { rx: 345, ry: 238 }, OUT = { rx: 520, ry: 352 };
     const rad = (deg) => (deg * Math.PI) / 180;
+    const norm = (deg) => ((deg % 360) + 360) % 360;
     const on = (e, deg) => [CX + e.rx * Math.cos(rad(deg)), CY + e.ry * Math.sin(rad(deg))];
     const f = (n) => n.toFixed(1);
     const place = (el, [x, y]) => { el.style.setProperty("--x", `${(x / W) * 100}%`); el.style.setProperty("--y", `${(y / H) * 100}%`); };
 
     const nodes = [...root.querySelectorAll(".maya__node")];
     const groups = [...root.querySelectorAll(".maya__groups li")];
-    groups.forEach((g) => place(g, on(OUT, +g.dataset.a)));
-
-    const spokes = [];
+    const at = {};
     nodes.forEach((n, i) => {
+      const a = norm(+n.dataset.a);
+      const xy = on(IN, a);
+      const up = Math.sin(rad(a)) < -0.35;
+      at[a] = { k: String(i), xy, up };
       n.dataset.k = i;
       n.style.setProperty("--i", i);
       n.tabIndex = 0;
-      const [x, y] = on(IN, +n.dataset.a);
-      place(n, [x, y]);
+      place(n, xy);
       // On hover the copy card covers the job, so it carries the job's name too
       n.querySelector(".maya__text").dataset.title = n.querySelector(".maya__name").textContent;
-      // Jobs above Maya carry their name over the icon, so the dotted line never runs under it
-      n.classList.toggle("is-up", y < CY - 20);
-      // Dotted line from just outside Maya (an oval round her and her name) to the edge of the job's icon
-      const len = Math.hypot(x - CX, y - CY);
-      const ux = (x - CX) / len, uy = (y - CY) / len;
-      const from = 1 / Math.hypot(ux / 125, uy / 150), to = len - 36;
-      spokes.push(`<path class="maya-svg__spoke" data-node="${i}" d="M${f(CX + ux * from)} ${f(CY + uy * from)} L${f(CX + ux * to)} ${f(CY + uy * to)}"/>`);
+      // Jobs in the top half carry their name above the icon, the rest below it
+      n.classList.toggle("is-up", up);
     });
 
-    // The outer loop runs clockwise; small arrows sit halfway between the people on it
-    const loop = `M${CX - OUT.rx} ${CY} A${OUT.rx} ${OUT.ry} 0 1 1 ${CX + OUT.rx} ${CY} A${OUT.rx} ${OUT.ry} 0 1 1 ${CX - OUT.rx} ${CY}`;
-    const arrows = [];
-    for (let k = 0; k < 8; k++) {
-      const t = -67.5 + k * 45;
+    // The network: every job to its neighbours, three across the ring, four straight through Maya
+    const ring = Object.keys(at).map(Number).sort((a, b) => a - b);
+    const pairs = ring.map((a, i) => [a, ring[(i + 1) % ring.length], "ring"]);
+    [[250, 330], [210, 290], [50, 130]].forEach(([a, b]) => pairs.push([a, b, "cross"]));
+    [[290, 130], [330, 170], [10, 210], [250, 50]].forEach(([a, b]) => pairs.push([a, b, "core"]));
+    const edges = [];
+    const pulses = [];
+    pairs.forEach(([a, b, kind], i) => {
+      if (!at[a] || !at[b]) return;
+      const [x1, y1] = at[a].xy, [x2, y2] = at[b].xy;
+      const len = Math.hypot(x2 - x1, y2 - y1);
+      const ux = (x2 - x1) / len, uy = (y2 - y1) / len;
+      // Stop a line well short of a job when it heads toward that job's name, so it never runs under the text
+      const trim = (node, dy) => ((node.up ? -dy : dy) > 0.5 && Math.abs(ux) < 0.75 ? 84 : 34);
+      const t1 = trim(at[a], uy), t2 = trim(at[b], -uy);
+      const d = `M${f(x1 + ux * t1)} ${f(y1 + uy * t1)} L${f(x2 - ux * t2)} ${f(y2 - uy * t2)}`;
+      const ids = `${at[a].k} ${at[b].k}`;
+      edges.push(`<path class="maya-svg__edge maya-svg__edge--${kind}" data-nodes="${ids}" d="${d}"/>`);
+      // A light streak on every third line only, so the centre stays calm: a lens-flare shape, brightest
+      // and thickest in the middle and tapering to fine points. It travels along the line at a fixed length,
+      // only its thickness swells in as it sets off and thins away as it arrives.
+      if (i % 3) return;
+      const dur = (len / 55 + 2.5 + (i % 4) * 0.8).toFixed(2);
+      const timing = `dur="${dur}s" begin="${(-i * 0.9).toFixed(2)}s" repeatCount="indefinite"`;
+      const swell = (r) => `<animate attributeName="ry" values="0;${r};${r};0" keyTimes="0;0.3;0.7;1" calcMode="spline" keySplines="0.4 0 0.2 1;0 0 1 1;0.4 0 0.2 1" ${timing}/>`;
+      const back = i % 2 ? ' keyPoints="1;0" keyTimes="0;1" calcMode="linear"' : "";
+      // Shorter lines get shorter streaks
+      const core = Math.min(40, Math.max(16, (len - t1 - t2) * 0.13));
+      pulses.push(`<g class="maya-svg__pulse" data-nodes="${ids}">
+        <ellipse rx="${f(core * 1.35)}" ry="0" fill="url(#maya-streak-haze)">${swell(9)}</ellipse>
+        <ellipse rx="${f(core)}" ry="0" fill="url(#maya-streak-core)">${swell(2.2)}</ellipse>
+        <animateMotion path="${d}" rotate="auto" ${timing}${back}/>
+      </g>`);
+    });
+
+    // The outer loop: an oval through the people, running clockwise from the top, arrows halfway between each
+    groups.forEach((g) => place(g, on(OUT, +g.dataset.a)));
+    const loop = `M${CX} ${CY - OUT.ry} A${OUT.rx} ${OUT.ry} 0 1 1 ${CX} ${CY + OUT.ry} A${OUT.rx} ${OUT.ry} 0 1 1 ${CX} ${CY - OUT.ry}`;
+    const arrows = groups.map((g) => {
+      const t = +g.dataset.a + 22.5;
       const [x, y] = on(OUT, t);
       const ang = (Math.atan2(OUT.ry * Math.cos(rad(t)), -OUT.rx * Math.sin(rad(t))) * 180) / Math.PI;
-      arrows.push(`<path class="maya-svg__arrow" d="M-5 -6 L4 0 L-5 6" transform="translate(${f(x)} ${f(y)}) rotate(${f(ang)})"/>`);
-    }
+      return `<path class="maya-svg__arrow" d="M-5 -6 L4 0 L-5 6" transform="translate(${f(x)} ${f(y)}) rotate(${f(ang)})"/>`;
+    });
 
     const svg = document.createElementNS("http://www.w3.org/2000/svg", "svg");
     svg.setAttribute("class", "maya-svg");
     svg.setAttribute("viewBox", `0 0 ${W} ${H}`);
     svg.setAttribute("aria-hidden", "true");
     svg.innerHTML = `
+      <defs>
+        <radialGradient id="maya-streak-core"><stop offset="0" stop-color="#fff"/><stop offset="0.25" stop-color="#ffe2b3"/><stop offset="0.6" stop-color="#ff8a3d" stop-opacity="0.8"/><stop offset="1" stop-color="#f93725" stop-opacity="0"/></radialGradient>
+        <radialGradient id="maya-streak-haze"><stop offset="0" stop-color="#ff9a4d" stop-opacity="0.55"/><stop offset="0.5" stop-color="#f93725" stop-opacity="0.22"/><stop offset="1" stop-color="#f93725" stop-opacity="0"/></radialGradient>
+      </defs>
       <path class="maya-svg__loop" d="${loop}"/>
       ${arrows.join("")}
-      <ellipse class="maya-svg__inner" cx="${CX}" cy="${CY}" rx="${IN.rx}" ry="${IN.ry}"/>
-      ${spokes.join("")}
-      <circle class="maya-svg__dot" r="6"><animateMotion class="maya-svg__hero" dur="9s" begin="indefinite" repeatCount="indefinite" path="${loop}"/></circle>`;
+      ${edges.join("")}
+      ${pulses.join("")}
+      <circle class="maya-svg__dot" r="6"><animateMotion class="maya-svg__hero" dur="10s" begin="indefinite" repeatCount="indefinite" path="${loop}"/></circle>`;
     root.prepend(svg);
     root.classList.add("is-live");
 
     const hint = root.parentElement.querySelector(".maya__hint");
     if (hint && !finePointer) hint.textContent = "Tap a job to see how Maya helps";
 
-    // Light up one job, its line to Maya and the people it serves; dim the rest
+    // Light up one job, its lines and the people it serves; dim the rest
     const setActive = (n) => {
       root.classList.toggle("is-focus", !!n);
       const keys = n ? n.dataset.groups.split(" ") : [];
       nodes.forEach((x) => x.classList.toggle("is-lit", x === n));
       groups.forEach((g) => g.classList.toggle("is-lit", keys.includes(g.dataset.group)));
-      svg.querySelectorAll("[data-node]").forEach((el) => el.classList.toggle("is-lit", !!n && el.dataset.node === n.dataset.k));
+      svg.querySelectorAll("[data-nodes]").forEach((el) => el.classList.toggle("is-lit", !!n && el.dataset.nodes.split(" ").includes(n.dataset.k)));
     };
     nodes.forEach((n) => {
       n.addEventListener("pointerenter", (e) => { if (e.pointerType === "mouse") setActive(n); });
@@ -854,7 +891,7 @@
       svg.pauseAnimations();
       return;
     }
-    // Entrance once in view: Maya lights up, the jobs appear one by one, then the dot starts round the loop
+    // Entrance once in view: Maya appears, the jobs follow, the network draws, then the dot starts round the loop
     const hero = svg.querySelector(".maya-svg__hero");
     let started = false;
     svg.pauseAnimations();

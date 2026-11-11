@@ -3110,31 +3110,38 @@ main > section:has(+ .ai)::after { display: none; }
 
   .maya-svg__loop { fill: none; stroke: rgb(249 55 37 / 0.55); stroke-width: 1.6; }
   .maya-svg__arrow { fill: none; stroke: rgb(249 55 37 / 0.85); stroke-width: 2; stroke-linecap: round; stroke-linejoin: round; }
-  .maya-svg__inner { fill: none; stroke: rgb(var(--ai-lilac-rgb) / 0.16); stroke-width: 1; }
-  .maya-svg__spoke { fill: none; stroke: rgb(255 255 255 / 0.4); stroke-width: 2; stroke-linecap: round; stroke-dasharray: 0.1 9; transition: stroke 0.3s var(--ease), opacity 0.3s var(--ease); }
-  .maya-svg__spoke.is-lit { stroke: var(--coral); stroke-width: 3; }
+  /* Network: thin lines between the jobs, with small pulses travelling along them */
+  .maya-svg__edge { fill: none; stroke: rgb(var(--ai-lilac-rgb) / 0.22); stroke-width: 1.2; stroke-linecap: round; transition: stroke 0.3s var(--ease), stroke-width 0.3s var(--ease), opacity 0.3s var(--ease); }
+  .maya-svg__edge--ring { stroke: rgb(var(--ai-lilac-rgb) / 0.32); }
+  .maya-svg__edge.is-lit { stroke: var(--coral); stroke-width: 2.2; }
+  .maya-svg__pulse { mix-blend-mode: screen; transition: opacity 0.3s var(--ease); }
   .maya-svg__dot { fill: #fff; filter: drop-shadow(0 0 6px #fff) drop-shadow(0 0 14px var(--coral)); }
 
   .is-focus .maya__node:not(.is-lit),
   .is-focus .maya__groups li:not(.is-lit) { opacity: 0.35; }
-  .is-focus .maya-svg__spoke:not(.is-lit) { opacity: 0.15; }
+  .is-focus .maya-svg__edge:not(.is-lit),
+  .is-focus .maya-svg__pulse:not(.is-lit) { opacity: 0.12; }
 
   /* Entrance: Maya appears, the jobs follow one by one, then the people */
   .js .is-live .maya__core { opacity: 0; scale: 0.85; transition: opacity 0.6s var(--ease), scale 0.8s var(--ease); }
   .js .is-live.is-on .maya__core { opacity: 1; scale: 1; }
-  .js .is-live .maya__node, .js .is-live .maya__groups li, .js .is-live .maya-svg__spoke, .js .is-live .maya-svg__dot { opacity: 0; }
+  .js .is-live .maya__node, .js .is-live .maya__groups li, .js .is-live .maya-svg__edge, .js .is-live .maya-svg__pulse, .js .is-live .maya-svg__dot { opacity: 0; }
   .js .is-live .maya__node { scale: 0.7; transition: opacity 0.45s var(--ease), scale 0.6s var(--ease); }
   .js .is-live.is-on .maya__node { opacity: 1; scale: 1; transition-delay: calc(0.5s + var(--i) * 0.11s); }
-  .js .is-live.is-on .maya-svg__spoke { opacity: 1; transition: opacity 0.6s var(--ease) 1.2s, stroke 0.3s var(--ease); }
+  .js .is-live.is-on .maya-svg__edge { opacity: 1; transition: opacity 0.8s var(--ease) 1.2s, stroke 0.3s var(--ease), stroke-width 0.3s var(--ease); }
+  .js .is-live.is-on .maya-svg__pulse { opacity: 0.9; transition: opacity 0.6s var(--ease) 2s; }
   .js .is-live.is-on .maya__groups li { opacity: 1; transition: opacity 0.6s var(--ease) 1.7s, background 0.3s var(--ease), border-color 0.3s var(--ease), color 0.3s var(--ease); }
   .js .is-live.is-on .maya-svg__dot { opacity: 1; transition: opacity 0.4s var(--ease) 2.4s; }
   .js .is-live.is-on.is-focus .maya__node:not(.is-lit),
   .js .is-live.is-on.is-focus .maya__groups li:not(.is-lit) { opacity: 0.35; transition-delay: 0s; }
-  .js .is-live.is-on.is-focus .maya-svg__spoke:not(.is-lit) { opacity: 0.15; transition-delay: 0s; }
+  .js .is-live.is-on.is-focus .maya-svg__edge:not(.is-lit),
+  .js .is-live.is-on.is-focus .maya-svg__pulse:not(.is-lit) { opacity: 0.12; transition-delay: 0s; }
+  .js .is-live.is-on.is-focus .maya-svg__pulse.is-lit { opacity: 1; }
   .js .is-live.is-on .maya__node.is-lit { transition-delay: 0s; }
   .js .is-live.is-ready .maya__node,
   .js .is-live.is-ready .maya__groups li,
-  .js .is-live.is-ready .maya-svg__spoke,
+  .js .is-live.is-ready .maya-svg__edge,
+  .js .is-live.is-ready .maya-svg__pulse,
   .js .is-live.is-ready .maya-svg__dot { transition-delay: 0s; }
 }
 
