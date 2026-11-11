@@ -1,0 +1,427 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Meet Maya - mock v3</title>
+  <meta name="robots" content="noindex">
+  <!-- Mock only, not linked from the site. Uses the site's fonts and colour tokens. -->
+  <link rel="stylesheet" href="../css/style.css">
+  <style>
+    body { margin: 0; background: var(--ai-bg); background-color: var(--night); color: var(--ai-mist); }
+    .mv { padding: 72px 24px 96px; }
+    .mv__wrap { max-width: 1180px; margin: 0 auto; }
+    .mv__head { max-width: 760px; margin: 0 auto; text-align: center; }
+    .mv__head .display { color: #fff; }
+    .mv__head .script { color: var(--ai-lilac); }
+    .mv__tagline { margin-top: 20px; font-size: var(--fs-3); font-weight: 600; line-height: 1.35; color: #fff; }
+    .mv__lead { margin-top: 14px; color: rgb(var(--ai-mist-rgb) / 0.82); }
+    .mv__lead b { color: var(--yellow); }
+
+    .mv__hint { margin-top: 36px; text-align: center; font-size: 15px; font-weight: 600; color: #fff; }
+    .mv__legend { display: flex; justify-content: center; gap: 22px; margin-top: 8px; font-size: 13px; font-weight: 600; color: rgb(var(--ai-mist-rgb) / 0.7); }
+    .mv__legend span { display: inline-flex; align-items: center; gap: 8px; }
+    .mv__legend i { width: 22px; height: 2px; border-radius: 2px; }
+    .mv__legend .in { background: var(--teal); }
+    .mv__legend .out { background: var(--coral); }
+
+    /* ---- Diagram ---- */
+    .mv__map { position: relative; width: min(100%, 1120px); aspect-ratio: 1200 / 800; margin: 12px auto 0; }
+    .mv__svg { position: absolute; inset: 0; width: 100%; height: 100%; overflow: visible; }
+    .mvring { fill: none; stroke: rgb(var(--ai-lilac-rgb) / 0.14); stroke-width: 1; }
+    .mvring--out { stroke: rgb(var(--ai-lilac-rgb) / 0.1); }
+    .mvspoke { stroke: rgb(var(--ai-lilac-rgb) / 0.35); stroke-width: 1.4; stroke-dasharray: 2 6; stroke-linecap: round; transition: opacity 0.3s; }
+    .mvflow { fill: none; stroke-width: 2; stroke-linecap: round; opacity: 0; transition: opacity 0.35s; }
+    .mvflow--in { stroke: var(--teal); }
+    .mvflow--out { stroke: var(--coral); }
+    .mvflow--mem { stroke: var(--ai-lilac); stroke-dasharray: 3 6; }
+    .mvflow.is-on { opacity: 0.9; }
+    .mvpool { fill: url(#mv-pool); stroke: rgb(var(--ai-lilac-rgb) / 0.55); stroke-width: 1.5; transition: stroke 0.3s, filter 0.3s; }
+    .mvpool-ring { fill: none; stroke: rgb(var(--ai-lilac-rgb) / 0.25); }
+    .mv__map.is-pool .mvpool, .mvpool.is-glow { stroke: #fff; filter: drop-shadow(0 0 12px rgb(var(--ai-lilac-rgb) / 0.9)); }
+
+    .mvcore { position: absolute; left: 50%; top: 44.5%; width: 18%; translate: -50% -50%; display: flex; flex-direction: column; align-items: center; text-align: center; z-index: 3; }
+    .mvcore::before { content: ""; position: absolute; z-index: -1; left: 50%; top: 40%; width: 125%; aspect-ratio: 1; translate: -50% -50%; border-radius: 50%; background: radial-gradient(closest-side, rgb(var(--ai-lilac-rgb) / 0.32), rgb(var(--ai-lilac-rgb) / 0.08) 60%, transparent); }
+    .mvcore img { width: 100%; height: auto; filter: drop-shadow(0 18px 28px rgb(10 6 40 / 0.5)); animation: float 4.5s ease-in-out infinite; }
+    @keyframes float { 50% { translate: 0 -8px; } }
+    .mvcore b { margin-top: 4px; font-family: var(--serif); font-size: 28px; line-height: 1; color: #fff; }
+    .mvcore small { margin-top: 4px; font-size: 12px; font-weight: 600; color: rgb(var(--ai-mist-rgb) / 0.8); }
+
+    .mvjob { position: absolute; z-index: 2; display: flex; flex-direction: column; align-items: center; gap: 8px; width: 126px; translate: -50% -24px; text-align: center; cursor: pointer; transition: opacity 0.3s; }
+    .mvjob.is-up { flex-direction: column-reverse; translate: -50% calc(-100% + 24px); }
+    .mvjob__icon { display: grid; place-items: center; width: 48px; height: 48px; border-radius: 50%; background: var(--coral); box-shadow: 0 0 0 6px rgb(249 55 37 / 0.16); color: #fff; transition: box-shadow 0.3s; }
+    .mvjob__icon svg { width: 22px; height: 22px; fill: none; stroke: currentColor; stroke-width: 1.7; stroke-linecap: round; stroke-linejoin: round; }
+    .mvjob__name { font-size: 14px; font-weight: 700; line-height: 1.25; color: #fff; text-wrap: balance; }
+    .mvjob.is-active { z-index: 6; }
+    .mvjob.is-active .mvjob__icon { box-shadow: 0 0 0 6px rgb(249 55 37 / 0.35), 0 0 28px rgb(249 55 37 / 0.7); }
+    .mvcard { position: absolute; left: 50%; top: 50%; width: 236px; padding: 14px 16px; translate: -50% -50%; scale: 0.92; border-radius: 14px; background: #fff; color: var(--ink); font-size: 14px; line-height: 1.45; text-align: center; box-shadow: 0 16px 40px rgb(10 6 40 / 0.5); opacity: 0; visibility: hidden; pointer-events: none; transition: opacity 0.25s, scale 0.25s, visibility 0s linear 0.25s; }
+    .mvcard b { display: block; margin-bottom: 4px; color: var(--coral); }
+    .is-active .mvcard { opacity: 1; visibility: visible; scale: 1; transition-delay: 0s; }
+
+    .mvgrp { position: absolute; z-index: 2; translate: -50% -50%; padding: 7px 14px; border-radius: 999px; border: 1px solid rgb(var(--ai-lilac-rgb) / 0.35); background: var(--night-2); font-size: 13px; font-weight: 600; white-space: nowrap; color: var(--ai-mist); transition: opacity 0.3s, background 0.3s, color 0.3s, border-color 0.3s; }
+    .mvgrp em { display: block; margin-top: 2px; font-style: normal; font-size: 12px; font-weight: 700; }
+    .mvgrp.is-src { border-color: var(--teal); background: #0f3a3a; color: #fff; text-align: center; }
+    .mvgrp.is-src em { color: #9ff0dc; }
+    .mvgrp.is-dst { background: #fff; border-color: #fff; color: var(--ink); text-align: center; }
+    .mvgrp.is-dst em { color: var(--coral); }
+    .mvgrp.is-src.is-dst { background: #fff; border-color: var(--teal); }
+    .mvgrp.is-src.is-dst em { color: var(--ink); }
+
+    .mvtag { position: absolute; z-index: 4; translate: -50% -50%; padding: 4px 10px; border-radius: 999px; font-size: 12px; font-weight: 700; white-space: nowrap; opacity: 0; transition: opacity 0.35s; pointer-events: none; }
+    .mvtag--in { background: rgb(95 208 182 / 0.16); border: 1px solid var(--teal); color: #c9fff1; }
+    .mvtag--out { background: rgb(249 55 37 / 0.18); border: 1px solid var(--coral); color: #ffd9d3; }
+    .mvtag--mem { background: rgb(var(--ai-lilac-rgb) / 0.16); border: 1px solid var(--ai-lilac); color: #fff; }
+    .mvtag.is-on { opacity: 1; }
+
+    .mvpoolname { position: absolute; z-index: 3; left: 50%; translate: -50% 0; font-size: 12.5px; font-weight: 700; color: var(--ai-lilac); white-space: nowrap; cursor: pointer; }
+    .mvpoolcard { position: absolute; z-index: 7; left: 50%; width: 250px; padding: 14px 16px; translate: -50% 0; border-radius: 14px; background: #fff; color: var(--ink); font-size: 14px; line-height: 1.45; text-align: center; box-shadow: 0 16px 40px rgb(10 6 40 / 0.5); opacity: 0; visibility: hidden; transition: opacity 0.25s, visibility 0s linear 0.25s; }
+    .mvpoolcard b { display: block; margin-bottom: 4px; color: #6b3fd1; }
+    .mv__map.is-pool .mvpoolcard { opacity: 1; visibility: visible; transition-delay: 0s; }
+
+    /* Dim everything that is not part of the current story */
+    .mv__map.is-focus .mvjob:not(.is-active),
+    .mv__map.is-focus .mvgrp:not(.is-src):not(.is-dst) { opacity: 0.3; }
+    .mv__map.is-focus .mvspoke { opacity: 0.25; }
+
+    /* What the highlighted job does, in words, under the graphic */
+    .mvpanel { max-width: 760px; min-height: 118px; margin: 4px auto 0; padding: 18px 24px; border-radius: 16px; background: rgb(255 255 255 / 0.06); border: 1px solid rgb(var(--ai-lilac-rgb) / 0.25); text-align: center; }
+    .mvpanel__name { font-size: 18px; font-weight: 700; color: #fff; }
+    .mvpanel__name i { font-style: normal; color: var(--coral); }
+    .mvpanel__text { margin-top: 4px; font-size: 15px; line-height: 1.45; color: rgb(var(--ai-mist-rgb) / 0.85); }
+    .mvpanel__flow { display: flex; flex-wrap: wrap; justify-content: center; align-items: center; gap: 8px 10px; margin-top: 12px; font-size: 13px; font-weight: 600; color: rgb(var(--ai-mist-rgb) / 0.75); }
+    .mvpanel__flow b { padding: 3px 10px; border-radius: 999px; font-weight: 700; }
+    .mvpanel__flow .in { border: 1px solid var(--teal); color: #c9fff1; }
+    .mvpanel__flow .out { border: 1px solid var(--coral); color: #ffd9d3; }
+    .mvpanel__flow .mem { border: 1px solid var(--ai-lilac); color: #fff; }
+
+    /* ---- Journey strip ---- */
+    .jr { max-width: 1100px; margin: 56px auto 0; }
+    .jr__title { text-align: center; font-family: var(--serif); font-size: 26px; font-weight: 700; color: #fff; }
+    .jr__sub { margin-top: 6px; text-align: center; font-size: 14px; color: rgb(var(--ai-mist-rgb) / 0.7); }
+    .jr__steps { position: relative; display: grid; grid-template-columns: repeat(6, minmax(0, 1fr)); gap: 14px; margin: 28px 0 0; padding: 0; list-style: none; }
+    .jr__steps::before { content: ""; position: absolute; left: 6%; right: 6%; top: 22px; height: 2px; background: linear-gradient(90deg, rgb(var(--ai-lilac-rgb) / 0.2), rgb(var(--ai-lilac-rgb) / 0.5), rgb(var(--ai-lilac-rgb) / 0.2)); }
+    .jr__step { position: relative; display: flex; flex-direction: column; align-items: center; text-align: center; cursor: pointer; }
+    .jr__dot { position: relative; z-index: 1; display: grid; place-items: center; width: 44px; height: 44px; border-radius: 50%; background: var(--night-3); border: 2px solid rgb(var(--ai-lilac-rgb) / 0.5); font-weight: 800; color: #fff; transition: background 0.3s, border-color 0.3s, box-shadow 0.3s; }
+    .jr__name { margin-top: 12px; font-size: 15px; font-weight: 700; color: #fff; }
+    .jr__help { margin-top: 4px; font-size: 13px; line-height: 1.4; color: rgb(var(--ai-mist-rgb) / 0.75); }
+    .jr__job { margin-top: 8px; padding: 3px 9px; border-radius: 999px; border: 1px solid rgb(249 55 37 / 0.5); font-size: 11.5px; font-weight: 700; color: #ffd9d3; }
+    .jr__step.is-now .jr__dot { background: var(--coral); border-color: #fff; box-shadow: 0 0 20px rgb(249 55 37 / 0.7); }
+    .jr__loop { display: block; width: 88%; height: 46px; margin: 4px auto 0; overflow: visible; }
+    .jr__loop path { fill: none; stroke: rgb(var(--ai-lilac-rgb) / 0.45); stroke-width: 1.5; stroke-dasharray: 4 6; }
+    .jr__loop text { fill: rgb(var(--ai-mist-rgb) / 0.7); font: 600 12px var(--sans); }
+
+    .mv__close { margin-top: 28px; text-align: center; font-family: var(--serif); font-size: var(--fs-3); font-weight: 600; color: #fff; }
+  </style>
+</head>
+<body>
+  <section class="mv">
+    <div class="mv__wrap">
+      <div class="mv__head">
+        <h2 class="display">Meet <span class="script">Maya</span></h2>
+        <p class="mv__tagline">Our agentic AI who runs the backend, so our team can focus on what matters: our Naaris!</p>
+        <p class="body mv__lead">What if an NGO never forgot a single thing a Naari told it? That is Maya. She is the agentic AI at the heart of Nimaya, and she listens, learns and joins the dots across every classroom, city and cohort. What a Naari tells Maya on a call today shapes tomorrow’s session, next month’s curriculum and even how our newest teammate is trained. Nothing sits in a silo.</p>
+        <p class="body mv__lead">And our people? They do what only people can: <b>show up for our Naaris!</b></p>
+      </div>
+
+      <p class="mv__hint">Maya does eight jobs for the people around her. Hover one to see what goes in and what comes out.</p>
+      <div class="mv__legend"><span><i class="in"></i>What Maya takes in</span><span><i class="out"></i>What Maya sends out</span></div>
+
+      <div class="mv__map" id="map">
+        <div class="mvcore"><img src="../assets/img/maya-bot.webp" alt="Maya, a friendly white robot, waving hello" width="600" height="531"><b>Maya</b><small>Nimaya’s agentic AI program manager</small></div>
+      </div>
+
+      <div class="mvpanel" id="panel" aria-live="polite"></div>
+
+      <div class="jr">
+        <p class="jr__title">A Naari’s journey, with Maya alongside</p>
+        <p class="jr__sub">Hover a step to see the job Maya does for her there.</p>
+        <ol class="jr__steps" id="journey"></ol>
+        <svg class="jr__loop" viewBox="0 0 1000 46" preserveAspectRatio="none" aria-hidden="true"><path d="M960 0 C960 36 920 40 880 40 L120 40 C80 40 40 36 40 0" vector-effect="non-scaling-stroke"/><path d="M34 10 L40 0 L46 10" vector-effect="non-scaling-stroke"/></svg>
+        <p class="jr__sub" style="margin-top:2px">...and the next Naari begins her journey</p>
+      </div>
+
+      <p class="mv__close">Maya joins the dots. Our people join hands with our Naaris.</p>
+    </div>
+  </section>
+
+<script>
+(() => {
+  const icons = {
+    phone: '<path d="M7 3h3l1.5 4-2 1.5a11 11 0 0 0 6 6l1.5-2 4 1.5v3a2 2 0 0 1-2 2A17 17 0 0 1 5 5a2 2 0 0 1 2-2z"/>',
+    doc: '<path d="M7 3h7l4 4v14H7z"/><path d="M14 3v4h4M9.5 14l2 2 3.5-4"/>',
+    eye: '<path d="M2.5 12S6 5.5 12 5.5 21.5 12 21.5 12 18 18.5 12 18.5 2.5 12 2.5 12z"/><circle cx="12" cy="12" r="3"/>',
+    star: '<path d="M12 3l2.2 5.6L20 9.3l-4.5 3.9 1.4 5.8L12 16l-4.9 3 1.4-5.8L4 9.3l5.8-.7z"/>',
+    cal: '<rect x="3.5" y="5" width="17" height="15" rx="2.5"/><path d="M3.5 10h17M8 3v4M16 3v4"/>',
+    award: '<circle cx="12" cy="9.5" r="5.5"/><path d="M9 14.5 7.5 21l4.5-2.5 4.5 2.5-1.5-6.5"/>',
+    bell: '<path d="M6 10a6 6 0 0 1 12 0c0 5 2 6 2 6H4s2-1 2-6z"/><path d="M10 19.5a2 2 0 0 0 4 0"/>',
+    cap: '<path d="M2.5 9.5 12 5l9.5 4.5L12 14z"/><path d="M6.5 11.5V16c1.5 1.5 3.5 2.2 5.5 2.2s4-.7 5.5-2.2v-4.5M21.5 9.5V14"/>',
+  };
+  // People round the outside
+  const groups = { naaris: ["Naaris", -90], curriculum: ["Curriculum Team", -45], pm: ["Program Managers", 0], trainers: ["Trainers", 45], newteam: ["New Teammates", 90], funders: ["Funders & Auditors", 135], leadership: ["Leadership", 225], alumni: ["Alumni", 180] };
+  // Maya's jobs: what comes in (from whom) and what goes out (to whom)
+  const jobs = [
+    { id: "speaks", a: -67.5, icon: "phone", name: "Naari speaks, we act", text: "Maya calls every Naari and turns her feedback into fixes.", in: ["naaris", "Her feedback"], out: [["curriculum", "Fixes to make"], ["pm", "Fixes to make"]] },
+    { id: "classroom", a: -22.5, icon: "eye", name: "An eye on every classroom", text: "Maya reviews every session and flags what could be better.", in: ["trainers", "Session recordings"], out: [["trainers", "What could be better"], ["pm", "What could be better"]] },
+    { id: "calendar", a: 22.5, icon: "cal", name: "Making the calendar work", text: "College schedules, trainers, curriculum. Maya makes it all fit.", in: ["trainers", "Trainer and college schedules"], out: [["trainers", "A plan that fits"], ["pm", "A plan that fits"]] },
+    { id: "proof", a: 67.5, icon: "award", name: "Proof of her progress", text: "An assessment, a certificate and a recommendation letter for every Naari.", in: ["naaris", "Her assessment"], out: [["naaris", "Report, certificate and letter"]] },
+    { id: "paperwork", a: 112.5, icon: "doc", name: "Paperwork? Handled.", text: "Audit-ready CSR and tax reports, so our teams stay with the Naaris.", in: ["pm", "Program data"], out: [["funders", "Audit-ready reports"]] },
+    { id: "stars", a: 157.5, icon: "star", name: "Spotting our rising stars", text: "Maya finds the Naaris worth betting on, in every cohort.", in: ["naaris", "Her results"], out: [["leadership", "Who to bet on"]] },
+    { id: "alumni", a: 202.5, icon: "cap", name: "Manages our alumni", text: "Jobs for our alumni, and a way to give back as mentors to new Naaris.", in: ["alumni", "Their updates"], out: [["alumni", "Jobs that fit"], ["naaris", "Mentors"]] },
+    { id: "toes", a: 247.5, icon: "bell", name: "Keeping us on our toes", text: "Maya tracks our follow-through, so no Naari is left waiting.", in: ["naaris", "What she asked us for"], out: [["leadership", "Follow-ups due"]] },
+  ];
+  const journey = [
+    ["Learns", "Maya calls her after sessions and acts on what she says", "speaks"],
+    ["Gets assessed", "Maya runs her assessment and sends her report", "proof"],
+    ["Spotted", "Maya flags her as a rising star", "stars"],
+    ["Graduates", "She joins our alumni network", "alumni"],
+    ["Gets a job", "Maya shares roles that fit her", "alumni"],
+    ["Mentors", "She comes back to guide the next Naari", "alumni"],
+  ];
+
+  const W = 1200, H = 800, CX = 600, CY = 356;
+  const IN = { rx: 350, ry: 230 }, OUT = { rx: 548, ry: 318 };
+  const POOL = { x: CX, y: 508, rx: 100, ry: 18 };
+  const map = document.getElementById("map");
+  const rad = (d) => (d * Math.PI) / 180;
+  const ell = (t, a) => [CX + (IN.rx + (OUT.rx - IN.rx) * t) * Math.cos(rad(a)), CY + (IN.ry + (OUT.ry - IN.ry) * t) * Math.sin(rad(a))];
+  const f = (n) => n.toFixed(1);
+  const pct = (el, [x, y]) => { el.style.left = `${(x / W) * 100}%`; el.style.top = `${(y / H) * 100}%`; };
+  const turn = (a, b) => ((((b - a) % 360) + 540) % 360) - 180;
+  const smooth = (x) => { x = Math.min(1, Math.max(0, x)); return x * x * (3 - 2 * x); };
+
+  // A line from a job out to a person: out to the middle lane, round it, then out to them
+  const lane = (aJob, aGrp, mid = 0.5) => {
+    const d = turn(aJob, aGrp), pts = [];
+    for (let i = 0; i <= 48; i++) {
+      const s = i / 48;
+      const t = s < 0.3 ? smooth(s / 0.3) * mid : s > 0.7 ? mid + smooth((s - 0.7) / 0.3) * (1 - mid) : mid;
+      pts.push(ell(t, aJob + d * smooth((s - 0.12) / 0.76)));
+    }
+    return pts.slice(4, -4);
+  };
+  const dOf = (pts) => "M" + pts.map(([x, y]) => `${f(x)} ${f(y)}`).join(" L");
+
+  const svgNS = "http://www.w3.org/2000/svg";
+  const svg = document.createElementNS(svgNS, "svg");
+  svg.setAttribute("class", "mv__svg");
+  svg.setAttribute("viewBox", `0 0 ${W} ${H}`);
+  let html = `
+    <defs>
+      <radialGradient id="mv-pool"><stop offset="0" stop-color="#c9b6ff" stop-opacity="0.45"/><stop offset="1" stop-color="#c9b6ff" stop-opacity="0.08"/></radialGradient>
+      <radialGradient id="mv-core"><stop offset="0" stop-color="#fff"/><stop offset="0.3" stop-color="#ffe2b3"/><stop offset="0.65" stop-color="#ff8a3d" stop-opacity="0.8"/><stop offset="1" stop-color="#f93725" stop-opacity="0"/></radialGradient>
+      <radialGradient id="mv-core-in"><stop offset="0" stop-color="#fff"/><stop offset="0.3" stop-color="#d6fff4"/><stop offset="0.65" stop-color="#5fd0b6" stop-opacity="0.8"/><stop offset="1" stop-color="#5fd0b6" stop-opacity="0"/></radialGradient>
+      <radialGradient id="mv-core-mem"><stop offset="0" stop-color="#fff"/><stop offset="0.35" stop-color="#e9e3ff"/><stop offset="0.7" stop-color="#c9b6ff" stop-opacity="0.8"/><stop offset="1" stop-color="#c9b6ff" stop-opacity="0"/></radialGradient>
+      <marker id="mv-arrow-in" viewBox="0 0 10 10" refX="7" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M1 1 L8 5 L1 9" fill="none" stroke="#5fd0b6" stroke-width="1.6"/></marker>
+      <marker id="mv-arrow-out" viewBox="0 0 10 10" refX="7" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M1 1 L8 5 L1 9" fill="none" stroke="#f93725" stroke-width="1.6"/></marker>
+      <marker id="mv-arrow-mem" viewBox="0 0 10 10" refX="7" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M1 1 L8 5 L1 9" fill="none" stroke="#c9b6ff" stroke-width="1.6"/></marker>
+    </defs>
+    <ellipse class="mvring" cx="${CX}" cy="${CY}" rx="${IN.rx}" ry="${IN.ry}"/>
+    <ellipse class="mvring mvring--out" cx="${CX}" cy="${CY}" rx="${OUT.rx}" ry="${OUT.ry}"/>
+    <ellipse class="mvpool-ring" cx="${POOL.x}" cy="${POOL.y + 6}" rx="${POOL.rx * 1.3}" ry="${POOL.ry * 1.4}"/>
+    <ellipse class="mvpool" id="pool" cx="${POOL.x}" cy="${POOL.y}" rx="${POOL.rx}" ry="${POOL.ry}"/>`;
+
+  const flows = {}; // id -> [{el, tag, streak}]
+  const streak = (d, grad, id) => `<g class="mvstreak" id="${id}" opacity="0"><ellipse rx="34" ry="0" fill="url(#${grad})"><animate attributeName="ry" values="0;3;3;0" keyTimes="0;0.25;0.75;1" dur="1.3s" begin="indefinite" fill="freeze"/></ellipse><animateMotion path="${d}" rotate="auto" dur="1.3s" begin="indefinite" fill="freeze"/></g>`;
+
+  // Jobs: placed on the inner ring, with a short dotted spoke to Maya and their in/out lines
+  jobs.forEach((j, i) => {
+    const [x, y] = ell(0, j.a);
+    const len = Math.hypot(x - CX, y - CY), ux = (x - CX) / len, uy = (y - CY) / len;
+    html += `<line class="mvspoke" x1="${f(CX + ux * 150)}" y1="${f(CY + uy * 150)}" x2="${f(x - ux * 34)}" y2="${f(y - uy * 34)}"/>`;
+    j.flows = [];
+    const add = (kind, grp, label, reverse) => {
+      let pts = lane(j.a, groups[grp][1], kind === "in" ? 0.42 : 0.58); // in and out run in slightly different lanes
+      if (reverse) pts = pts.reverse();
+      const d = dOf(pts);
+      const fid = `f-${j.id}-${j.flows.length}`;
+      const two = kind === "out" && grp === j.in[0]; // the same person gives and receives: one two-way line
+      html += `<path class="mvflow mvflow--${kind}" id="${fid}" d="${d}" marker-end="url(#mv-arrow-${kind})"${two ? ' marker-start="url(#mv-arrow-in)"' : ""}/>`;
+      if (two) label = `${j.in[1]} ⇄ ${label}`;
+      html += streak(d, kind === "in" ? "mv-core-in" : "mv-core", `s-${fid}`);
+      j.flows.push({ fid, kind, grp, label, mid: (() => {
+        // Label at least 140 units out from the job (clear of its name), else as close to the person as it gets
+        const job = ell(0, j.a), order = reverse ? [...pts].reverse() : pts;
+        const grpXY = ell(1, groups[grp][1]);
+        const two = kind === "out" && grp === j.in[0];
+        const th = reverse ? 140 : two ? 110 : 185; // stagger in and out labels so they never stack
+        const p = order.find(([x, y]) => Math.hypot(x - job[0], y - job[1]) >= th && Math.hypot(x - grpXY[0], y - grpXY[1]) >= 100)
+          || order[Math.floor(order.length / 2)];
+        return p;
+      })() });
+    };
+    if (!j.out.some(([g]) => g === j.in[0])) add("in", j.in[0], j.in[1], true);
+    j.out.forEach(([g, label]) => add("out", g, label, false));
+    // The lesson from this job drops into the memory pool
+    const ctrl = [x, POOL.y];
+    const dm = `M${f(x - ux * 30)} ${f(y - uy * 30)} Q${f(ctrl[0])} ${f(ctrl[1])} ${f(POOL.x + Math.sign(x - CX) * POOL.rx * 0.7)} ${f(POOL.y)}`;
+    html += `<path class="mvflow mvflow--mem" id="m-${j.id}" d="${dm}" marker-end="url(#mv-arrow-mem)"/>` + streak(dm, "mv-core-mem", `s-m-${j.id}`);
+  });
+  // Memory feeds new teammates and Maya
+  const nt = ell(1, 90);
+  const dNT = `M${POOL.x} ${POOL.y + POOL.ry + 6} L${POOL.x} ${f(nt[1] - 24)}`;
+  const dMaya = `M${POOL.x - 40} ${POOL.y - POOL.ry - 4} Q${POOL.x - 140} ${POOL.y - 90} ${POOL.x - 112} ${CY + 60}`;
+  html += `<path class="mvflow mvflow--mem" id="mem-nt" d="${dNT}" marker-end="url(#mv-arrow-mem)"/>` + streak(dNT, "mv-core-mem", "s-mem-nt");
+  html += `<path class="mvflow mvflow--mem" id="mem-maya" d="${dMaya}" marker-end="url(#mv-arrow-mem)"/>` + streak(dMaya, "mv-core-mem", "s-mem-maya");
+  svg.innerHTML = html;
+  map.prepend(svg);
+
+  // People
+  const grpEl = {};
+  Object.entries(groups).forEach(([k, [label, a]]) => {
+    const el = document.createElement("div");
+    el.className = "mvgrp";
+    el.textContent = label;
+    pct(el, ell(1, a));
+    map.append(el);
+    grpEl[k] = el;
+  });
+  // Jobs
+  jobs.forEach((j) => {
+    const el = document.createElement("div");
+    el.className = "mvjob" + (Math.sin(rad(j.a)) < -0.35 ? " is-up" : "");
+    el.innerHTML = `<span class="mvjob__icon"><svg viewBox="0 0 24 24">${icons[j.icon]}</svg></span><span class="mvjob__name">${j.name}</span>`;
+    pct(el, ell(0, j.a));
+    map.append(el);
+    j.el = el;
+    const seen = new Set();
+    j.tags = []; [].map((fl) => {
+      const t = document.createElement("span");
+      // The same label on two lines is shown once
+      if (seen.has(fl.label)) t.hidden = true;
+      seen.add(fl.label);
+      t.className = `mvtag mvtag--${fl.kind}`;
+      t.textContent = fl.label;
+      pct(t, fl.mid);
+      map.append(t);
+      return t;
+    });
+    const mt = document.createElement("span");
+    mt.className = "mvtag mvtag--mem";
+    mt.textContent = "Lesson saved to memory";
+    pct(mt, [POOL.x + Math.sign(ell(0, j.a)[0] - CX) * (POOL.rx + 105), POOL.y - 4]);
+    j.memTag = mt; // shown in the panel instead; the pool glows when the lesson lands
+  });
+  // Memory pool label, card and its own tags
+  const pn = document.createElement("span");
+  pn.className = "mvpoolname";
+  pn.textContent = "Organisational memory";
+  pn.style.top = `${((POOL.y + POOL.ry + 6) / H) * 100}%`;
+  map.append(pn);
+  const pc = document.createElement("div");
+  pc.className = "mvpoolcard";
+  pc.innerHTML = "<b>Builds our organisational memory</b>Every lesson is remembered. Every new teammate starts smarter.";
+  pc.style.top = `${((POOL.y + 50) / H) * 100}%`;
+  // (the memory copy now shows in the panel under the graphic)
+  const memTags = [["Maya gets sharper", [POOL.x - 190, POOL.y - 58]]].map(([txt, xy]) => {
+    const t = document.createElement("span");
+    t.className = "mvtag mvtag--mem";
+    t.textContent = txt;
+    pct(t, xy);
+    map.append(t);
+    return t;
+  });
+
+  const play = (id, delay) => setTimeout(() => {
+    const g = document.getElementById(id);
+    if (!g) return;
+    g.setAttribute("opacity", "1");
+    g.querySelectorAll("animate, animateMotion").forEach((a) => a.beginElement());
+  }, delay);
+
+  let timers = [];
+  const clear = () => {
+    timers.forEach(clearTimeout); timers = [];
+    map.classList.remove("is-focus", "is-pool");
+    svg.querySelectorAll(".mvflow.is-on").forEach((p) => p.classList.remove("is-on"));
+    map.querySelectorAll(".mvtag.is-on, .mvjob.is-active, .mvgrp.is-src, .mvgrp.is-dst").forEach((e) => e.classList.remove("is-on", "is-active", "is-src", "is-dst"));
+    Object.entries(grpEl).forEach(([g, el]) => { el.textContent = groups[g][0]; });
+    svg.querySelectorAll(".streak").forEach((s) => s.setAttribute("opacity", "0"));
+    document.getElementById("pool").classList.remove("is-glow");
+  };
+  const panel = document.getElementById("panel");
+  const names = (keys) => keys.map((k) => groups[k][0]).join(" and ");
+  const show = (j) => {
+    clear();
+    const outs = [...new Set(j.out.map(([, l]) => l))].map((l) => `<b class="out">${l}</b> to ${names(j.out.filter(([, x]) => x === l).map(([g]) => g))}`).join(" · ");
+    panel.innerHTML = `<p class="mvpanel__name"><i>Maya</i> · ${j.name}</p><p class="mvpanel__text">${j.text}</p>
+      <p class="mvpanel__flow">Takes in <b class="in">${j.in[1]}</b> from ${groups[j.in[0]][0]} <span>→</span> sends out ${outs} <span>→</span> <b class="mem">Lesson saved to memory</b></p>`;
+    map.classList.add("is-focus");
+    j.el.classList.add("is-active");
+    const say = {};
+    j.flows.forEach((fl) => {
+      const two = fl.kind === "out" && fl.grp === j.in[0];
+      (say[fl.grp] ||= []).push(fl.kind === "in" ? `gives ${fl.label.toLowerCase()}` : two ? `gives ${j.in[1].toLowerCase()}, gets ${j.out.find(([g]) => g === fl.grp)[1].toLowerCase()}` : `gets ${fl.label.toLowerCase()}`);
+      if (two) grpEl[fl.grp].classList.add("is-src");
+    });
+    Object.entries(say).forEach(([g, lines]) => { grpEl[g].innerHTML = `${groups[g][0]}<em>${[...new Set(lines)].join(" · ")}</em>`; });
+    j.flows.forEach((fl, i) => {
+      document.getElementById(fl.fid).classList.add("is-on");
+      grpEl[fl.grp].classList.add(fl.kind === "in" ? "is-src" : "is-dst");
+      // In first, then out
+      timers.push(play(`s-${fl.fid}`, fl.kind === "in" ? 0 : 1300));
+    });
+    // Then the lesson drops into memory
+    timers.push(setTimeout(() => {
+      document.getElementById(`m-${j.id}`).classList.add("is-on");
+      j.memTag.classList.add("is-on");
+    }, 2600));
+    timers.push(play(`s-m-${j.id}`, 2600));
+    timers.push(setTimeout(() => document.getElementById("pool").classList.add("is-glow"), 3800));
+  };
+  const showPool = () => {
+    clear();
+    panel.innerHTML = `<p class="mvpanel__name"><i>Maya</i> · Builds our organisational memory</p><p class="mvpanel__text">Every lesson is remembered. Every new teammate starts smarter.</p>
+      <p class="mvpanel__flow">Every job adds a lesson <span>→</span> <b class="mem">They start smarter</b> for New Teammates <span>·</span> <b class="mem">Maya gets sharper</b></p>`;
+    map.classList.add("is-focus", "is-pool");
+    ["mem-nt", "mem-maya"].forEach((id) => document.getElementById(id).classList.add("is-on"));
+    memTags.forEach((t) => t.classList.add("is-on"));
+    grpEl.newteam.classList.add("is-dst");
+    grpEl.newteam.innerHTML = "New Teammates<em>start smarter</em>";
+    timers.push(play("s-mem-nt", 200), play("s-mem-maya", 200));
+  };
+
+  // Hover takes over; otherwise Maya cycles through her jobs on her own, memory last
+  let auto = 0, paused = false;
+  const steps = [...jobs.map((j) => () => show(j)), showPool];
+  const tick = () => { if (!paused) { steps[auto % steps.length](); auto++; } };
+  setInterval(tick, 5200);
+  tick();
+  jobs.forEach((j) => {
+    j.el.addEventListener("mouseenter", () => { paused = true; show(j); });
+    j.el.addEventListener("mouseleave", () => { paused = false; clear(); });
+  });
+  [pn, document.getElementById("pool")].forEach((el) => {
+    el.addEventListener("mouseenter", () => { paused = true; showPool(); });
+    el.addEventListener("mouseleave", () => { paused = false; clear(); });
+  });
+
+  // Journey strip
+  const jr = document.getElementById("journey");
+  journey.forEach(([name, help, jobId], i) => {
+    const li = document.createElement("li");
+    li.className = "jr__step";
+    const job = jobs.find((j) => j.id === jobId);
+    li.innerHTML = `<span class="jr__dot">${i + 1}</span><span class="jr__name">${name}</span><span class="jr__help">${help}</span><span class="jr__job">${job.name}</span>`;
+    li.addEventListener("mouseenter", () => { paused = true; jr.querySelectorAll(".is-now").forEach((e) => e.classList.remove("is-now")); li.classList.add("is-now"); show(job); });
+    li.addEventListener("mouseleave", () => { paused = false; li.classList.remove("is-now"); clear(); });
+    jr.append(li);
+  });
+  // A dot walks the journey on its own
+  let step = 0;
+  setInterval(() => {
+    if (paused) return;
+    const lis = jr.children;
+    [...lis].forEach((e) => e.classList.remove("is-now"));
+    lis[step % lis.length].classList.add("is-now");
+    step++;
+  }, 1600);
+
+  // For screenshots: ?job=proof, ?pool, ?step=2
+  const q = new URLSearchParams(location.search);
+  if (q.has("job")) { paused = true; show(jobs.find((j) => j.id === q.get("job"))); }
+  if (q.has("pool")) { paused = true; showPool(); }
+  if (q.has("step")) { const li = jr.children[+q.get("step")]; li.dispatchEvent(new Event("mouseenter")); }
+})();
+</script>
+</body>
+</html>
