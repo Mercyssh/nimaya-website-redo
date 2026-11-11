@@ -771,119 +771,103 @@
     else pageVisible.then(() => onceInView([root], start, { threshold: 0.3 }));
   }
 
-  /* ---------- How AI runs Nimaya ----------
-     An AI core, four agents around it and a ring of Naaris outside. Signals travel
-     Naari -> agent -> core and back; a feed under it types out what is happening.
-     Animation pauses while off screen. */
-  function initAiNet(root) {
-    const NS = "http://www.w3.org/2000/svg";
-    const C = 300;
+  /* ---------- Meet Maya ----------
+     Maya in the middle, her jobs on an inner ellipse joined to her by dotted lines. The people she
+     works for sit on an outer loop with arrows; one bright dot travels it (a Naari learns, grows,
+     graduates, comes back to mentor).
+     Hover, focus or tap a job to light up who it serves. Below 1000px the CSS turns the same list into stacked cards. */
+  function initMaya(root) {
+    const W = 1200, H = 800, CX = 600, CY = 390;
+    const IN = { rx: 345, ry: 238 }, OUT = { rx: 520, ry: 352 };
     const rad = (deg) => (deg * Math.PI) / 180;
-    const at = (r, deg) => [C + r * Math.cos(rad(deg)), C + r * Math.sin(rad(deg))];
+    const on = (e, deg) => [CX + e.rx * Math.cos(rad(deg)), CY + e.ry * Math.sin(rad(deg))];
     const f = (n) => n.toFixed(1);
-    const icons = {
-      phone: '<path d="M7 3h3l1.5 4-2 1.5a11 11 0 0 0 6 6l1.5-2 4 1.5v3a2 2 0 0 1-2 2A17 17 0 0 1 5 5a2 2 0 0 1 2-2z"/>',
-      chat: '<path d="M4 5h16v11H9l-5 4z"/><path d="M8 9.5h8M8 12.5h5"/>',
-      book: '<path d="M4 5c3-1 6-1 8 1 2-2 5-2 8-1v14c-3-1-6-1-8 1-2-2-5-2-8-1z"/><path d="M12 6v14"/>',
-      spark: '<path d="M12 3l2.2 5.6L20 9.3l-4.5 3.9 1.4 5.8L12 16l-4.9 3 1.4-5.8L4 9.3l5.8-.7z"/>',
+    const place = (el, [x, y]) => { el.style.setProperty("--x", `${(x / W) * 100}%`); el.style.setProperty("--y", `${(y / H) * 100}%`); };
+
+    const nodes = [...root.querySelectorAll(".maya__node")];
+    const groups = [...root.querySelectorAll(".maya__groups li")];
+    groups.forEach((g) => place(g, on(OUT, +g.dataset.a)));
+
+    const spokes = [];
+    nodes.forEach((n, i) => {
+      n.dataset.k = i;
+      n.style.setProperty("--i", i);
+      n.tabIndex = 0;
+      const [x, y] = on(IN, +n.dataset.a);
+      place(n, [x, y]);
+      // On hover the copy card covers the job, so it carries the job's name too
+      n.querySelector(".maya__text").dataset.title = n.querySelector(".maya__name").textContent;
+      // Jobs above Maya carry their name over the icon, so the dotted line never runs under it
+      n.classList.toggle("is-up", y < CY - 20);
+      // Dotted line from just outside Maya (an oval round her and her name) to the edge of the job's icon
+      const len = Math.hypot(x - CX, y - CY);
+      const ux = (x - CX) / len, uy = (y - CY) / len;
+      const from = 1 / Math.hypot(ux / 125, uy / 150), to = len - 36;
+      spokes.push(`<path class="maya-svg__spoke" data-node="${i}" d="M${f(CX + ux * from)} ${f(CY + uy * from)} L${f(CX + ux * to)} ${f(CY + uy * to)}"/>`);
+    });
+
+    // The outer loop runs clockwise; small arrows sit halfway between the people on it
+    const loop = `M${CX - OUT.rx} ${CY} A${OUT.rx} ${OUT.ry} 0 1 1 ${CX + OUT.rx} ${CY} A${OUT.rx} ${OUT.ry} 0 1 1 ${CX - OUT.rx} ${CY}`;
+    const arrows = [];
+    for (let k = 0; k < 8; k++) {
+      const t = -67.5 + k * 45;
+      const [x, y] = on(OUT, t);
+      const ang = (Math.atan2(OUT.ry * Math.cos(rad(t)), -OUT.rx * Math.sin(rad(t))) * 180) / Math.PI;
+      arrows.push(`<path class="maya-svg__arrow" d="M-5 -6 L4 0 L-5 6" transform="translate(${f(x)} ${f(y)}) rotate(${f(ang)})"/>`);
+    }
+
+    const svg = document.createElementNS("http://www.w3.org/2000/svg", "svg");
+    svg.setAttribute("class", "maya-svg");
+    svg.setAttribute("viewBox", `0 0 ${W} ${H}`);
+    svg.setAttribute("aria-hidden", "true");
+    svg.innerHTML = `
+      <path class="maya-svg__loop" d="${loop}"/>
+      ${arrows.join("")}
+      <ellipse class="maya-svg__inner" cx="${CX}" cy="${CY}" rx="${IN.rx}" ry="${IN.ry}"/>
+      ${spokes.join("")}
+      <circle class="maya-svg__dot" r="6"><animateMotion class="maya-svg__hero" dur="9s" begin="indefinite" repeatCount="indefinite" path="${loop}"/></circle>`;
+    root.prepend(svg);
+    root.classList.add("is-live");
+
+    const hint = root.parentElement.querySelector(".maya__hint");
+    if (hint && !finePointer) hint.textContent = "Tap a job to see how Maya helps";
+
+    // Light up one job, its line to Maya and the people it serves; dim the rest
+    const setActive = (n) => {
+      root.classList.toggle("is-focus", !!n);
+      const keys = n ? n.dataset.groups.split(" ") : [];
+      nodes.forEach((x) => x.classList.toggle("is-lit", x === n));
+      groups.forEach((g) => g.classList.toggle("is-lit", keys.includes(g.dataset.group)));
+      svg.querySelectorAll("[data-node]").forEach((el) => el.classList.toggle("is-lit", !!n && el.dataset.node === n.dataset.k));
     };
-    const agents = [
-      { name: "Outreach", icon: "phone", deg: -135 },
-      { name: "Feedback", icon: "chat", deg: -45 },
-      { name: "Curriculum", icon: "book", deg: 45 },
-      { name: "Smart Didi", icon: "spark", deg: 135 },
-    ].map((a) => ({ ...a, xy: at(150, a.deg) }));
-    const faces = ["t-anjali", "t-chandani", "t-jyoti", "t-khushi", "t-mahak", "t-mahek", "story-amisha", "story-nayonica"];
-    const naaris = faces.map((src, i) => {
-      const deg = -112 + i * 45 + (i % 2 ? 8 : -8);
-      // Each Naari talks to the agent closest to her
-      const near = (a) => Math.cos(rad(a.deg - deg));
-      const agent = agents.reduce((best, a) => (near(a) > near(best) ? a : best));
-      return { src, xy: at(256, deg), agent };
+    nodes.forEach((n) => {
+      n.addEventListener("pointerenter", (e) => { if (e.pointerType === "mouse") setActive(n); });
+      n.addEventListener("pointerleave", (e) => { if (e.pointerType === "mouse") setActive(null); });
+      n.addEventListener("focus", () => setActive(n));
+      n.addEventListener("click", () => setActive(n));
     });
+    root.addEventListener("focusout", (e) => { if (!root.contains(e.relatedTarget)) setActive(null); });
+    document.addEventListener("pointerdown", (e) => { if (!e.target.closest(".maya__node")) setActive(null); });
 
-    const links = [];
-    naaris.forEach((n) => {
-      const [x1, y1] = n.xy;
-      const [x2, y2] = n.agent.xy;
-      // Bow the line slightly outward so it reads as a signal path
-      const mx = (x1 + x2) / 2 + (y2 - y1) * 0.12;
-      const my = (y1 + y2) / 2 - (x2 - x1) * 0.12;
-      links.push({ d: `M${f(x1)} ${f(y1)} Q${f(mx)} ${f(my)} ${f(x2)} ${f(y2)}`, kind: "naari" });
-    });
-    agents.forEach((a) => links.push({ d: `M${f(a.xy[0])} ${f(a.xy[1])} L${C} ${C}`, kind: "core" }));
-    // Curriculum agent hands updates on to Smart Didi: the feedback loop
-    links.push({ d: `M${f(agents[1].xy[0])} ${f(agents[1].xy[1])} A150 150 0 0 1 ${f(agents[2].xy[0])} ${f(agents[2].xy[1])}`, kind: "loop" });
-
-    const crowd = [];
-    for (let i = 0; i < 64; i++) {
-      const [x, y] = at(i % 2 ? 288 : 270, i * (360 / 64) + 3);
-      crowd.push(`<circle class="ai-net__crowd" cx="${f(x)}" cy="${f(y)}" r="${i % 3 ? 2.4 : 3.2}" style="--i:${i}"/>`);
-    }
-    const assets = root.dataset.assets || "assets/";
-    const packets = links.map((l, i) => {
-      const dur = (2.6 + (i % 5) * 0.45).toFixed(2);
-      const begin = (-(i * 0.73) % 4).toFixed(2);
-      const back = i % 2 ? ' keyPoints="1;0" keyTimes="0;1" calcMode="linear"' : "";
-      return `<circle class="ai-net__packet ai-net__packet--${l.kind}" r="${l.kind === "core" ? 4.5 : 3.5}"><animateMotion dur="${dur}s" begin="${begin}s" repeatCount="indefinite" path="${l.d}"${back}/></circle>`;
-    });
-
-    root.querySelector(".ai__net").innerHTML = `
-      <svg class="ai-net" viewBox="0 0 600 600" role="img" aria-label="Diagram: Naaris connect to four AI agents (Outreach, Feedback, Curriculum and Smart Didi), which connect to Nimaya's AI core">
-        <defs>
-          <radialGradient id="ai-core-fill" cx="50%" cy="40%" r="60%"><stop offset="0" stop-color="#6b3fd1"/><stop offset="1" stop-color="#2a1677"/></radialGradient>
-          ${naaris.map((n, i) => `<clipPath id="ai-face-${i}"><circle cx="${f(n.xy[0])}" cy="${f(n.xy[1])}" r="24"/></clipPath>`).join("")}
-        </defs>
-        <circle class="ai-net__ring" cx="${C}" cy="${C}" r="150"/>
-        <circle class="ai-net__ring ai-net__ring--outer" cx="${C}" cy="${C}" r="256"/>
-        ${crowd.join("")}
-        ${links.map((l) => `<path class="ai-net__link ai-net__link--${l.kind}" d="${l.d}"/>`).join("")}
-        ${packets.join("")}
-        <circle class="ai-net__halo" cx="${C}" cy="${C}" r="74"/>
-        <circle class="ai-net__core" cx="${C}" cy="${C}" r="62"/>
-        <text class="ai-net__core-name" x="${C}" y="${C + 2}" text-anchor="middle">Nimaya</text>
-        <text class="ai-net__core-sub" x="${C}" y="${C + 22}" text-anchor="middle">AI core</text>
-        ${agents.map((a) => `
-          <g class="ai-net__agent" transform="translate(${f(a.xy[0])} ${f(a.xy[1])})">
-            <circle r="32"/>
-            <g class="ai-net__icon" transform="translate(-12 -12)">${icons[a.icon]}</g>
-            <text y="${a.deg < 0 ? -44 : 54}" text-anchor="middle">${a.name}</text>
-          </g>`).join("")}
-        ${naaris.map((n, i) => `
-          <circle class="ai-net__face-ring" cx="${f(n.xy[0])}" cy="${f(n.xy[1])}" r="27"/>
-          <image href="${assets}img/people/${n.src}.webp" x="${f(n.xy[0] - 24)}" y="${f(n.xy[1] - 24)}" width="48" height="48" preserveAspectRatio="xMidYMin slice" clip-path="url(#ai-face-${i})"/>`).join("")}
-      </svg>`;
-    const svg = root.querySelector("svg");
-
-    const lines = [
-      "Outreach agent: checking in with Naaris in Guwahati",
-      "Feedback agent: session feedback received from Lucknow",
-      "Curriculum agent: module updated from Naari feedback",
-      "Smart Didi: mock interview ready for a Naari in Mumbai",
-    ];
-    const text = root.querySelector(".ai__feed-text");
-    if (!text) {
-      if (reduceMotion) svg.pauseAnimations();
-      else new IntersectionObserver(([e]) => { e.isIntersecting ? svg.unpauseAnimations() : svg.pauseAnimations(); }).observe(root);
-      return;
-    }
     if (reduceMotion) {
+      root.classList.add("is-on", "is-ready");
       svg.pauseAnimations();
-      text.textContent = lines[0];
       return;
     }
-    let line = 0, char = 0, timer = 0, running = false;
-    const type = () => {
-      const s = lines[line];
-      char += 1;
-      text.textContent = s.slice(0, char);
-      if (char < s.length) timer = setTimeout(type, 28);
-      else timer = setTimeout(() => { line = (line + 1) % lines.length; char = 0; type(); }, 2200);
-    };
+    // Entrance once in view: Maya lights up, the jobs appear one by one, then the dot starts round the loop
+    const hero = svg.querySelector(".maya-svg__hero");
+    let started = false;
+    svg.pauseAnimations();
     new IntersectionObserver(([e]) => {
-      if (e.isIntersecting && !running) { running = true; svg.unpauseAnimations(); type(); }
-      else if (!e.isIntersecting && running) { running = false; svg.pauseAnimations(); clearTimeout(timer); }
-    }).observe(root);
+      if (!e.isIntersecting) return svg.pauseAnimations();
+      svg.unpauseAnimations();
+      if (started) return;
+      started = true;
+      root.classList.add("is-on");
+      setTimeout(() => hero.beginElement(), 2400);
+      // Entrance done: drop its staggered delays so hover changes are instant
+      setTimeout(() => root.classList.add("is-ready"), 2600);
+    }, { threshold: 0.3 }).observe(root);
   }
 
   /* ---------- Pointer polish (mouse / trackpad only) ---------- */
@@ -1163,7 +1147,7 @@
     document.querySelectorAll("[data-tabs]").forEach(initTabs);
     document.querySelectorAll("[data-bars]").forEach(initBars);
     document.querySelectorAll("[data-reach-map]").forEach(initReachMap);
-    document.querySelectorAll("[data-ai-net]").forEach(initAiNet);
+    document.querySelectorAll("[data-maya]").forEach(initMaya);
     initSmoothScroll();
     initCursor();
     initTilt();
