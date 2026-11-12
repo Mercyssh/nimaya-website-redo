@@ -771,6 +771,147 @@
     else pageVisible.then(() => onceInView([root], start, { threshold: 0.3 }));
   }
 
+  /* ---------- Swipe rail (phones) ----------
+     A row of cards that shows one at a time on phones: swipe the rail, or tap a pill or a dot, to change card.
+     The pill labels come from each card's data-tab. The pills and dots only show on phones (CSS). */
+  function initRail(rail) {
+    const slides = [...rail.children];
+    const make = (cls, html) => { const el = document.createElement("div"); el.className = cls; el.innerHTML = html; return el; };
+    const pills = make("rail__pills", slides.map((sl) => `<button type="button" class="rail__pill">${sl.dataset.tab}</button>`).join(""));
+    const dots = make("rail__dots", slides.map((sl) => `<button type="button" class="rail__dot" aria-label="${sl.dataset.tab}"></button>`).join(""));
+    rail.before(pills);
+    rail.after(dots);
+
+    let active = -1, raf = 0;
+    const setActive = (i) => {
+      if (i === active) return;
+      active = i;
+      [...pills.children].forEach((b, k) => {
+        b.classList.toggle("is-active", k === i);
+        if (k !== i) return;
+        // Keep the active pill in view without moving the page
+        const c = pills.getBoundingClientRect(), r = b.getBoundingClientRect();
+        if (r.left < c.left) pills.scrollBy({ left: r.left - c.left - 12, behavior: "smooth" });
+        else if (r.right > c.right) pills.scrollBy({ left: r.right - c.right + 12, behavior: "smooth" });
+      });
+      [...dots.children].forEach((b, k) => b.classList.toggle("is-active", k === i));
+    };
+    // Whichever card sits nearest the middle of the rail is the active one
+    const measure = () => {
+      raf = 0;
+      const mid = rail.scrollLeft + rail.clientWidth / 2;
+      let best = 0, dist = Infinity;
+      slides.forEach((sl, i) => { const d = Math.abs(sl.offsetLeft + sl.offsetWidth / 2 - mid); if (d < dist) { dist = d; best = i; } });
+      setActive(best);
+    };
+    rail.addEventListener("scroll", () => { if (!raf) raf = requestAnimationFrame(measure); }, { passive: true });
+    const goTo = (i) => rail.scrollTo({ left: slides[i].offsetLeft - (rail.clientWidth - slides[i].clientWidth) / 2, behavior: reduceMotion ? "auto" : "smooth" });
+    [pills, dots].forEach((box) => [...box.children].forEach((b, i) => b.addEventListener("click", () => goTo(i))));
+    setActive(0);
+  }
+
+  /* ---------- Meet Maya on phones ----------
+     Below 1001px the diagram gives way to Maya with her jobs as photo cards on a ring around her:
+     the front card sits under her, its neighbours fan out to the sides and the rest go round behind her.
+     Drag or fling sideways, or tap a card or a dot, to turn the ring. */
+  function initMayaDeck(root) {
+    const list = root.querySelector(".maya__nodes");
+    const bot = root.querySelector(".maya__bot");
+    const cards = [...list.children];
+    const count = cards.length;
+    const mq = window.matchMedia("(max-width: 1000px)");
+    const STEP = 110; // px of drag that turns the ring by one card
+
+    const dots = document.createElement("div");
+    dots.className = "maya__dots";
+    dots.innerHTML = cards.map((c) => `<button type="button" class="maya__dot" aria-label="${c.querySelector(".maya__name").textContent}"></button>`).join("");
+    const hint = document.createElement("p");
+    hint.className = "maya__swipe";
+    hint.textContent = "Swipe to see what Maya does";
+    list.after(dots, hint);
+    const dotEls = [...dots.children];
+
+    let pos = 0, raf = 0, R = 150, lift = 190, on = false;
+    const active = () => ((Math.round(pos) % count) + count) % count;
+    const relOf = (i) => { let r = (((i - pos) % count) + count) % count; if (r > count / 2) r -= count; return r; };
+
+    const render = () => {
+      cards.forEach((el, i) => {
+        const t = (relOf(i) / count) * Math.PI * 2, c = Math.cos(t), depth = (1 - c) / 2;
+        const far = Math.pow(depth, 0.7); // cards shrink and dim quickly as they leave the front
+        el.style.transform = `translate(-50%, 0) translate(${(Math.sin(t) * R).toFixed(1)}px, ${(-depth * lift).toFixed(1)}px) scale(${(1 - far * 0.62).toFixed(3)})`;
+        el.style.filter = depth > 0.01 ? `brightness(${(1 - far * 0.68).toFixed(2)})` : "";
+        // Maya sits at 20: the near half of the ring passes in front of her, the far half behind
+        el.style.zIndex = c > 0.1 ? 30 + Math.round(c * 10) : Math.round((c + 1) * 10);
+      });
+      const a = active();
+      dotEls.forEach((d, i) => d.classList.toggle("is-active", i === a));
+    };
+    const measure = () => {
+      on = mq.matches;
+      root.classList.toggle("is-deck", on);
+      cancelAnimationFrame(raf);
+      cards.forEach((el) => { el.style.minHeight = ""; if (!on) el.style.transform = el.style.filter = el.style.zIndex = ""; });
+      list.style.height = "";
+      if (!on) return;
+      const h = Math.max(...cards.map((el) => el.offsetHeight));
+      cards.forEach((el) => { el.style.minHeight = `${h}px`; });
+      list.style.height = `${h}px`;
+      R = Math.min(list.clientWidth * 0.46, 215);
+      lift = (bot.offsetHeight || 230) * 0.86;
+      render();
+    };
+    const turnTo = (to) => {
+      cancelAnimationFrame(raf);
+      if (reduceMotion) { pos = to; return render(); }
+      const from = pos, t0 = performance.now();
+      const tick = (now) => {
+        const k = Math.min(1, (now - t0) / 520);
+        pos = from + (to - from) * (1 - Math.pow(1 - k, 3));
+        render();
+        if (k < 1) raf = requestAnimationFrame(tick);
+      };
+      raf = requestAnimationFrame(tick);
+    };
+
+    let dragging = false, moved = false, startX = 0, base = 0, lastX = 0, lastT = 0, vx = 0;
+    list.addEventListener("pointerdown", (e) => {
+      if (!on) return;
+      dragging = true; moved = false;
+      startX = lastX = e.clientX; lastT = performance.now(); vx = 0; base = pos;
+      cancelAnimationFrame(raf);
+    });
+    list.addEventListener("pointermove", (e) => {
+      if (!dragging) return;
+      const dx = e.clientX - startX;
+      if (!moved && Math.abs(dx) > 6) { moved = true; list.setPointerCapture(e.pointerId); }
+      if (!moved) return;
+      pos = base - dx / STEP;
+      render();
+      const now = performance.now();
+      if (now > lastT) vx = ((e.clientX - lastX) / (now - lastT)) * 1000;
+      lastX = e.clientX; lastT = now;
+    });
+    const end = () => {
+      if (!dragging) return;
+      dragging = false;
+      turnTo(moved ? Math.round(pos - (vx / STEP) * 0.16) : Math.round(pos));
+    };
+    list.addEventListener("pointerup", end);
+    list.addEventListener("pointercancel", end);
+    cards.forEach((el, i) => {
+      el.addEventListener("click", () => { if (on && !moved) turnTo(Math.round(pos) + Math.round(relOf(i))); });
+      el.addEventListener("focus", () => { if (on && !dragging) turnTo(Math.round(pos) + Math.round(relOf(i))); });
+    });
+    dotEls.forEach((d, i) => d.addEventListener("click", () => turnTo(Math.round(pos) + Math.round(relOf(i)))));
+
+    mq.addEventListener("change", measure);
+    window.addEventListener("resize", measure);
+    window.addEventListener("load", measure);
+    if (document.fonts) document.fonts.ready.then(measure);
+    measure();
+  }
+
   /* ---------- Meet Maya ----------
      Maya in the middle, the jobs she does on a ring around her. Every job feeds what it learns into Maya
      (a line with a soft streak flowing in), Maya files it in organisational memory, and memory passes it
@@ -1202,6 +1343,8 @@
     document.querySelectorAll("[data-bars]").forEach(initBars);
     document.querySelectorAll("[data-reach-map]").forEach(initReachMap);
     document.querySelectorAll("[data-maya]").forEach(initMaya);
+    document.querySelectorAll("[data-maya]").forEach(initMayaDeck);
+    document.querySelectorAll("[data-rail]").forEach(initRail);
     initSmoothScroll();
     initCursor();
     initTilt();

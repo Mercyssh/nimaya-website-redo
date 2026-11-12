@@ -87,12 +87,28 @@
             <span class="line"><span class="script"><span class="script__swish" aria-hidden="true"></span>Indi<span class="script__end">a<img class="script__earmarks" src="assets/Motifs/earmarks.svg" alt="" width="17" height="18"></span></span></span>
           </h2>
           <p class="hero__sub" data-reveal="up" data-delay="0.45">Nimaya Foundation enables young women from underserved communities and emerging regions of India to master GenAI and human skills, with the exposure, training and access they need to grow in the future of work.</p>
-          <ul class="hero__stats" data-reveal="up" data-delay="0.55">
-            <li><span class="hero__num" data-count="10000" data-suffix="+">10,000+</span><span class="hero__stat-label">Naaris trained</span></li>
-            <li><span class="hero__num" data-count="5" data-suffix="+">5+</span><span class="hero__stat-label">States</span></li>
-            <li><span class="hero__num" data-count="10">10</span><span class="hero__stat-label">Cities</span></li>
-            <li><span class="hero__num" data-count="9" data-suffix="+">9+</span><span class="hero__stat-label">Partners across NGOs, colleges, CSR &amp; government</span></li>
+          <ul class="hero__stats hero__stats--one" data-reveal="up" data-delay="0.55">
+            <li><span class="hero__num" data-count="10000" data-suffix="+">10,000+</span><span class="hero__stat-label">Naaris trained across India</span></li>
           </ul>
+          <!-- Our Partners: sits under the number on desktop, under the map on phones -->
+          <div class="hero__partners partners">
+            <p class="caption partners__title" data-reveal="up"><i class="m-mask m-star partners__star" aria-hidden="true" data-twinkle></i>Our Partners<i class="m-mask m-star partners__star" aria-hidden="true" data-twinkle></i></p>
+            <div class="ticker" data-reveal="fade" data-delay="0.15" data-ticker data-speed="100" data-gap="72">
+              <ul class="ticker__list">
+                <li><img src="assets/img/partner-gates.svg" alt="Gates Foundation" width="216" height="73"></li>
+                <li><img src="assets/img/partner-ekl.png" alt="Escorts Kubota" width="265" height="73"></li>
+                <li><img src="assets/img/partner-unwomen.png" alt="UN Women" width="258" height="73"></li>
+                <li><img src="assets/img/partner-indiaai.png" alt="IndiaAI" width="161" height="73"></li>
+                <li><img src="assets/img/partner-datamatics.png" alt="Datamatics Business Solutions" width="364" height="73"></li>
+                <li><img src="assets/img/partner-ashoka.png" alt="Ashoka University" width="222" height="73"></li>
+                <li><img src="assets/img/partner-csbc.svg" alt="Ashoka University Centre for Social and Behaviour Change" width="196" height="73"></li>
+                <li><img src="assets/img/partner-adani.png" alt="Adani Foundation" width="114" height="73"></li>
+                <li><img src="assets/img/partner-sewa.png" alt="SEWA" width="72" height="72"></li>
+                <li><img src="assets/img/partner-njf.png" alt="NJF" width="116" height="73"></li>
+                <li><img src="assets/img/partner-dsf.png" alt="DSF" width="215" height="73"></li>
+              </ul>
+            </div>
+          </div>
           <!-- In the press: a few headlines take turns, not clickable (the full list lives on About).
                Thumbnails come from each article. -->
           <aside class="newsbox" data-fade="4.5" data-fade-items=".newsbox__item" aria-label="In the press">
@@ -154,49 +170,31 @@
 
     </section>
 
-    <!-- Our Partners -->
-    <section>
-      <div class="wrap partners">
-        <p class="caption partners__title" data-reveal="up"><i class="m-mask m-star partners__star" aria-hidden="true" data-twinkle></i>Our Partners<i class="m-mask m-star partners__star" aria-hidden="true" data-twinkle></i></p>
-        <div class="ticker" data-reveal="fade" data-delay="0.15" data-ticker data-speed="100" data-gap="72">
-          <ul class="ticker__list">
-            <li><img src="assets/img/partner-gates.svg" alt="Gates Foundation" width="216" height="73"></li>
-            <li><img src="assets/img/partner-ekl.png" alt="Escorts Kubota" width="265" height="73"></li>
-            <li><img src="assets/img/partner-unwomen.png" alt="UN Women" width="258" height="73"></li>
-            <li><img src="assets/img/partner-indiaai.png" alt="IndiaAI" width="161" height="73"></li>
-            <li><img src="assets/img/partner-datamatics.png" alt="Datamatics Business Solutions" width="364" height="73"></li>
-            <li><img src="assets/img/partner-ashoka.png" alt="Ashoka University" width="222" height="73"></li>
-            <li><img src="assets/img/partner-csbc.svg" alt="Ashoka University Centre for Social and Behaviour Change" width="196" height="73"></li>
-            <li><img src="assets/img/partner-adani.png" alt="Adani Foundation" width="114" height="73"></li>
-            <li><img src="assets/img/partner-sewa.png" alt="SEWA" width="72" height="72"></li>
-            <li><img src="assets/img/partner-njf.png" alt="NJF" width="116" height="73"></li>
-            <li><img src="assets/img/partner-dsf.png" alt="DSF" width="215" height="73"></li>
-          </ul>
-        </div>
-      </div>
-    </section>
-
     <!-- Meet Maya: the agentic AI behind Nimaya.
          Maya sits in the middle with the jobs she does around her; each job feeds what it learns into Maya,
          Maya files it in organisational memory, and memory passes it on to new teammates.
          The outer loop is a Naari's journey; its numbers match the job Maya does for her at that step.
-         JS places everything and draws the lines; hover or tap a job to see what Maya takes in and gives back.
-         Phones get the same content as a stack of cards. The "takes in / gives" lines are draft wording. -->
+         JS places everything and draws the lines; hover a job to see what Maya takes in and gives back.
+         Phones get Maya with the jobs as photo cards circling her (swipe to turn them); no journey there.
+         The "takes in / gives" lines are draft wording. -->
     <section class="ai maya" id="meet-maya">
       <div class="wrap">
         <div class="maya__head">
-          <h2 class="display">Meet <span class="script"><span class="script__swish" aria-hidden="true"></span>May<span class="script__end">a<img class="script__earmarks" src="assets/Motifs/earmarks.svg" alt="" width="17" height="18"></span></span></h2>
-          <p class="maya__tagline balance" data-reveal="up">Our agentic AI who runs the backend, so our team can focus on what matters: our Naaris!</p>
-          <p class="body maya__lead" data-reveal="up">What if an NGO never forgot a single thing a Naari told it? That is Maya. She is the agentic AI at the heart of Nimaya, and she listens, learns and joins the dots across every classroom, city and cohort. What a Naari tells Maya on a call today shapes tomorrow’s session, next month’s curriculum and even how our newest teammate is trained. Nothing sits in a silo.</p>
-          <p class="body maya__lead" data-reveal="up">And our people? They do what only people can: <b class="em">show up for our Naaris!</b></p>
+          <div class="maya__head-title">
+            <h2 class="display">Meet <span class="script"><span class="script__swish" aria-hidden="true"></span>May<span class="script__end">a<img class="script__earmarks" src="assets/Motifs/earmarks.svg" alt="" width="17" height="18"></span></span></h2>
+            <p class="maya__tagline balance" data-reveal="up">Our agentic AI who runs the backend, so our team can focus on what matters: our Naaris!</p>
+          </div>
+          <div class="maya__head-text">
+            <p class="body maya__lead" data-reveal="up">What if an NGO never forgot a single thing a Naari told it? That is Maya. She is the agentic AI at the heart of Nimaya, and she listens, learns and joins the dots across every classroom, city and cohort. What a Naari tells Maya on a call today shapes tomorrow’s session, next month’s curriculum and even how our newest teammate is trained. Nothing sits in a silo.</p>
+            <p class="body maya__lead" data-reveal="up">And our people? They do what only people can: <b class="em">show up for our Naaris!</b></p>
+          </div>
         </div>
 
         <p class="maya__hint">Around Maya are the <b>jobs she does</b>. The <span class="maya__hint-loop">outer loop</span> is a Naari’s journey. The <span class="maya__hint-lines">lit lines</span> carry what every job learns into Maya, who files it in her memory for new teammates. <b class="maya__hint-verb">Hover</b> a job to see more.</p>
 
         <div class="maya__map" data-maya>
           <div class="maya__core">
-            <img class="maya__bot" src="assets/img/Maya Ai No legs.png" alt="Maya, a friendly white robot, waving hello" width="274" height="447">
-            <!-- <img class="maya__bot" src="assets/img/maya-bot.webp" alt="Maya, a friendly white robot, waving hello" width="600" height="531"> -->
+            <img class="maya__bot" src="assets/img/maya.webp" alt="Maya, a young woman with a long braid and glowing violet eyes, arms folded and smiling" width="360" height="544">
             <span class="maya__core-name">Maya</span>
             <span class="maya__core-sub">Nimaya’s agentic AI program manager</span>
           </div>
@@ -214,6 +212,7 @@
 
           <ul class="maya__nodes">
             <li class="maya__node" data-id="speaks" data-a="330">
+              <span class="maya__photo"><img src="assets/img/photos/learn-bahadurgarh-phone.webp" alt="Naaris in Bahadurgarh working together on a phone" width="1200" height="900" loading="lazy" draggable="false"></span>
               <span class="maya__icon"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M7 3h3l1.5 4-2 1.5a11 11 0 0 0 6 6l1.5-2 4 1.5v3a2 2 0 0 1-2 2A17 17 0 0 1 5 5a2 2 0 0 1 2-2z"/></svg></span>
               <span class="maya__name">Naari speaks, we act</span>
               <span class="maya__card">
@@ -226,6 +225,7 @@
               </span>
             </li>
             <li class="maya__node" data-id="proof" data-a="10">
+              <span class="maya__photo"><img src="assets/img/photos/genai-credit.webp" alt="A Naari holding up her GenAI Ready Naari certificate" width="900" height="900" loading="lazy" draggable="false"></span>
               <span class="maya__icon"><svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="9.5" r="5.5"/><path d="M9 14.5 7.5 21l4.5-2.5 4.5 2.5-1.5-6.5"/></svg></span>
               <span class="maya__name">Proof of her progress</span>
               <span class="maya__card">
@@ -238,6 +238,7 @@
               </span>
             </li>
             <li class="maya__node" data-id="stars" data-a="50">
+              <span class="maya__photo"><img src="assets/img/photos/milestone-curriculum.webp" alt="A Naari presenting confidently beside a screen" width="1000" height="750" loading="lazy" draggable="false"></span>
               <span class="maya__icon"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 3l2.2 5.6L20 9.3l-4.5 3.9 1.4 5.8L12 16l-4.9 3 1.4-5.8L4 9.3l5.8-.7z"/></svg></span>
               <span class="maya__name">Spotting our rising stars</span>
               <span class="maya__card">
@@ -250,6 +251,7 @@
               </span>
             </li>
             <li class="maya__node" data-id="alumni" data-a="170">
+              <span class="maya__photo"><img src="assets/img/photos/pepsico-visit.webp" alt="Naaris on a visit to a partner company office" width="1600" height="1067" loading="lazy" draggable="false"></span>
               <span class="maya__icon"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M2.5 9.5 12 5l9.5 4.5L12 14z"/><path d="M6.5 11.5V16c1.5 1.5 3.5 2.2 5.5 2.2s4-.7 5.5-2.2v-4.5M21.5 9.5V14"/></svg></span>
               <span class="maya__name">Manages our alumni</span>
               <span class="maya__card">
@@ -262,6 +264,7 @@
               </span>
             </li>
             <li class="maya__node" data-id="classroom" data-a="290">
+              <span class="maya__photo"><img src="assets/img/photos/guwahati-hands-up.webp" alt="A full classroom in Guwahati with hands raised" width="1400" height="1120" loading="lazy" draggable="false"></span>
               <span class="maya__icon"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M2.5 12S6 5.5 12 5.5 21.5 12 21.5 12 18 18.5 12 18.5 2.5 12 2.5 12z"/><circle cx="12" cy="12" r="3"/></svg></span>
               <span class="maya__name">An eye on every classroom</span>
               <span class="maya__card">
@@ -274,6 +277,7 @@
               </span>
             </li>
             <li class="maya__node" data-id="calendar" data-a="250">
+              <span class="maya__photo"><img src="assets/img/photos/learn-gurgaon-session.webp" alt="A trainer leading a session in Gurgaon" width="1200" height="900" loading="lazy" draggable="false"></span>
               <span class="maya__icon"><svg viewBox="0 0 24 24" aria-hidden="true"><rect x="3.5" y="5" width="17" height="15" rx="2.5"/><path d="M3.5 10h17M8 3v4M16 3v4"/></svg></span>
               <span class="maya__name">Making the calendar work</span>
               <span class="maya__card">
@@ -286,6 +290,7 @@
               </span>
             </li>
             <li class="maya__node" data-id="paperwork" data-a="130">
+              <span class="maya__photo"><img src="assets/img/photos/naaris-laptop.webp" alt="Naaris gathered around a laptop" width="1351" height="757" loading="lazy" draggable="false"></span>
               <span class="maya__icon"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M7 3h7l4 4v14H7z"/><path d="M14 3v4h4M9.5 14l2 2 3.5-4"/></svg></span>
               <span class="maya__name">Paperwork? Handled.</span>
               <span class="maya__card">
@@ -298,6 +303,7 @@
               </span>
             </li>
             <li class="maya__node" data-id="toes" data-a="210">
+              <span class="maya__photo"><img src="assets/img/photos/learn-mumbai-circle.webp" alt="Naaris in Mumbai talking in a circle with the team" width="1200" height="900" loading="lazy" draggable="false"></span>
               <span class="maya__icon"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M6 10a6 6 0 0 1 12 0c0 5 2 6 2 6H4s2-1 2-6z"/><path d="M10 19.5a2 2 0 0 0 4 0"/></svg></span>
               <span class="maya__name">Keeping us on our toes</span>
               <span class="maya__card">
@@ -310,6 +316,7 @@
               </span>
             </li>
             <li class="maya__node maya__node--memory" data-id="memory" data-a="90">
+              <span class="maya__photo"><img src="assets/img/photos/careers-trainer.webp" alt="A Nimaya trainer leading a session" width="900" height="900" loading="lazy" draggable="false"></span>
               <span class="maya__icon"><svg viewBox="0 0 24 24" aria-hidden="true"><ellipse cx="12" cy="6" rx="7" ry="2.8"/><path d="M5 6v6c0 1.5 3.1 2.8 7 2.8s7-1.3 7-2.8V6M5 12v6c0 1.5 3.1 2.8 7 2.8s7-1.3 7-2.8v-6"/></svg></span>
               <span class="maya__name">Builds our organisational memory</span>
               <span class="maya__card">
@@ -326,6 +333,101 @@
         </div>
 
         <p class="maya__close balance" data-reveal="up">Maya joins the dots. Our people join hands with our Naaris.</p>
+      </div>
+    </section>
+
+    <!-- Our Programs -->
+    <section class="programs" id="programs">
+      <div class="wrap">
+        <i class="motif m-mask m-shape programs__shape" aria-hidden="true" data-parallax="20"></i>
+        <div class="programs__top">
+          <div class="programs__head">
+            <h2 class="display">Our Flagship Learning <span class="script"><span class="script__swish" aria-hidden="true"></span>Journey<span class="script__end">s<img class="script__earmarks" src="assets/Motifs/earmarks.svg" alt="" width="17" height="18"></span></span></h2>
+            <p class="body" data-reveal="up">Two <b class="em">fully funded</b> programs, built to work at different depths: a 40-hour program that brings GenAI and workplace skills to thousands of women, and a 12-month fellowship that develops future leaders. GenAI Ready Naari is part of the Government’s <b class="em">IndiaAI Mission</b>, and our Naaris have solved live business problems for <b class="em">PepsiCo and JCL</b>.</p>
+          </div>
+          <!-- Accreditation: applies to both programs, so it sits beside the intro, above the cards -->
+          <aside class="programs__accredit" aria-label="Accreditation" data-reveal="up" data-delay="0.15">
+            <div class="programs__accredit-head">
+              <span class="programs__seal" aria-hidden="true"><svg viewBox="0 0 24 24"><circle cx="12" cy="9.5" r="6.5"/><path d="M9.2 9.6l2 2 3.6-3.8M8.4 15l-1.6 6 5.2-2.6 5.2 2.6-1.6-6"/></svg></span>
+              <div>
+                <p class="programs__accredit-title">NSQF-aligned credit</p>
+              </div>
+            </div>
+            <p class="programs__accredit-text">Both programs award national credit, governed by <b>NCVET</b>.</p>
+            <div class="programs__accredit-foot">
+              <span class="caption">Awarding body</span>
+              <img src="assets/Logos/jindal-steel.webp" alt="Jindal Steel" width="781" height="369">
+            </div>
+          </aside>
+        </div>
+
+        <div class="programs__cards">
+          <div data-reveal="left" data-delay="0.2">
+            <article class="card card--banner program">
+              <div class="card__banner">
+                <h3 class="program__name">#GenAIReadyNaari</h3>
+              </div>
+              <div class="card__body">
+                <div class="program__img" data-unmask><img src="assets/img/photos/naaris-working.webp" alt="Naaris at work in a GenAI Ready Naari classroom" width="1400" height="1050"></div>
+                <p class="program__desc body">A practical learning journey where Naaris master how to co-create unique outputs with GenAI across 50+ professional use cases. From churning out powerful content and applying emotional intelligence to build deeper context, to training agentic AIs, our GenAI Ready Naaris can think, create and imagine for any new challenge at work!</p>
+                <ul class="program__facts">
+                  <li><span class="program__icon"><svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3.5 2.4"/></svg></span><b>40 hours</b><span>Immersive training</span></li>
+                  <li><span class="program__icon"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 3l2.2 5.6L20 9.3l-4.5 3.9 1.4 5.8L12 16l-4.9 3 1.4-5.8L4 9.3l5.8-.7z"/></svg></span><b>GenAI + Human Skills</b><span>16+ skills, from prompting to emotional intelligence</span></li>
+                  <li><span class="program__icon"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 4l9 4.5-9 4.5-9-4.5z"/><path d="M3 13l9 4.5 9-4.5"/></svg></span><b>Industry projects</b><span>With mentoring and placement training</span></li>
+                </ul>
+                <a class="btn btn--filled" href="programs/genai-ready-naari/">Explore GenAI Ready Naari</a>
+              </div>
+            </article>
+          </div>
+          <div data-reveal="right" data-delay="0.2">
+            <article class="card card--banner program program--alt">
+              <div class="card__banner">
+                <h3 class="program__name">#FutureReadyNaariFellowship</h3>
+              </div>
+              <div class="card__body">
+                <div class="program__img" data-unmask><img src="assets/img/photos/naari-presenting.webp" alt="A fellow presenting a brand strategy to her team in a corporate office" width="1400" height="788"></div>
+                <p class="program__desc body">Where we build the future CXOs of India Inc. The Fellowship spots leadership potential in young women from challenging circumstances and puts them through a 12-month immersive journey that trains them to think, act and decide like a founder.</p>
+                <ul class="program__facts">
+                  <li><span class="program__icon"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 4l9 4.5-9 4.5-9-4.5z"/><path d="M3 13l9 4.5 9-4.5"/></svg></span><b>3 industry projects</b><span>Led by partner company leadership</span></li>
+                  <li><span class="program__icon"><svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="9" cy="8" r="3.2"/><path d="M3.5 19c.6-3.2 2.9-5 5.5-5s4.9 1.8 5.5 5"/><circle cx="16.5" cy="9" r="2.6"/><path d="M15.5 14.2c2.5-.3 4.5 1.4 5 4.8"/></svg></span><b>1-1 mentoring</b><span>With women CXOs</span></li>
+                  <li><span class="program__icon"><svg viewBox="0 0 24 24" aria-hidden="true"><rect x="3.5" y="7.5" width="17" height="12" rx="2.5"/><path d="M9 7.5V5.5A1.5 1.5 0 0 1 10.5 4h3A1.5 1.5 0 0 1 15 5.5v2M3.5 12.5h17"/></svg></span><b>Guaranteed placement</b><span>In growth roles</span></li>
+                </ul>
+                <a class="btn btn--filled" href="programs/future-naari-fellowship/">Explore the Fellowship</a>
+              </div>
+            </article>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- How We're Different: not for profit, built like a future-ready enterprise.
+         Phones show one card at a time on a swipe rail, with a pill per card above and dots below (data-rail). -->
+    <section>
+      <div class="wrap milestones">
+        <i class="motif m-mask m-star2 m-big milestones__big" aria-hidden="true" data-parallax="50"></i>
+        <h2 class="display milestones__title balance">Not for profit. Built like a <span class="nowrap">future-ready</span> <span class="script"><span class="script__swish" aria-hidden="true"></span>enterpris<span class="script__end">e<img class="script__earmarks" src="assets/Motifs/earmarks.svg" alt="" width="17" height="18"></span></span></h2>
+        <ul class="milestones__grid" data-rail>
+          <li class="stat" data-tab="Stakeholders" data-reveal="up" data-delay="0.1">
+            <div class="stat__media stat__media--photo"><img src="assets/img/photos/different-stakeholders.webp" alt="A Naari in Guwahati making her point at a session" width="1000" height="750" loading="lazy"></div>
+            <p class="stat__title balance">Naaris are stakeholders, not beneficiaries</p>
+            <p class="stat__desc">Our programs are free, but never second-best. We hold every learning journey to the standard of the world’s leading skilling and academic institutions, because our Naaris deserve nothing less.</p>
+          </li>
+          <li class="stat" data-tab="Her context" data-reveal="up" data-delay="0.2">
+            <div class="stat__media stat__media--photo"><img src="assets/img/photos/different-context.webp" alt="Naaris in Guwahati listening closely during a session" width="1000" height="750" loading="lazy"></div>
+            <p class="stat__title balance">Starting where she is</p>
+            <p class="stat__desc">Our curriculum and delivery are shaped around the social, economic and regional context each Naari comes from. We take her where she wants to go, starting from where she is. With tribal women in Assam, that means using AI to elevate traditional designs and take them to market.</p>
+          </li>
+          <li class="stat" data-tab="Scale" data-reveal="up" data-delay="0.3">
+            <div class="stat__media stat__media--photo"><img src="assets/img/photos/different-scale.webp" alt="A packed GenAI Ready Naari classroom in Guwahati" width="1000" height="750" loading="lazy"></div>
+            <p class="stat__title balance">Built to scale, with depth</p>
+            <p class="stat__desc">Because AI agents carry most of our backend, we can reach the farthest corners of Bharat without losing the personalisation that makes learning stick.</p>
+          </li>
+          <li class="stat" data-tab="Smart Didi" data-reveal="up" data-delay="0.4">
+            <div class="stat__media stat__media--photo"><img src="assets/img/photos/milestone-coach.webp" alt="A Naari in Bahadurgarh learning on her phone between sessions" width="1000" height="750" loading="lazy"></div>
+            <p class="stat__title balance">Smart Didi (beta): support beyond the session</p>
+            <p class="stat__desc">Learning doesn’t stop when the program ends. Smart Didi, Nimaya’s AI workplace coach, builds on what Naaris learned to help them handle real challenges at work.</p>
+          </li>
+        </ul>
       </div>
     </section>
 
@@ -397,100 +499,6 @@
           <p class="why__lead balance" data-reveal="up">We started with one question:</p>
           <p class="body" data-reveal="up"><b class="why__question">Why can’t a farmer’s daughter from remote Haryana or a tribal woman from Assam become a product lead, Chief of Staff or a founder’s office manager?</b></p>
           <p class="body" data-reveal="up">Nimaya’s programs are designed to help Naaris build a productive relationship with GenAI, much like a co-creator instead of a tool to merely outsource work to. Our Naaris see work as an expression of their creativity, acumen and independence instead of a mere income-generating source. This approach seeds bigger dreams, encourages generation of unique outputs with AI and transforms them into role models for their communities.</p>
-        </div>
-      </div>
-    </section>
-
-    <!-- How We're Different: not for profit, built like a future-ready enterprise -->
-    <section>
-      <div class="wrap milestones">
-        <i class="motif m-mask m-star2 m-big milestones__big" aria-hidden="true" data-parallax="50"></i>
-        <h2 class="display milestones__title balance">Not for profit. Built like a <span class="nowrap">future-ready</span> <span class="script"><span class="script__swish" aria-hidden="true"></span>enterpris<span class="script__end">e<img class="script__earmarks" src="assets/Motifs/earmarks.svg" alt="" width="17" height="18"></span></span></h2>
-        <ul class="milestones__grid">
-          <li class="stat" data-reveal="up" data-delay="0.1">
-            <div class="stat__media stat__media--photo"><img src="assets/img/photos/different-stakeholders.webp" alt="A Naari in Guwahati making her point at a session" width="1000" height="750" loading="lazy"></div>
-            <p class="stat__title balance">Naaris are stakeholders, not beneficiaries</p>
-            <p class="stat__desc">Our programs are free, but never second-best. We hold every learning journey to the standard of the world’s leading skilling and academic institutions, because our Naaris deserve nothing less.</p>
-          </li>
-          <li class="stat" data-reveal="up" data-delay="0.2">
-            <div class="stat__media stat__media--photo"><img src="assets/img/photos/different-context.webp" alt="Naaris in Guwahati listening closely during a session" width="1000" height="750" loading="lazy"></div>
-            <p class="stat__title balance">Starting where she is</p>
-            <p class="stat__desc">Our curriculum and delivery are shaped around the social, economic and regional context each Naari comes from. We take her where she wants to go, starting from where she is. With tribal women in Assam, that means using AI to elevate traditional designs and take them to market.</p>
-          </li>
-          <li class="stat" data-reveal="up" data-delay="0.3">
-            <div class="stat__media stat__media--photo"><img src="assets/img/photos/different-scale.webp" alt="A packed GenAI Ready Naari classroom in Guwahati" width="1000" height="750" loading="lazy"></div>
-            <p class="stat__title balance">Built to scale, with depth</p>
-            <p class="stat__desc">Because AI agents carry most of our backend, we can reach the farthest corners of Bharat without losing the personalisation that makes learning stick.</p>
-          </li>
-          <li class="stat" data-reveal="up" data-delay="0.4">
-            <div class="stat__media stat__media--photo"><img src="assets/img/photos/milestone-coach.webp" alt="A Naari in Bahadurgarh learning on her phone between sessions" width="1000" height="750" loading="lazy"></div>
-            <p class="stat__title balance">Smart Didi (beta): support beyond the session</p>
-            <p class="stat__desc">Learning doesn’t stop when the program ends. Smart Didi, Nimaya’s AI workplace coach, builds on what Naaris learned to help them handle real challenges at work.</p>
-          </li>
-        </ul>
-      </div>
-    </section>
-
-    <!-- Our Programs -->
-    <section class="programs" id="programs">
-      <div class="wrap">
-        <i class="motif m-mask m-shape programs__shape" aria-hidden="true" data-parallax="20"></i>
-        <div class="programs__top">
-          <div class="programs__head">
-            <h2 class="display">Our Flagship Learning <span class="script"><span class="script__swish" aria-hidden="true"></span>Journey<span class="script__end">s<img class="script__earmarks" src="assets/Motifs/earmarks.svg" alt="" width="17" height="18"></span></span></h2>
-            <p class="body" data-reveal="up">Two <b class="em">fully funded</b> programs, built to work at different depths: a 40-hour program that brings GenAI and workplace skills to thousands of women, and a 12-month fellowship that develops future leaders. GenAI Ready Naari is part of the Government’s <b class="em">IndiaAI Mission</b>, and our Naaris have solved live business problems for <b class="em">PepsiCo and JCL</b>.</p>
-          </div>
-          <!-- Accreditation: applies to both programs, so it sits beside the intro, above the cards -->
-          <aside class="programs__accredit" aria-label="Accreditation" data-reveal="up" data-delay="0.15">
-            <div class="programs__accredit-head">
-              <span class="programs__seal" aria-hidden="true"><svg viewBox="0 0 24 24"><circle cx="12" cy="9.5" r="6.5"/><path d="M9.2 9.6l2 2 3.6-3.8M8.4 15l-1.6 6 5.2-2.6 5.2 2.6-1.6-6"/></svg></span>
-              <div>
-                <p class="programs__accredit-title">NSQF-aligned credit</p>
-              </div>
-            </div>
-            <p class="programs__accredit-text">Both programs award national credit, governed by <b>NCVET</b>.</p>
-            <div class="programs__accredit-foot">
-              <span class="caption">Awarding body</span>
-              <img src="assets/Logos/jindal-steel.webp" alt="Jindal Steel" width="781" height="369">
-            </div>
-          </aside>
-        </div>
-
-        <div class="programs__cards">
-          <div data-reveal="left" data-delay="0.2">
-            <article class="card card--banner program">
-              <div class="card__banner">
-                <h3 class="program__name">#GenAIReadyNaari</h3>
-              </div>
-              <div class="card__body">
-                <div class="program__img" data-unmask><img src="assets/img/photos/naaris-working.webp" alt="Naaris at work in a GenAI Ready Naari classroom" width="1400" height="1050"></div>
-                <p class="program__desc body">A practical learning journey where Naaris master how to co-create unique outputs with GenAI across 50+ professional use cases. From churning out powerful content and applying emotional intelligence to build deeper context, to training agentic AIs, our GenAI Ready Naaris can think, create and imagine for any new challenge at work!</p>
-                <ul class="program__facts">
-                  <li><span class="program__icon"><svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3.5 2.4"/></svg></span><b>40 hours</b><span>Immersive training</span></li>
-                  <li><span class="program__icon"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 3l2.2 5.6L20 9.3l-4.5 3.9 1.4 5.8L12 16l-4.9 3 1.4-5.8L4 9.3l5.8-.7z"/></svg></span><b>GenAI + Human Skills</b><span>16+ skills, from prompting to emotional intelligence</span></li>
-                  <li><span class="program__icon"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 4l9 4.5-9 4.5-9-4.5z"/><path d="M3 13l9 4.5 9-4.5"/></svg></span><b>Industry projects</b><span>With mentoring and placement training</span></li>
-                </ul>
-                <a class="btn btn--filled" href="programs/genai-ready-naari/">Explore GenAI Ready Naari</a>
-              </div>
-            </article>
-          </div>
-          <div data-reveal="right" data-delay="0.2">
-            <article class="card card--banner program program--alt">
-              <div class="card__banner">
-                <h3 class="program__name">#FutureReadyNaariFellowship</h3>
-              </div>
-              <div class="card__body">
-                <div class="program__img" data-unmask><img src="assets/img/photos/naari-presenting.webp" alt="A fellow presenting a brand strategy to her team in a corporate office" width="1400" height="788"></div>
-                <p class="program__desc body">Where we build the future CXOs of India Inc. The Fellowship spots leadership potential in young women from challenging circumstances and puts them through a 12-month immersive journey that trains them to think, act and decide like a founder.</p>
-                <ul class="program__facts">
-                  <li><span class="program__icon"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 4l9 4.5-9 4.5-9-4.5z"/><path d="M3 13l9 4.5 9-4.5"/></svg></span><b>3 industry projects</b><span>Led by partner company leadership</span></li>
-                  <li><span class="program__icon"><svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="9" cy="8" r="3.2"/><path d="M3.5 19c.6-3.2 2.9-5 5.5-5s4.9 1.8 5.5 5"/><circle cx="16.5" cy="9" r="2.6"/><path d="M15.5 14.2c2.5-.3 4.5 1.4 5 4.8"/></svg></span><b>1-1 mentoring</b><span>With women CXOs</span></li>
-                  <li><span class="program__icon"><svg viewBox="0 0 24 24" aria-hidden="true"><rect x="3.5" y="7.5" width="17" height="12" rx="2.5"/><path d="M9 7.5V5.5A1.5 1.5 0 0 1 10.5 4h3A1.5 1.5 0 0 1 15 5.5v2M3.5 12.5h17"/></svg></span><b>Guaranteed placement</b><span>In growth roles</span></li>
-                </ul>
-                <a class="btn btn--filled" href="programs/future-naari-fellowship/">Explore the Fellowship</a>
-              </div>
-            </article>
-          </div>
         </div>
       </div>
     </section>
