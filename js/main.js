@@ -817,6 +817,7 @@
   function initMayaDeck(root) {
     const list = root.querySelector(".maya__nodes");
     const bot = root.querySelector(".maya__bot");
+    const section = root.closest("section");
     const cards = [...list.children];
     const count = cards.length;
     const mq = window.matchMedia("(max-width: 1000px)");
@@ -837,10 +838,13 @@
 
     const render = () => {
       cards.forEach((el, i) => {
-        const t = (relOf(i) / count) * Math.PI * 2, c = Math.cos(t), depth = (1 - c) / 2;
-        const far = Math.pow(depth, 0.7); // cards shrink and dim quickly as they leave the front
+        const rel = relOf(i), t = (rel / count) * Math.PI * 2, c = Math.cos(t), depth = (1 - c) / 2;
+        const far = Math.pow(depth, 0.7); // cards shrink quickly as they leave the front
         el.style.transform = `translate(-50%, 0) translate(${(Math.sin(t) * R).toFixed(1)}px, ${(-depth * lift).toFixed(1)}px) scale(${(1 - far * 0.62).toFixed(3)})`;
-        el.style.filter = depth > 0.01 ? `brightness(${(1 - far * 0.68).toFixed(2)})` : "";
+        // Only the front card is at full strength: its neighbours drop to about 45%, the ones behind Maya to under 20%
+        const away = Math.abs(rel);
+        el.style.filter = away > 0.01 ? `brightness(${(0.16 + 0.84 * Math.exp(-1.06 * away)).toFixed(3)})` : "";
+        el.style.opacity = away > 2 ? (1 - 0.35 * Math.min(1, (away - 2) / 2)).toFixed(3) : "";
         // Maya sits at 20: the near half of the ring passes in front of her, the far half behind
         el.style.zIndex = c > 0.1 ? 30 + Math.round(c * 10) : Math.round((c + 1) * 10);
       });
@@ -851,7 +855,7 @@
       on = mq.matches;
       root.classList.toggle("is-deck", on);
       cancelAnimationFrame(raf);
-      cards.forEach((el) => { el.style.minHeight = ""; if (!on) el.style.transform = el.style.filter = el.style.zIndex = ""; });
+      cards.forEach((el) => { el.style.minHeight = ""; if (!on) el.style.transform = el.style.filter = el.style.opacity = el.style.zIndex = ""; });
       list.style.height = "";
       if (!on) return;
       const h = Math.max(...cards.map((el) => el.offsetHeight));
@@ -859,6 +863,11 @@
       list.style.height = `${h}px`;
       R = Math.min(list.clientWidth * 0.46, 215);
       lift = (bot.offsetHeight || 230) * 0.86;
+      // The glowing patch of the section's grid sits behind Maya
+      if (section) {
+        const b = bot.getBoundingClientRect();
+        section.style.setProperty("--maya-glow-y", `${Math.round(b.top + b.height / 2 - section.getBoundingClientRect().top)}px`);
+      }
       render();
     };
     const turnTo = (to) => {

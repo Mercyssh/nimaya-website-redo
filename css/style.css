@@ -2520,6 +2520,8 @@ main > section:has(+ .ai)::after { display: none; }
     scrollbar-width: none;
   }
   .nav.is-open .nav__links { opacity: 1; visibility: visible; translate: none; transition-delay: 0s; }
+  /* The program links must hide with the closed sheet, or they stay tappable through it */
+  .nav__menu { visibility: inherit; transition: none; }
   .nav__links a,
   .nav__links .nav__menu a {
     padding: 16px 0;
@@ -3144,9 +3146,38 @@ main > section:has(+ .ai)::after { display: none; }
   .maya__dot.is-active::before { background: var(--yellow); scale: 1.35; }
   .is-deck .maya__swipe { display: block; margin-top: 6px; text-align: center; font-size: var(--fs-6); font-weight: 600; color: rgb(var(--ai-mist-rgb) / 0.7); }
   .maya__close { margin-top: 28px; }
+
+  /* Behind Maya, the section's grid lights up in lilac. The lit patch drifts slowly around her.
+     It is a second copy of the grid on the same box, so its lines sit exactly on the faint ones. */
+  main > section.maya::after {
+    display: block;
+    content: "";
+    position: absolute;
+    inset: 0;
+    height: auto;
+    z-index: -1;
+    pointer-events: none;
+    background-image: linear-gradient(rgb(var(--ai-lilac-rgb) / 0.34) 1px, transparent 1px), linear-gradient(90deg, rgb(var(--ai-lilac-rgb) / 0.34) 1px, transparent 1px);
+    background-size: 44px 44px;
+    -webkit-mask-image: radial-gradient(closest-side, #000, rgb(0 0 0 / 0.45) 40%, transparent);
+    mask-image: radial-gradient(closest-side, #000, rgb(0 0 0 / 0.45) 40%, transparent);
+    -webkit-mask-size: 380px 380px;
+    mask-size: 380px 380px;
+    -webkit-mask-repeat: no-repeat;
+    mask-repeat: no-repeat;
+    -webkit-mask-position: 50% calc(var(--maya-glow-y, 50%) - 190px);
+    mask-position: 50% calc(var(--maya-glow-y, 50%) - 190px);
+    animation: maya-grid-glow 11s ease-in-out infinite;
+  }
+}
+@keyframes maya-grid-glow {
+  0%, 100% { -webkit-mask-position: calc(50% - 46px) calc(var(--maya-glow-y, 50%) - 214px); mask-position: calc(50% - 46px) calc(var(--maya-glow-y, 50%) - 214px); opacity: 0.75; }
+  35% { -webkit-mask-position: calc(50% + 52px) calc(var(--maya-glow-y, 50%) - 170px); mask-position: calc(50% + 52px) calc(var(--maya-glow-y, 50%) - 170px); opacity: 1; }
+  70% { -webkit-mask-position: calc(50% + 8px) calc(var(--maya-glow-y, 50%) - 236px); mask-position: calc(50% + 8px) calc(var(--maya-glow-y, 50%) - 236px); opacity: 0.85; }
 }
 @media (prefers-reduced-motion: reduce) {
   .maya__bot { animation: none; }
+  main > section.maya::after { animation: none; }
 }
 
 /* ============ Home hero: the partner logos under the intro, their heading between two rules ============ */
