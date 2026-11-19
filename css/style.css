@@ -2194,6 +2194,11 @@ html.is-locked { overflow: hidden; }
 main > section.ai { background: var(--ai-bg); }
 /* Faint blueprint grid instead of the paper grain */
 main > section.ai::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  z-index: -1;
+  pointer-events: none;
   background-image: var(--ai-grid);
   background-size: 44px 44px;
   opacity: 1;
@@ -3008,8 +3013,8 @@ main > section:has(+ .ai)::after { display: none; }
 /* ============ Meet Maya ============ */
 /* Intro on top, the diagram filling the section, one closing line under it */
 .maya__head { max-width: 760px; margin-inline: auto; text-align: center; }
-.maya__tagline { margin-top: var(--title-gap); font-size: var(--fs-3); font-weight: 600; line-height: 1.35; color: #fff; }
-.maya__lead { margin-top: 14px; color: rgb(var(--ai-mist-rgb) / 0.82); }
+.maya__tagline { margin-top: var(--title-gap); font-size: var(--fs-4); font-weight: 600; line-height: 1.35; color: #fff; }
+.maya__lead { margin-top: 14px; font-size: var(--fs-5); color: rgb(var(--ai-mist-rgb) / 0.82); }
 .maya__lead .em { color: var(--yellow); }
 .maya__close { max-width: 640px; margin: 32px auto 0; text-align: center; font-family: var(--serif); font-size: var(--fs-3); font-weight: 600; line-height: 1.25; color: #fff; }
 .maya__hint { display: none; }
@@ -3144,12 +3149,10 @@ main > section:has(+ .ai)::after { display: none; }
   .maya__bot { animation: none; }
 }
 
-/* ============ Home hero: one number, with the partner logos under it ============ */
-.hero__info .hero__stats--one { grid-template-columns: minmax(0, 1fr); max-width: none; margin-top: 32px; }
-.hero__info .hero__stats--one li { flex-flow: row wrap; align-items: baseline; gap: 4px 16px; }
-.hero__stats--one .hero__stat-label { font-size: var(--fs-3); color: var(--ink); }
-.hero__partners { margin-top: 40px; min-width: 0; }
-.hero__partners .partners__title { justify-content: flex-start; }
+/* ============ Home hero: the partner logos under the intro, their heading between two rules ============ */
+.hero__partners { margin-top: 36px; min-width: 0; }
+.hero__partners .partners__title { justify-content: center; }
+.hero__partners .partners__title::before, .hero__partners .partners__title::after { content: ""; flex: 1; height: 1px; background: var(--line); }
 .hero__partners .ticker { height: 64px; margin-top: 14px; -webkit-mask-image: linear-gradient(to right, transparent 0%, #000 8%, #000 92%, transparent 100%); mask-image: linear-gradient(to right, transparent 0%, #000 8%, #000 92%, transparent 100%); }
 .hero__partners .ticker__list { gap: 48px; }
 .hero__partners .ticker__list img, .hero__partners .ticker__list img[height="72"] { height: 48px; }
@@ -3160,11 +3163,9 @@ main > section:has(+ .ai)::after { display: none; }
   .hero--home .hero__info { display: contents; }
   .hero--home .hero__title { order: 1; }
   .hero--home .hero__sub { order: 2; }
-  .hero--home .hero__stats { order: 3; }
   .hero--home .reach-map--hero { order: 4; margin-top: 28px; }
   .hero--home .hero__partners { order: 5; margin-top: 32px; }
   .hero--home .newsbox { order: 6; margin-top: 28px; }
-  .hero__partners .partners__title { justify-content: center; }
 }
 
 /* Meet Maya on desktop: title and tagline on the left, the story on the right */
