@@ -1085,9 +1085,9 @@
       if (started) return;
       started = true;
       root.classList.add("is-on");
-      setTimeout(() => hero.beginElement(), 2600);
+      setTimeout(() => hero.beginElement(), 1100);
       // Entrance done: drop its staggered delays so hover changes are instant
-      setTimeout(() => root.classList.add("is-ready"), 3200);
+      setTimeout(() => root.classList.add("is-ready"), 1600);
     }, { threshold: 0.3 }).observe(root);
   }
 

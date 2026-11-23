@@ -200,8 +200,7 @@ main > section:nth-of-type(even)::after { background: linear-gradient(to bottom,
 .press__title,
 .callout__title,
 .reach-card__place,
-.values__lead,
-.newsbox__outlet {
+.values__lead {
   font-family: var(--serif);
   font-weight: 700;
   letter-spacing: var(--serif-tracking);
@@ -2883,8 +2882,9 @@ main > section:has(+ .ai)::after { display: none; }
 @keyframes fade-bar { to { transform: scaleX(1); } }
 .newsbox__item figcaption { flex: 1; min-width: 0; }
 .newsbox__thumb { flex: none; width: 76px; height: 76px; border-radius: var(--r-md); object-fit: cover; }
-.newsbox__outlet { display: block; font-size: var(--fs-4); line-height: 1.1; color: var(--ink); }
-.newsbox__headline { display: block; margin-top: 4px; font-size: var(--fs-6); line-height: 1.4; color: var(--text-soft); text-wrap: pretty; }
+/* Outlet logos share one height; the very wide ones are capped by width instead */
+.newsbox__logo { display: block; width: auto; height: 28px; max-width: 190px; object-fit: contain; object-position: left center; }
+.newsbox__headline { display: block; margin-top: 8px; font-size: var(--fs-5); line-height: 1.4; color: var(--text-soft); text-wrap: pretty; }
 /* Phones and tablets: the card sits under the numbers */
 @media (max-width: 900px) {
   .newsbox { max-width: none; }
@@ -3101,12 +3101,12 @@ main > section:has(+ .ai)::after { display: none; }
 
   /* Everything on the map fades with one transition; --d staggers the entrance and drops to 0 once it is done */
   .is-live .maya__core, .is-live .maya__node, .is-live .maya__stage, .is-live .maya__again, .is-live .maya__team,
-  .is-live .maya-svg > * { transition: opacity 0.5s var(--ease) var(--d, 0s), scale 0.6s var(--ease) var(--d, 0s), background 0.3s var(--ease); }
-  .is-live .maya__node { --d: calc(0.5s + var(--i) * 0.1s); }
-  .is-live .maya-svg__frame, .is-live .maya-svg__spoke { --d: 1.4s; }
-  .is-live .maya-svg__flow, .is-live .maya__team { --d: 1.8s; }
-  .is-live .maya-svg__loop, .is-live .maya-svg__arrow, .is-live .maya__stage, .is-live .maya__again { --d: 2.1s; }
-  .is-live .maya-svg__streak, .is-live .maya-svg__dot { --d: 2.6s; }
+  .is-live .maya-svg > * { transition: opacity 0.4s var(--ease) var(--d, 0s), scale 0.45s var(--ease) var(--d, 0s), background 0.3s var(--ease); }
+  .is-live .maya__node { --d: calc(0.12s + var(--i) * 0.06s); }
+  .is-live .maya-svg__frame, .is-live .maya-svg__spoke { --d: 0.55s; }
+  .is-live .maya-svg__flow, .is-live .maya__team { --d: 0.75s; }
+  .is-live .maya-svg__loop, .is-live .maya-svg__arrow, .is-live .maya__stage, .is-live .maya__again { --d: 0.9s; }
+  .is-live .maya-svg__streak, .is-live .maya-svg__dot { --d: 1.1s; }
   .is-live.is-ready .maya__node, .is-live.is-ready .maya__stage, .is-live.is-ready .maya__again, .is-live.is-ready .maya__team,
   .is-live.is-ready .maya-svg > * { --d: 0s; transition-duration: 0.3s; }
   .js .is-live:not(.is-on) .maya__core { opacity: 0; scale: 0.85; }
