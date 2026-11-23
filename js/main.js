@@ -178,15 +178,28 @@
     const imgs = [...el.querySelectorAll(el.dataset.fadeItems || "img")];
     if (imgs.length < 2 || reduceMotion) return;
     const every = (Number(el.dataset.fade) || 4) * 1000;
-    let i = 0, timer = 0;
+    let i = 0, timer = 0, bars = [];
+    if (el.hasAttribute("data-fade-bars")) {
+      const box = document.createElement("div");
+      box.className = "fade-bars";
+      box.setAttribute("aria-hidden", "true");
+      box.innerHTML = imgs.map(() => "<i></i>").join("");
+      el.append(box);
+      bars = [...box.children];
+      el.style.setProperty("--fade-ms", `${every}ms`);
+    }
+    // Restart the current bar's fill from empty (a reflow between removing and adding the class)
+    const paint = () => bars.forEach((b, k) => { b.classList.remove("is-on"); if (k === i) { void b.offsetWidth; b.classList.add("is-on"); } });
     const step = () => {
       imgs[i].classList.remove("is-on");
       i = (i + 1) % imgs.length;
       imgs[i].classList.add("is-on");
+      paint();
     };
     new IntersectionObserver(([entry]) => {
       clearInterval(timer);
-      if (entry.isIntersecting) timer = setInterval(step, every);
+      el.classList.toggle("is-running", entry.isIntersecting);
+      if (entry.isIntersecting) { paint(); timer = setInterval(step, every); }
     }).observe(el);
   }
 
@@ -626,6 +639,10 @@
       if (hover) {
         box.addEventListener("pointerenter", () => { exploring = true; syncPhotos(); });
         box.addEventListener("pointerleave", () => { exploring = false; syncPhotos(); });
+      } else {
+        // Touch has no "pointer on the map": the first tap hands the map to the visitor for good,
+        // so the resting photos (Haryana, Guwahati) stop showing beside the place they open
+        box.addEventListener("click", () => { exploring = true; syncPhotos(); });
       }
       const links = document.createElementNS(NS, "svg");
       links.setAttribute("class", "reach-map__links");

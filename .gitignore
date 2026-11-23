@@ -5,3 +5,6 @@ design-source/
 
 # Assets moved out during cleanup, kept for review
 _quarantine/
+
+# Upload packages for GoDaddy hosting
+_deploy/
