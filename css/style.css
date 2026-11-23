@@ -3228,3 +3228,4 @@ main > section:has(+ .ai)::after { display: none; }
   .rail__dot::before { content: ""; position: absolute; left: 50%; top: 50%; width: 8px; height: 8px; translate: -50% -50%; border-radius: 50%; background: var(--line); transition: background var(--t-1) var(--ease), scale var(--t-1) var(--ease); }
   .rail__dot.is-active::before { background: var(--coral); scale: 1.35; }
 }
+
