@@ -606,7 +606,7 @@
     let touring = null; // the place the idle tour has open
     let inView = false, onPlace = false, tourOff = reduceMotion || !motion || !route.length;
     let tourTimer = 0, tourIndex = 0;
-    const TOUR_MS = 3400; // time on each place
+    const TOUR_MS = 5400; // time on each place
     root.style.setProperty("--tour-ms", `${TOUR_MS}ms`);
     function syncPhotos() {
       const picky = photos.some((p) => p.el.hasAttribute("data-default"));

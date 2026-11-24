@@ -2622,9 +2622,9 @@ main > section:has(+ .ai)::after { display: none; }
   z-index: -1;
   background:
     /* Dark band under the transparent bar, so its white logo reads on bright photos */
-    linear-gradient(180deg, rgb(var(--shade) / 0.6) 0%, rgb(var(--shade) / 0) calc(var(--nav-h) + 80px)),
-    radial-gradient(120% 70% at 50% 100%, rgb(var(--shade) / 0.95) 0%, rgb(var(--shade) / 0.78) 55%, rgb(var(--shade) / 0) 100%),
-    linear-gradient(180deg, rgb(var(--shade) / 0.68) 0%, rgb(var(--shade) / 0.5) 35%, rgb(var(--shade) / 0.68) 100%);
+    linear-gradient(180deg, rgb(var(--shade) / 0.75) 0%, rgb(var(--shade) / 0) calc(var(--nav-h) + 160px)),
+    radial-gradient(120% 70% at 50% 100%, rgb(var(--shade) / 0.95) 0%, rgb(var(--shade) / 0.82) 55%, rgb(var(--shade) / 0) 100%),
+    linear-gradient(180deg, rgb(var(--shade) / 0.8) 0%, rgb(var(--shade) / 0.6) 35%, rgb(var(--shade) / 0.72) 100%);
 }
 .landing__content { padding-bottom: clamp(72px, 13vh, 132px); text-align: center; }
 .landing .hero__title { color: #fff; font-size: clamp(30px, 3.4vw, 54px); line-height: 1; }
