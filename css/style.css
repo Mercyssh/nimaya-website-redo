@@ -2936,7 +2936,6 @@ main > section:has(+ .ai)::after { display: none; }
 .fact__icon svg { width: 18px; height: 18px; fill: none; stroke: currentColor; stroke-width: 1.9; stroke-linecap: round; stroke-linejoin: round; }
 .page-hero__facts .fact b { font-size: var(--fs-5); white-space: nowrap; }
 .page-hero__facts .fact span:not(.fact__icon) { font-size: var(--fs-6); }
-.page-hero__facts .fact span:not(.fact__icon)::before { content: "·"; margin-right: 8px; color: var(--on-dark-faint); }
 @media (max-width: 700px) {
   .page-hero__facts { display: flex; flex-wrap: wrap; gap: 8px; }
   .page-hero__facts .fact,
