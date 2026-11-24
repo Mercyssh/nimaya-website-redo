@@ -2663,10 +2663,15 @@ main > section:has(+ .ai)::after { display: none; }
 
 /* Phones: one photo at a time, cross-fading */
 @media (max-width: 700px) {
-  .landing { min-height: 560px; }
+  /* Grows past the screen rather than clipping, and always clears the bar */
+  .landing { height: auto; min-height: 100svh; padding-top: calc(var(--nav-h) + 16px); }
   .landing__panels { grid-template-columns: minmax(0, 1fr); }
   .landing__panel { grid-area: 1 / 1; animation: landing-cycle 15s linear calc(var(--i) * 5s - 15s) infinite; }
-  .landing__logo { width: min(62vw, 260px); }
+  /* Sized by the screen's height too, so short phones keep it all in view */
+  .landing__logo { width: min(62vw, 260px, 26svh * 1.11); transform-origin: 0 0; will-change: translate, scale; }
+  /* The bar's logo waits for the landing logo to arrive (see initLogoHandoff) */
+  .has-dark-landing .nav__logo { opacity: var(--logo-in, 1); }
+  .has-dark-landing .nav.is-open .nav__logo { opacity: 1; }
   .landing .hero__title { font-size: 26px; }
 }
 @keyframes landing-cycle {

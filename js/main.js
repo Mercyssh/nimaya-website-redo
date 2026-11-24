@@ -234,6 +234,45 @@
     });
   }
 
+  /* ---------- Phones: the landing logo becomes the nav logo ----------
+     Scrolling already carries the big logo up towards the bar; on the way it shrinks
+     and slides left onto the bar's logo spot, then the two cross-fade. Until then the
+     bar shows no logo, so there are never two on screen. */
+  function initLogoHandoff() {
+    const big = document.querySelector(".landing__logo");
+    const navLogo = document.querySelector(".nav__logo img");
+    if (!big || !navLogo) return;
+    const nav = navLogo.closest(".nav");
+    const phone = window.matchMedia("(max-width: 700px)");
+    let from = null;
+    const measure = () => {
+      big.style.translate = big.style.scale = "";
+      // Layout position, not the on-screen box: the entrance animations move it while they play
+      let x = 0, top = 0;
+      for (let el = big; el; el = el.offsetParent) { x += el.offsetLeft; top += el.offsetTop; }
+      const n = navLogo.getBoundingClientRect();
+      from = { x, top, h: big.offsetHeight, nx: n.left, ny: n.top, nh: n.height };
+    };
+    const reset = () => { big.style.translate = big.style.scale = big.style.opacity = ""; nav.style.removeProperty("--logo-in"); };
+    const update = () => {
+      if (!phone.matches) return reset();
+      if (!from) measure();
+      const travel = Math.max(1, from.top - from.ny);
+      const t = Math.min(1, Math.max(0, window.scrollY / travel));
+      const fade = Math.min(1, Math.max(0, (t - 0.7) / 0.3));
+      if (!reduceMotion) {
+        big.style.translate = `${(from.nx - from.x) * t}px 0`;
+        big.style.scale = String(1 + (from.nh / from.h - 1) * t);
+      }
+      big.style.opacity = String(1 - fade);
+      nav.style.setProperty("--logo-in", String(fade));
+    };
+    window.addEventListener("resize", () => { from = null; update(); });
+    window.addEventListener("load", () => { from = null; update(); });
+    phone.addEventListener("change", () => { from = null; update(); });
+    onScroll(update);
+  }
+
   /* ---------- Mobile menu ----------
      Below 900px the links fold into a sheet under the bar. Closes on a link,
      on Escape, or when the screen grows back past the breakpoint. */
@@ -338,7 +377,7 @@
     const assets = root.dataset.assets || "assets/";
     const GAP = 16;     // pin -> card
     const BLEED = 40;   // how far a card may hang outside the map box
-    const MAX_OPEN = 3;
+    const MAX_OPEN = 1; // one place at a time: opening another closes the last, however it was opened
     const narrow = window.matchMedia("(max-width: 700px)");
 
     // data-hover: pins open on hover (mouse only); data-quiet: no cards open by default
@@ -1363,6 +1402,7 @@
     document.querySelectorAll("[data-fade]").forEach(initFade);
     initCounters();
     initNav();
+    initLogoHandoff();
     initMenu();
     initDropdown();
     document.querySelectorAll("[data-tabs]").forEach(initTabs);
