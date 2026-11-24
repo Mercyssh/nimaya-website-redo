@@ -1366,7 +1366,7 @@ a.press__card:hover,
   position: absolute;
   left: 0;
   top: 0;
-  z-index: 3;
+  z-index: 4;
   width: 280px;
   padding: 14px 16px;
   background: #fff;
@@ -2017,7 +2017,8 @@ html.is-locked { overflow: hidden; }
 .hero--home .hero__wrap { grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); gap: 56px; min-height: 0; }
 
 .reach-map--hero { max-width: max(420px, min(600px, calc((100svh - var(--nav-h) - 170px) * 1000 / 1115))); margin-inline: auto 0; }
-.reach-map__layer { z-index: 3; pointer-events: none; }
+/* The layer stacks nothing of its own, so photos can sit between its pins (below) and its cards (above) */
+.reach-map__layer { z-index: auto; pointer-events: none; }
 .reach-pin, .reach-card { pointer-events: auto; }
 .reach-map__links {
   position: absolute;
@@ -2039,7 +2040,7 @@ html.is-locked { overflow: hidden; }
   position: absolute;
   left: var(--x);
   top: var(--y);
-  z-index: 2;
+  z-index: 3;
   width: 36%;
   margin: 0;
   padding: 6px 6px 0;

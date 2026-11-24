@@ -622,7 +622,7 @@
       while (opened.length > MAX_OPEN) close(opened[0]);
       setOpen(item, true);
       // Raise the newest card above the others
-      opened.forEach((o, i) => { o.card.style.zIndex = 3 + i; });
+      opened.forEach((o, i) => { o.card.style.zIndex = 4 + i; });
     }
 
     function close(item) {
