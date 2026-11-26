@@ -2336,6 +2336,8 @@ main > section:has(+ .ai)::after { display: none; }
 .milestones__grid .stat { width: auto; flex: none; }
 
 .milestones__grid .stat__title { font-size: var(--fs-4); line-height: 1.3; }
+/* Forced title breaks only while the four cards sit in one row, so every title runs two lines */
+@media (max-width: 1100px) { .br-wide { display: none; } }
 
 /* ============ Programs: key facts as icons, a colour per program ============ */
 .program__facts { width: 100%; display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 12px; }
