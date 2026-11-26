@@ -602,7 +602,8 @@ main { padding-top: var(--nav-h); }
   height: 100%;
   object-fit: cover;
 }
-.program .btn { margin-top: auto; }
+/* Facts and button sit at the card's foot, so both programs' boxes line up side by side */
+.program .program__facts { margin-top: auto; }
 
 /* ============ How We Work ============ */
 .work__list {
@@ -1414,6 +1415,11 @@ a.press__card:hover,
 .reach-card__lines li { display: flex; align-items: baseline; gap: 10px; font-size: var(--fs-5); line-height: 1.35; }
 .reach-card__lines b { flex: none; padding: 1px 8px; border-radius: var(--r-xs); background: var(--purple); color: #fff; font-weight: 700; font-variant-numeric: tabular-nums; }
 .reach-card__note { margin-top: 8px; line-height: 1.4; }
+/* Laptop and up: the number reads inside its sentence, highlighted, instead of a separate badge */
+@media (min-width: 701px) {
+  .reach-card__lines li { display: block; }
+  .reach-card__lines b { display: inline; margin-right: 0.3em; padding: 0 3px; border-radius: 0; background: linear-gradient(transparent 55%, rgb(252 175 31 / 0.45) 55%); color: var(--purple); font-weight: 800; }
+}
 .reach-card__logos { margin-top: 10px; padding-top: 10px; border-top: 1px dashed var(--line); display: flex; flex-wrap: wrap; align-items: center; gap: 10px 16px; }
 .reach-card__logos img { height: 22px; width: auto; max-width: 96px; object-fit: contain; }
 

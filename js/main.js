@@ -645,7 +645,7 @@
     let touring = null; // the place the idle tour has open
     let inView = false, onPlace = false, tourOff = reduceMotion || !motion || !route.length;
     let tourTimer = 0, tourIndex = 0;
-    const TOUR_MS = 5400; // time on each place
+    const TOUR_MS = 8500; // time on each place
     root.style.setProperty("--tour-ms", `${TOUR_MS}ms`);
     function syncPhotos() {
       const picky = photos.some((p) => p.el.hasAttribute("data-default"));
@@ -1077,7 +1077,7 @@
       <path class="maya-svg__flow" d="${mayaD}" marker-end="url(#maya-arrowhead)"/>
       <path class="maya-svg__flow" d="${teamD}" marker-end="url(#maya-arrowhead)"/>
       ${streaks}${streak(mayaD, 60, 1)}${streak(teamD, 60, 4)}
-      <circle class="maya-svg__dot" r="6"><animateMotion class="maya-svg__hero" dur="14s" begin="indefinite" repeatCount="indefinite" path="${loop}"/></circle>`;
+      <circle class="maya-svg__dot" r="6"><animateMotion class="maya-svg__hero" dur="28s" begin="indefinite" repeatCount="indefinite" path="${loop}"/></circle>`;
     root.prepend(svg);
     root.classList.add("is-live");
 
@@ -1389,8 +1389,27 @@
     });
   }
 
+  /* ---------- Program cards ----------
+     Side by side, both programs' fact boxes take the taller set's height so their tops and bottoms line up */
+  function initProgramFacts() {
+    const lists = [...document.querySelectorAll(".programs__cards .program__facts")];
+    if (lists.length < 2) return;
+    const sync = () => {
+      lists.forEach((l) => { l.style.minHeight = ""; });
+      const tops = lists.map((l) => l.closest(".program").getBoundingClientRect().top);
+      if (Math.abs(tops[0] - tops[1]) > 2) return; // stacked: nothing to match
+      const h = Math.max(...lists.map((l) => l.offsetHeight));
+      lists.forEach((l) => { l.style.minHeight = `${h}px`; });
+    };
+    window.addEventListener("resize", sync);
+    window.addEventListener("load", sync);
+    if (document.fonts) document.fonts.ready.then(sync);
+    sync();
+  }
+
   /* ---------- Boot ---------- */
   function boot() {
+    initProgramFacts();
     initOverlays();
     document.querySelectorAll("[data-ticker]").forEach(initTicker);
     initRise(); // before initDraw: script words move into the rise wrappers
