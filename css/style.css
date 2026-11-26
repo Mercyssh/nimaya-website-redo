@@ -2964,7 +2964,7 @@ main > section:has(+ .ai)::after { display: none; }
 .reach__stat:not(.reach__stat--lead) { text-align: center; }
 .reach__stat:not(.reach__stat--lead) .reach__icon { margin-inline: auto; }
 @media (min-width: 1101px) {
-  .program__facts li { align-items: center; text-align: center; }
+  .program__facts li { align-items: center; justify-content: center; text-align: center; }
 }
 
 /* ============ Photos through the program pages ============ */
